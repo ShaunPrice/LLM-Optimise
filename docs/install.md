@@ -68,6 +68,8 @@ Keep the extracted directory together. Linux needs a graphical desktop session; 
 
 ## First launch and your data
 
+![The desktop welcome screen with its included runtime and Open laboratory button](assets/installer-welcome.png)
+
 The bundled runtime is the simplest starting point. Advanced users can select an existing trusted Python environment that already contains LLM-Optimise. That choice changes the service interpreter; it does not install or upgrade packages in that environment.
 
 Choose a workspace outside the installation directory, such as a dedicated folder in Documents. The laboratory writes experiment artifacts under `runs/`, code projects under `projects/`, and local model configuration under `.llm-optimise/`. Model files can live in a separate directory. Keep this workspace when updating or uninstalling the application.

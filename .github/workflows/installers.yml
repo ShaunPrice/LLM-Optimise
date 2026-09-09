@@ -2,41 +2,65 @@ name: Build and validate installers
 
 on:
   workflow_dispatch:
+    inputs:
+      target:
+        description: Native target(s) to build and validate
+        type: choice
+        required: true
+        default: all
+        options:
+          - all
+          - macos
+          - linux
+          - macos-arm64
+          - macos-x64
+          - windows-x64
+          - linux-x64
+          - linux-arm64
 
 permissions:
   contents: read
 
 concurrency:
-  group: installers-${{ github.ref }}
+  group: installers-${{ github.ref }}-${{ inputs.target || 'all' }}
   cancel-in-progress: false
 
 jobs:
+  select:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.targets.outputs.matrix }}
+    steps:
+      - id: targets
+        env:
+          SELECTED_TARGET: ${{ inputs.target }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          targets = [
+              {"platform": "macos", "arch": "arm64", "runner": "macos-15"},
+              {"platform": "macos", "arch": "x64", "runner": "macos-15-intel"},
+              {"platform": "windows", "arch": "x64", "runner": "windows-latest"},
+              {"platform": "linux", "arch": "x64", "runner": "ubuntu-22.04", "fuse_package": "libfuse2"},
+              {"platform": "linux", "arch": "arm64", "runner": "ubuntu-24.04-arm", "fuse_package": "libfuse2t64"},
+          ]
+          selected = os.environ.get("SELECTED_TARGET") or "all"
+          rows = [row for row in targets if selected in ("all", row["platform"], row["platform"] + "-" + row["arch"])]
+          if not rows:
+              raise SystemExit("Unknown installer target")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write("matrix=" + json.dumps({"include": rows}) + "\n")
+          PY
   installer:
+    needs: select
     if: github.ref == 'refs/heads/main'
     name: ${{ matrix.platform }}-${{ matrix.arch }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 90
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - platform: macos
-            arch: arm64
-            runner: macos-15
-          - platform: macos
-            arch: x64
-            runner: macos-15-intel
-          - platform: windows
-            arch: x64
-            runner: windows-latest
-          - platform: linux
-            arch: x64
-            runner: ubuntu-22.04
-            fuse_package: libfuse2
-          - platform: linux
-            arch: arm64
-            runner: ubuntu-24.04-arm
-            fuse_package: libfuse2t64
+      matrix: ${{ fromJSON(needs.select.outputs.matrix) }}
     env:
       CARGO_TERM_COLOR: always
       APPIMAGE_EXTRACT_AND_RUN: '1'
@@ -65,7 +89,9 @@ jobs:
       - name: Build the pinned standalone Python runtime and preserve licenses
         run: python scripts/build-bundled-runtime.py
       - name: Build the desktop with bundled resources
-        run: npm run build --prefix desktop -- --config src-tauri/tauri.bundle.conf.json -- --locked
+        env:
+          NO_STRIP: '1'
+        run: npm run build --prefix desktop -- --verbose --config src-tauri/tauri.bundle.conf.json -- --locked
       - name: Package platform installers and checksums
         run: python scripts/package-installers.py --platform ${{ matrix.platform }} --arch ${{ matrix.arch }} --version 0.1.1 --output dist/installers
       - name: Validate installed Linux packages in a native webview
