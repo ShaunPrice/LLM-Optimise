@@ -1,8 +1,9 @@
 # Native llama.cpp accelerators are selected on the host; this image runs the GUI/CLI.
 FROM python:3.12-slim-bookworm
+LABEL org.opencontainers.image.licenses="MIT"
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 WORKDIR /app
-COPY pyproject.toml README.md ./
+COPY pyproject.toml README.md LICENSE ./
 COPY src ./src
 RUN pip install --no-cache-dir . && useradd --uid 10001 --create-home lab && mkdir /workspace && chown lab:lab /workspace
 USER lab

@@ -27,7 +27,7 @@ The application is a lightweight Python control layer with a browser interface. 
 
 ## Start the lab
 
-Clone this private repository with an authorised GitHub account. Install Python 3.10+ and run:
+Install Python 3.10+, clone the repository and run:
 
 ```bash
 git clone https://github.com/ShaunPrice/LLM-Optimise.git
@@ -93,4 +93,8 @@ OpenRouter completed 15 live requests for **US$0.0013586**, including GUI chat a
 
 **Version 0.1.0 — working experimental application.** Native CPU/Metal inference, generated-project container testing and browser workflows have live validation on this Mac. CI checks Python code on Linux, macOS and Windows. OpenRouter cloud calls and Soup training/reload on Mac MLX and Omen CUDA/WSL also pass live validation. The GUI exports training recipes; the live training tests run separately. Native Windows training and llama.cpp NVIDIA telemetry still need hardware validation.
 
-This repository contains no model weights or credentials. Third-party runtimes, models and services retain their own licences and terms. The private application code is covered by [LICENSE](LICENSE).
+## Licence
+
+LLM-Optimise is released under the permissive [MIT licence](LICENSE). You may use, modify and redistribute it, including commercially, while retaining the copyright and licence notice.
+
+This repository contains no model weights or credentials. Third-party runtimes, models and services retain their own licences and terms.
