@@ -82,3 +82,13 @@ The 16 roadmap additions now have executable paths shared by the GUI and CLI. Th
 The GUI dataset workflow and [bounded real CPU capacity search](../validation/workbench/mac-gui-capacity.json) were exercised through browser controls. The new workbench exposes 25 guided tools in six areas, shares job progress/cancellation with the main application, and retains request/evidence inspection.
 
 Additional accelerator inference paths, real speculative-decoding benefits, student quality after distillation, native Windows Soup training, and signed production installer acceptance remain unvalidated. Prior Omen Soup tests use WSL/CUDA. The native supervisor memory comparison excludes model memory, the Python API, browser/webview helpers and GPU allocations. Sampled limits can miss short-lived spikes; Metal allocation remains unknown.
+
+## MCP and product film validation — 9 September 2026
+
+After the independent Opus 5 review and fixes, the integrated local suite passed **331 tests**, including 13 dedicated MCP checks. Ruff checks/formatting pass and the reviewed wheel builds, installs and connects to the existing Mac lab. [Review findings, dispositions and scope](../validation/mcp-review.json)
+
+The optional MCP interface uses actual official-SDK clients over stdio and authenticated Streamable HTTP. Dedicated checks cover discovery/schema validity, a real isolated App session, artifact writes, job results/cancellation, runtime and filesystem boundaries, Host/Origin checks and signed JWT claims. The built wheel also connected through stdio to the running Mac GUI and read its existing completed capacity-search job: **8 tools, 35 actions, no extra provider calls**. [Live check](../validation/mcp-live.json)
+
+These checks establish the local protocol and shared application behavior. They do not establish a live hosted ChatGPT/Claude connector, external OAuth identity provider, secure tunnel or public HTTPS deployment. [Client configuration and deployment requirements](mcp.md)
+
+The marketing film uses actual application captures, including a two-configuration CPU capacity search and generated Python changes passing three Docker tests with a 128 MiB memory cap. The Soup image is labelled recipe preparation; live training evidence above remains separate. [Demonstration observations](../validation/marketing-workflows.json) · [Video production and encoded quality checks](../marketing/video/README.md)

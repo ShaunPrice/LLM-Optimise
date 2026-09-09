@@ -2,9 +2,9 @@
 
 <p align="center"><strong>A practical laboratory for specialised LLMs on constrained hardware.</strong><br>Measure the trade-offs. Build with your models. Route with explicit limits.</p>
 
-<p align="center">Linux · macOS · Windows &nbsp; | &nbsp; Browser / native desktop + CLI &nbsp; | &nbsp; Local · Cloud · Mixed &nbsp; | &nbsp; Docker</p>
+<p align="center">Linux · macOS · Windows &nbsp; | &nbsp; GUI · CLI · MCP &nbsp; | &nbsp; Local · Cloud · Mixed &nbsp; | &nbsp; Docker</p>
 
-<p align="center"><a href="docs/getting-started.md">Get started</a> · <a href="docs/user-guide.md">User guide</a> · <a href="docs/cli-reference.md">CLI reference</a> · <a href="docs/training-research.md">Research</a> · <a href="docs/validation.md">Validation evidence</a></p>
+<p align="center"><a href="docs/getting-started.md">Get started</a> · <a href="docs/user-guide.md">User guide</a> · <a href="docs/mcp.md">MCP + companion skill</a> · <a href="docs/cli-reference.md">CLI reference</a> · <a href="docs/training-research.md">Research</a> · <a href="docs/validation.md">Validation evidence</a></p>
 
 ---
 
@@ -23,8 +23,15 @@ The application combines a lightweight Python control layer, browser interface a
 | **Training & adapters** | Run bounded Soup SFT in a selected environment; register, reload, evaluate and compare adapters with model/data/runtime provenance. Recipes cover streamed and resident QLoRA and MLX. |
 | **Workbench** | Domain datasets and regression gates; capacity, KV, speculation, accelerator and progressive searches; routing calibration, caching, context selection, distillation, specialist abstention, model residency, and Python/Rust component benchmarks. |
 | **CLI + containers** | Run the same core workflows from scripts. Package the GUI/CLI in Docker, or run generated project tests with CPU, RAM, timeout and network limits. |
+| **MCP + skill** | Drive the existing lab from Claude, Codex or another MCP client. Discover 35 actions through 8 tools; share GUI jobs, results and cancellation. Local stdio and authenticated Streamable HTTP, with an installable companion skill. Hosted clients require their documented HTTPS/authentication setup. |
 
 <p align="center"><img src="docs/assets/experiment-lab.png" alt="Experiment lab showing measured CPU and Metal configurations, quality gates and memory comparisons" width="100%"></p>
+
+## Watch the product film
+
+[![Watch the two-minute LLM-Optimise product film](docs/assets/product-film-poster.jpg)](https://github.com/ShaunPrice/LLM-Optimise/releases/download/v0.1.0-experimental/LLM-Optimise-product-film.mp4)
+
+A narrated 1080p walkthrough of the workspace, architecture, routing, Docker development, Soup and MCP. Real application captures, an ElevenLabs female voiceover, original generated music and synchronised captions. [Download video and captions](https://github.com/ShaunPrice/LLM-Optimise/releases/tag/v0.1.0-experimental) · [Production notes and reproducible scripts](marketing/video/README.md)
 
 ## Start the lab
 
@@ -84,6 +91,7 @@ All 16 roadmap additions have executable implementations, with guided GUI forms 
 | [Getting started](docs/getting-started.md) | Linux/macOS/Windows installation, runtimes, first benchmark and local model setup |
 | [User guide](docs/user-guide.md) | Every workspace, datasets, sweeps, metrics, reports and interpretation |
 | [CLI reference](docs/cli-reference.md) | Commands, arguments, examples, outputs and exit behaviour |
+| [MCP and companion skill](docs/mcp.md) | Claude/Codex configuration, discovery, shared jobs, runtime permissions, HTTP authentication and hosted-client setup |
 | [Routing and credentials](docs/agent-routing.md) | Registry schema, local/cloud policy, budgets and provider compatibility |
 | [Development workflow](docs/development.md) | Context selection, proposals, diffs, apply and generated-project testing |
 | [Docker](docs/docker.md) | Application packaging, host runtimes, resource limits and container builds/tests |

@@ -21,3 +21,12 @@ native/target/
 desktop/src-tauri/target/
 desktop/src-tauri/gen/schemas/
 node_modules/
+
+# Marketing production media stays outside source history; releases carry the film.
+marketing/video/audio/*.mp3
+marketing/video/audio/*.flac
+marketing/video/audio/*.wav
+marketing/video/shots/*.png
+marketing/video/output/*
+!marketing/video/output/captions.srt
+!marketing/video/output/quality-report.json

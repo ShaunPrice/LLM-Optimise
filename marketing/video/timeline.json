@@ -1,0 +1,381 @@
+{
+  "fps": 30,
+  "transition": 0.4,
+  "duration": 125.966667,
+  "word_count": 238,
+  "scenes": [
+    {
+      "id": 0,
+      "name": "intro",
+      "heading": "Small hardware.\nSpecialised intelligence.",
+      "eyebrow": "LLM-OPTIMISE",
+      "narration": "Small hardware. Specialised intelligence. Meet L L M Optimise.",
+      "start": 0.0,
+      "duration": 7.966666666666667,
+      "source_start": 0.0,
+      "source_end": 6.2,
+      "voice_lead": 1.2,
+      "captions": [
+        {
+          "start": 1.2,
+          "end": 4.24,
+          "text": "Small hardware, specialised intelligence."
+        },
+        {
+          "start": 5.02,
+          "end": 7.1000000000000005,
+          "text": "Meet LLM-Optimise."
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "purpose",
+      "heading": "Push your hardware.\nProve the result.",
+      "eyebrow": "A LABORATORY FOR SPECIALISED AI",
+      "narration": "Explore what your hardware can really do. Balance speed, memory and cost, while keeping task quality in view.",
+      "start": 7.566667,
+      "duration": 9.1,
+      "source_start": 6.2,
+      "source_end": 14.4,
+      "voice_lead": 0.35,
+      "captions": [
+        {
+          "start": 0.7699999999999999,
+          "end": 3.0100000000000002,
+          "text": "Explore what your hardware can really do."
+        },
+        {
+          "start": 3.7499999999999996,
+          "end": 7.25,
+          "text": "Balance speed, memory, and cost while keeping\ntask"
+        },
+        {
+          "start": 7.13,
+          "end": 8.23,
+          "text": "quality in view."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "configure",
+      "heading": "Start with your task.",
+      "eyebrow": "01 / CONFIGURE",
+      "narration": "Choose a model, add representative examples, and set your quality and resource limits. Start with a baseline you can measure.",
+      "start": 16.266667,
+      "duration": 9.0,
+      "source_start": 14.4,
+      "source_end": 22.47,
+      "voice_lead": 0.35,
+      "captions": [
+        {
+          "start": 0.7899999999999995,
+          "end": 4.249999999999999,
+          "text": "Choose a model, add representative examples, and\nset"
+        },
+        {
+          "start": 4.129999999999999,
+          "end": 5.830000000000001,
+          "text": "your quality and resource limits."
+        },
+        {
+          "start": 6.489999999999998,
+          "end": 8.229999999999999,
+          "text": "Start with a baseline you can measure."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "compare",
+      "heading": "Find the measured\ntrade-offs.",
+      "eyebrow": "02 / RUN AND COMPARE",
+      "narration": "Run bounded experiments. Compare latency, memory and accuracy, then inspect the measured trade-offs before you choose a configuration.",
+      "start": 24.866667,
+      "duration": 9.833333333333334,
+      "source_start": 22.47,
+      "source_end": 31.38,
+      "voice_lead": 0.35,
+      "captions": [
+        {
+          "start": 0.6600000000000023,
+          "end": 1.9600000000000022,
+          "text": "Run bounded experiments."
+        },
+        {
+          "start": 2.5800000000000005,
+          "end": 5.04,
+          "text": "Compare latency, memory, and accuracy."
+        },
+        {
+          "start": 5.5600000000000005,
+          "end": 7.86,
+          "text": "Then inspect the measured trade-offs before you"
+        },
+        {
+          "start": 7.74,
+          "end": 8.899999999999999,
+          "text": "choose a configuration."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "explore",
+      "heading": "Make every\nconstraint useful.",
+      "eyebrow": "03 / REFINE",
+      "narration": "Explore context sizes, quantized caches and accelerator settings, with controlled searches and clear evidence for every result.",
+      "start": 34.3,
+      "duration": 10.0,
+      "source_start": 31.38,
+      "source_end": 40.45,
+      "voice_lead": 0.35,
+      "captions": [
+        {
+          "start": 0.8300000000000004,
+          "end": 5.650000000000003,
+          "text": "Explore context sizes, quantized caches, and\naccelerator settings"
+        },
+        {
+          "start": 5.530000000000003,
+          "end": 8.610000000000003,
+          "text": "with controlled searches and clear evidence for\nevery"
+        },
+        {
+          "start": 8.490000000000004,
+          "end": 9.069999999999997,
+          "text": "result."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "architecture",
+      "heading": "One engine.\nMultiple ways to work.",
+      "eyebrow": "THE ARCHITECTURE",
+      "narration": "One shared application engine connects the visual workspace, command line and MCP interface. Python coordinates workflows, while an optional Rust supervisor manages model processes.",
+      "start": 43.9,
+      "duration": 15.2,
+      "source_start": 40.45,
+      "source_end": 54.739999999999995,
+      "voice_lead": 0.35,
+      "captions": [
+        {
+          "start": 0.8199999999999988,
+          "end": 4.479999999999998,
+          "text": "One shared application engine connects the\nvisual workspace,"
+        },
+        {
+          "start": 4.999999999999998,
+          "end": 7.559999999999996,
+          "text": "command line, and MCP interface."
+        },
+        {
+          "start": 8.199999999999994,
+          "end": 12.36,
+          "text": "Python coordinates workflows while an optional\nRust supervisor"
+        },
+        {
+          "start": 12.24,
+          "end": 14.279999999999994,
+          "text": "manages model processes."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "routing",
+      "heading": "Your priorities.\nYour model choices.",
+      "eyebrow": "LOCAL / CLOUD / MIXED",
+      "narration": "Route agents using your priorities. Calibrate on scored tasks, reuse exact responses, and unload idle models to recover memory.",
+      "start": 58.7,
+      "duration": 10.5,
+      "source_start": 54.739999999999995,
+      "source_end": 64.33,
+      "voice_lead": 0.35,
+      "captions": [
+        {
+          "start": 0.830000000000004,
+          "end": 2.710000000000002,
+          "text": "Route agents using your priorities."
+        },
+        {
+          "start": 3.310000000000008,
+          "end": 7.510000000000006,
+          "text": "Calibrate on scored tasks, reuse exact\nresponses, and"
+        },
+        {
+          "start": 7.390000000000006,
+          "end": 9.670000000000002,
+          "text": "unload idle models to recover memory."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "develop",
+      "heading": "Describe. Build.\nTest. Refine.",
+      "eyebrow": "DEVELOP WITH YOUR CHOSEN MODEL",
+      "narration": "Describe a solution with your chosen model. Review the changes, then build and test a disposable copy in Docker, with bounded repair loops.",
+      "start": 68.8,
+      "duration": 10.266666666666667,
+      "source_start": 64.33,
+      "source_end": 73.67,
+      "voice_lead": 0.35,
+      "captions": [
+        {
+          "start": 0.7400000000000005,
+          "end": 2.879999999999997,
+          "text": "Describe a solution with your chosen model."
+        },
+        {
+          "start": 3.319999999999999,
+          "end": 6.099999999999995,
+          "text": "Review the changes, then build and test a"
+        },
+        {
+          "start": 5.979999999999995,
+          "end": 9.36,
+          "text": "disposable copy in Docker with bounded repair\nloops."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "training",
+      "heading": "Specialise smaller\nmodels with Soup.",
+      "eyebrow": "TRAIN / RELOAD / EVALUATE",
+      "narration": "Use Soup to train task adapters, reload them, and compare results. Keep held-out evaluations separate, so smaller models still have to prove their value.",
+      "start": 78.666667,
+      "duration": 11.3,
+      "source_start": 73.67,
+      "source_end": 84.04,
+      "voice_lead": 0.35,
+      "captions": [
+        {
+          "start": 0.8000000000000028,
+          "end": 3.959999999999995,
+          "text": "Use Soup to train task adapters, reload them,"
+        },
+        {
+          "start": 4.020000000000001,
+          "end": 4.939999999999999,
+          "text": "and compare results."
+        },
+        {
+          "start": 5.639999999999992,
+          "end": 9.0,
+          "text": "Keep held-out evaluations separate, so smaller\nmodels"
+        },
+        {
+          "start": 8.88,
+          "end": 10.480000000000004,
+          "text": "still have to prove their value."
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "mcp",
+      "heading": "Work through\nyour assistant.",
+      "eyebrow": "CHAT + MCP + COMPANION SKILL",
+      "narration": "Ask the built-in assistant for guidance, or drive the laboratory from a compatible MCP client. The companion skill helps your assistant discover tools and interpret evidence.",
+      "start": 89.566667,
+      "duration": 12.433333333333334,
+      "source_start": 84.04,
+      "source_end": 95.55,
+      "voice_lead": 0.35,
+      "captions": [
+        {
+          "start": 0.7099999999999994,
+          "end": 3.44999999999999,
+          "text": "Ask the built-in assistant for guidance, or"
+        },
+        {
+          "start": 3.32999999999999,
+          "end": 6.4099999999999975,
+          "text": "drive the laboratory from a compatible MCP\nclient."
+        },
+        {
+          "start": 7.0899999999999945,
+          "end": 10.069999999999993,
+          "text": "The companion skill helps your assistant\ndiscover tools"
+        },
+        {
+          "start": 10.129999999999987,
+          "end": 11.569999999999993,
+          "text": "and interpret evidence."
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "evidence",
+      "heading": "Evidence you\ncan inspect.",
+      "eyebrow": "REPRODUCIBLE EXPERIMENTS",
+      "narration": "Validated workflows span Mac, Windows, Linux, Docker and OpenRouter. Hardware results remain specific to the model, task and configuration you test.",
+      "start": 101.6,
+      "duration": 12.533333333333333,
+      "source_start": 95.55,
+      "source_end": 107.16,
+      "voice_lead": 0.35,
+      "captions": [
+        {
+          "start": 0.7599999999999966,
+          "end": 5.420000000000003,
+          "text": "Validated workflows span Mac, Windows, Linux,\nDocker, and"
+        },
+        {
+          "start": 5.3000000000000025,
+          "end": 6.000000000000001,
+          "text": "OpenRouter."
+        },
+        {
+          "start": 6.560000000000008,
+          "end": 9.780000000000001,
+          "text": "Hardware results remain specific to the model,\ntask,"
+        },
+        {
+          "start": 10.060000000000008,
+          "end": 11.799999999999997,
+          "text": "and configuration you test."
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "outro",
+      "heading": "Find your\nbetter fit.",
+      "eyebrow": "OPEN SOURCE / MIT LICENSED",
+      "narration": "Open source. MIT licensed. L L M Optimise. Find a better fit for your task, on the hardware you have.",
+      "start": 113.733333,
+      "duration": 12.233333333333333,
+      "source_start": 107.16,
+      "source_end": 116.0359375,
+      "voice_lead": 0.35,
+      "captions": [
+        {
+          "start": 0.6300000000000011,
+          "end": 3.2100000000000093,
+          "text": "Open Source, MIT licensed."
+        },
+        {
+          "start": 4.470000000000004,
+          "end": 5.590000000000004,
+          "text": "LLM-Optimise."
+        },
+        {
+          "start": 6.0699999999999985,
+          "end": 8.210000000000008,
+          "text": "Find a better fit for your task on"
+        },
+        {
+          "start": 8.090000000000009,
+          "end": 9.129999999999995,
+          "text": "the hardware you have."
+        }
+      ]
+    }
+  ]
+}

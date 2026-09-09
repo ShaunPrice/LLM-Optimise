@@ -1,0 +1,23 @@
+Small hardware. Specialised intelligence. Meet L L M Optimise.
+
+Explore what your hardware can really do. Balance speed, memory and cost, while keeping task quality in view.
+
+Choose a model, add representative examples, and set your quality and resource limits. Start with a baseline you can measure.
+
+Run bounded experiments. Compare latency, memory and accuracy, then inspect the measured trade-offs before you choose a configuration.
+
+Explore context sizes, quantized caches and accelerator settings, with controlled searches and clear evidence for every result.
+
+One shared application engine connects the visual workspace, command line and MCP interface. Python coordinates workflows, while an optional Rust supervisor manages model processes.
+
+Route agents using your priorities. Calibrate on scored tasks, reuse exact responses, and unload idle models to recover memory.
+
+Describe a solution with your chosen model. Review the changes, then build and test a disposable copy in Docker, with bounded repair loops.
+
+Use Soup to train task adapters, reload them, and compare results. Keep held-out evaluations separate, so smaller models still have to prove their value.
+
+Ask the built-in assistant for guidance, or drive the laboratory from a compatible MCP client. The companion skill helps your assistant discover tools and interpret evidence.
+
+Validated workflows span Mac, Windows, Linux, Docker and OpenRouter. Hardware results remain specific to the model, task and configuration you test.
+
+Open source. MIT licensed. L L M Optimise. Find a better fit for your task, on the hardware you have.

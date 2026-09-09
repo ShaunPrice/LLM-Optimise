@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "llm-optimise": {
+      "command": "/absolute/path/to/LLM-Optimise/.venv/bin/python",
+      "args": [
+        "-m", "llm_optimise.mcp_server",
+        "--workspace", "/absolute/path/to/LLM-Optimise",
+        "--app-url", "http://127.0.0.1:8765",
+        "--runtime", "/absolute/path/to/llama-server"
+      ]
+    }
+  }
+}

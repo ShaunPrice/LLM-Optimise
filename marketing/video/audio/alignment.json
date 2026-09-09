@@ -1,0 +1,1195 @@
+{
+  "ok": true,
+  "words": [
+    {
+      "word": "Small",
+      "start": 0,
+      "end": 0.28
+    },
+    {
+      "word": "hardware,",
+      "start": 0.28,
+      "end": 0.96
+    },
+    {
+      "word": "specialized",
+      "start": 1.54,
+      "end": 2.08
+    },
+    {
+      "word": "intelligence.",
+      "start": 2.08,
+      "end": 2.92
+    },
+    {
+      "word": "Meet",
+      "start": 3.82,
+      "end": 3.98
+    },
+    {
+      "word": "LLM",
+      "start": 3.98,
+      "end": 4.94
+    },
+    {
+      "word": "Optimize.",
+      "start": 4.94,
+      "end": 5.78
+    },
+    {
+      "word": "Explore",
+      "start": 6.62,
+      "end": 7.12
+    },
+    {
+      "word": "what",
+      "start": 7.12,
+      "end": 7.36
+    },
+    {
+      "word": "your",
+      "start": 7.36,
+      "end": 7.5
+    },
+    {
+      "word": "hardware",
+      "start": 7.5,
+      "end": 7.78
+    },
+    {
+      "word": "can",
+      "start": 7.78,
+      "end": 8.1
+    },
+    {
+      "word": "really",
+      "start": 8.1,
+      "end": 8.42
+    },
+    {
+      "word": "do.",
+      "start": 8.42,
+      "end": 8.74
+    },
+    {
+      "word": "Balance",
+      "start": 9.6,
+      "end": 9.86
+    },
+    {
+      "word": "speed,",
+      "start": 9.86,
+      "end": 10.32
+    },
+    {
+      "word": "memory,",
+      "start": 10.78,
+      "end": 10.98
+    },
+    {
+      "word": "and",
+      "start": 11.26,
+      "end": 11.34
+    },
+    {
+      "word": "cost",
+      "start": 11.34,
+      "end": 11.8
+    },
+    {
+      "word": "while",
+      "start": 11.8,
+      "end": 12.38
+    },
+    {
+      "word": "keeping",
+      "start": 12.38,
+      "end": 12.68
+    },
+    {
+      "word": "task",
+      "start": 12.68,
+      "end": 12.98
+    },
+    {
+      "word": "quality",
+      "start": 12.98,
+      "end": 13.48
+    },
+    {
+      "word": "in",
+      "start": 13.48,
+      "end": 13.72
+    },
+    {
+      "word": "view.",
+      "start": 13.72,
+      "end": 13.96
+    },
+    {
+      "word": "Choose",
+      "start": 14.84,
+      "end": 15.12
+    },
+    {
+      "word": "a",
+      "start": 15.12,
+      "end": 15.26
+    },
+    {
+      "word": "model,",
+      "start": 15.26,
+      "end": 15.58
+    },
+    {
+      "word": "add",
+      "start": 16.08,
+      "end": 16.22
+    },
+    {
+      "word": "representative",
+      "start": 16.22,
+      "end": 16.76
+    },
+    {
+      "word": "examples,",
+      "start": 16.76,
+      "end": 17.28
+    },
+    {
+      "word": "and",
+      "start": 17.64,
+      "end": 17.96
+    },
+    {
+      "word": "set",
+      "start": 17.96,
+      "end": 18.18
+    },
+    {
+      "word": "your",
+      "start": 18.18,
+      "end": 18.34
+    },
+    {
+      "word": "quality",
+      "start": 18.34,
+      "end": 18.76
+    },
+    {
+      "word": "and",
+      "start": 18.76,
+      "end": 19.06
+    },
+    {
+      "word": "resource",
+      "start": 19.06,
+      "end": 19.34
+    },
+    {
+      "word": "limits.",
+      "start": 19.34,
+      "end": 19.76
+    },
+    {
+      "word": "Start",
+      "start": 20.54,
+      "end": 20.9
+    },
+    {
+      "word": "with",
+      "start": 20.9,
+      "end": 21.08
+    },
+    {
+      "word": "a",
+      "start": 21.08,
+      "end": 21.18
+    },
+    {
+      "word": "baseline",
+      "start": 21.18,
+      "end": 21.5
+    },
+    {
+      "word": "you",
+      "start": 21.5,
+      "end": 21.74
+    },
+    {
+      "word": "can",
+      "start": 21.74,
+      "end": 21.86
+    },
+    {
+      "word": "measure.",
+      "start": 21.86,
+      "end": 22.16
+    },
+    {
+      "word": "Run",
+      "start": 22.78,
+      "end": 22.98
+    },
+    {
+      "word": "bounded",
+      "start": 22.98,
+      "end": 23.38
+    },
+    {
+      "word": "experiments.",
+      "start": 23.38,
+      "end": 23.96
+    },
+    {
+      "word": "Compare",
+      "start": 24.7,
+      "end": 24.98
+    },
+    {
+      "word": "latency,",
+      "start": 24.98,
+      "end": 25.52
+    },
+    {
+      "word": "memory,",
+      "start": 25.94,
+      "end": 26.2
+    },
+    {
+      "word": "and",
+      "start": 26.44,
+      "end": 26.54
+    },
+    {
+      "word": "accuracy.",
+      "start": 26.54,
+      "end": 27.04
+    },
+    {
+      "word": "Then",
+      "start": 27.68,
+      "end": 27.82
+    },
+    {
+      "word": "inspect",
+      "start": 27.82,
+      "end": 28.3
+    },
+    {
+      "word": "the",
+      "start": 28.3,
+      "end": 28.5
+    },
+    {
+      "word": "measured",
+      "start": 28.5,
+      "end": 28.78
+    },
+    {
+      "word": "trade",
+      "start": 28.78,
+      "end": 29.1
+    },
+    {
+      "word": "-offs",
+      "start": 29.1,
+      "end": 29.28
+    },
+    {
+      "word": "before",
+      "start": 29.28,
+      "end": 29.64
+    },
+    {
+      "word": "you",
+      "start": 29.64,
+      "end": 29.86
+    },
+    {
+      "word": "choose",
+      "start": 29.86,
+      "end": 30.14
+    },
+    {
+      "word": "a",
+      "start": 30.14,
+      "end": 30.22
+    },
+    {
+      "word": "configuration.",
+      "start": 30.22,
+      "end": 30.9
+    },
+    {
+      "word": "Explore",
+      "start": 31.86,
+      "end": 32.38
+    },
+    {
+      "word": "context",
+      "start": 32.38,
+      "end": 32.82
+    },
+    {
+      "word": "sizes,",
+      "start": 32.82,
+      "end": 33.34
+    },
+    {
+      "word": "quantize",
+      "start": 33.88,
+      "end": 34.42
+    },
+    {
+      "word": "caches,",
+      "start": 34.42,
+      "end": 34.86
+    },
+    {
+      "word": "and",
+      "start": 35.42,
+      "end": 35.48
+    },
+    {
+      "word": "accelerator",
+      "start": 35.48,
+      "end": 35.88
+    },
+    {
+      "word": "settings",
+      "start": 35.88,
+      "end": 36.56
+    },
+    {
+      "word": "with",
+      "start": 36.56,
+      "end": 37.1
+    },
+    {
+      "word": "controlled",
+      "start": 37.1,
+      "end": 37.54
+    },
+    {
+      "word": "searches",
+      "start": 37.54,
+      "end": 37.94
+    },
+    {
+      "word": "and",
+      "start": 37.94,
+      "end": 38.26
+    },
+    {
+      "word": "clear",
+      "start": 38.26,
+      "end": 38.52
+    },
+    {
+      "word": "evidence",
+      "start": 38.52,
+      "end": 38.92
+    },
+    {
+      "word": "for",
+      "start": 38.92,
+      "end": 39.2
+    },
+    {
+      "word": "every",
+      "start": 39.2,
+      "end": 39.52
+    },
+    {
+      "word": "result.",
+      "start": 39.52,
+      "end": 39.98
+    },
+    {
+      "word": "One",
+      "start": 40.92,
+      "end": 41.32
+    },
+    {
+      "word": "shared",
+      "start": 41.32,
+      "end": 41.72
+    },
+    {
+      "word": "application",
+      "start": 41.72,
+      "end": 42.32
+    },
+    {
+      "word": "engine",
+      "start": 42.32,
+      "end": 42.84
+    },
+    {
+      "word": "connects",
+      "start": 42.84,
+      "end": 43.38
+    },
+    {
+      "word": "the",
+      "start": 43.38,
+      "end": 43.66
+    },
+    {
+      "word": "visual",
+      "start": 43.66,
+      "end": 43.96
+    },
+    {
+      "word": "workspace,",
+      "start": 43.96,
+      "end": 44.46
+    },
+    {
+      "word": "command",
+      "start": 45.1,
+      "end": 45.28
+    },
+    {
+      "word": "line,",
+      "start": 45.28,
+      "end": 45.64
+    },
+    {
+      "word": "and",
+      "start": 45.9,
+      "end": 46.14
+    },
+    {
+      "word": "MCP",
+      "start": 46.14,
+      "end": 46.78
+    },
+    {
+      "word": "interface.",
+      "start": 46.78,
+      "end": 47.54
+    },
+    {
+      "word": "Python",
+      "start": 48.3,
+      "end": 48.76
+    },
+    {
+      "word": "coordinates",
+      "start": 48.76,
+      "end": 49.36
+    },
+    {
+      "word": "workflows",
+      "start": 49.36,
+      "end": 49.92
+    },
+    {
+      "word": "while",
+      "start": 49.92,
+      "end": 50.68
+    },
+    {
+      "word": "an",
+      "start": 50.68,
+      "end": 50.88
+    },
+    {
+      "word": "optional",
+      "start": 50.88,
+      "end": 51.3
+    },
+    {
+      "word": "rust",
+      "start": 51.3,
+      "end": 51.62
+    },
+    {
+      "word": "supervisor",
+      "start": 51.62,
+      "end": 52.34
+    },
+    {
+      "word": "manages",
+      "start": 52.34,
+      "end": 53.14
+    },
+    {
+      "word": "model",
+      "start": 53.14,
+      "end": 53.68
+    },
+    {
+      "word": "processes.",
+      "start": 53.68,
+      "end": 54.26
+    },
+    {
+      "word": "Route",
+      "start": 55.22,
+      "end": 55.58
+    },
+    {
+      "word": "agents",
+      "start": 55.58,
+      "end": 55.9
+    },
+    {
+      "word": "using",
+      "start": 55.9,
+      "end": 56.26
+    },
+    {
+      "word": "your",
+      "start": 56.26,
+      "end": 56.46
+    },
+    {
+      "word": "priorities.",
+      "start": 56.46,
+      "end": 56.98
+    },
+    {
+      "word": "Calibrate",
+      "start": 57.7,
+      "end": 58.16
+    },
+    {
+      "word": "on",
+      "start": 58.16,
+      "end": 58.38
+    },
+    {
+      "word": "scored",
+      "start": 58.38,
+      "end": 58.7
+    },
+    {
+      "word": "tasks,",
+      "start": 58.7,
+      "end": 59.2
+    },
+    {
+      "word": "reuse",
+      "start": 59.76,
+      "end": 59.96
+    },
+    {
+      "word": "exact",
+      "start": 59.96,
+      "end": 60.42
+    },
+    {
+      "word": "responses,",
+      "start": 60.42,
+      "end": 61.08
+    },
+    {
+      "word": "and",
+      "start": 61.7,
+      "end": 61.78
+    },
+    {
+      "word": "unload",
+      "start": 61.78,
+      "end": 62.14
+    },
+    {
+      "word": "idle",
+      "start": 62.14,
+      "end": 62.6
+    },
+    {
+      "word": "models",
+      "start": 62.6,
+      "end": 62.92
+    },
+    {
+      "word": "to",
+      "start": 62.92,
+      "end": 63.2
+    },
+    {
+      "word": "recover",
+      "start": 63.2,
+      "end": 63.52
+    },
+    {
+      "word": "memory.",
+      "start": 63.52,
+      "end": 63.94
+    },
+    {
+      "word": "Describe",
+      "start": 64.72,
+      "end": 65
+    },
+    {
+      "word": "a",
+      "start": 65,
+      "end": 65.22
+    },
+    {
+      "word": "solution",
+      "start": 65.22,
+      "end": 65.66
+    },
+    {
+      "word": "with",
+      "start": 65.66,
+      "end": 65.92
+    },
+    {
+      "word": "your",
+      "start": 65.92,
+      "end": 66.02
+    },
+    {
+      "word": "chosen",
+      "start": 66.02,
+      "end": 66.34
+    },
+    {
+      "word": "model.",
+      "start": 66.34,
+      "end": 66.74
+    },
+    {
+      "word": "Review",
+      "start": 67.3,
+      "end": 67.52
+    },
+    {
+      "word": "the",
+      "start": 67.52,
+      "end": 67.7
+    },
+    {
+      "word": "changes,",
+      "start": 67.7,
+      "end": 68.08
+    },
+    {
+      "word": "then",
+      "start": 68.6,
+      "end": 68.84
+    },
+    {
+      "word": "build",
+      "start": 68.84,
+      "end": 69.08
+    },
+    {
+      "word": "and",
+      "start": 69.08,
+      "end": 69.4
+    },
+    {
+      "word": "test",
+      "start": 69.4,
+      "end": 69.72
+    },
+    {
+      "word": "a",
+      "start": 69.72,
+      "end": 69.96
+    },
+    {
+      "word": "disposable",
+      "start": 69.96,
+      "end": 70.4
+    },
+    {
+      "word": "copy",
+      "start": 70.4,
+      "end": 70.86
+    },
+    {
+      "word": "in",
+      "start": 70.86,
+      "end": 71.12
+    },
+    {
+      "word": "Docker",
+      "start": 71.12,
+      "end": 71.4
+    },
+    {
+      "word": "with",
+      "start": 71.4,
+      "end": 72.16
+    },
+    {
+      "word": "bounded",
+      "start": 72.16,
+      "end": 72.58
+    },
+    {
+      "word": "repair",
+      "start": 72.58,
+      "end": 72.92
+    },
+    {
+      "word": "loops.",
+      "start": 72.92,
+      "end": 73.22
+    },
+    {
+      "word": "Use",
+      "start": 74.12,
+      "end": 74.34
+    },
+    {
+      "word": "Soup",
+      "start": 74.34,
+      "end": 74.64
+    },
+    {
+      "word": "to",
+      "start": 74.64,
+      "end": 74.86
+    },
+    {
+      "word": "train",
+      "start": 74.86,
+      "end": 75.1
+    },
+    {
+      "word": "task",
+      "start": 75.1,
+      "end": 75.54
+    },
+    {
+      "word": "adapters,",
+      "start": 75.54,
+      "end": 76.06
+    },
+    {
+      "word": "reload",
+      "start": 76.62,
+      "end": 76.84
+    },
+    {
+      "word": "them,",
+      "start": 76.84,
+      "end": 77.16
+    },
+    {
+      "word": "and",
+      "start": 77.34,
+      "end": 77.42
+    },
+    {
+      "word": "compare",
+      "start": 77.42,
+      "end": 77.72
+    },
+    {
+      "word": "results.",
+      "start": 77.72,
+      "end": 78.14
+    },
+    {
+      "word": "Keep",
+      "start": 78.96,
+      "end": 79.2
+    },
+    {
+      "word": "held",
+      "start": 79.2,
+      "end": 79.5
+    },
+    {
+      "word": "out",
+      "start": 79.5,
+      "end": 79.66
+    },
+    {
+      "word": "evaluation",
+      "start": 79.66,
+      "end": 80.06
+    },
+    {
+      "word": "separate,",
+      "start": 80.06,
+      "end": 80.78
+    },
+    {
+      "word": "so",
+      "start": 81.12,
+      "end": 81.38
+    },
+    {
+      "word": "smaller",
+      "start": 81.38,
+      "end": 81.8
+    },
+    {
+      "word": "models",
+      "start": 81.8,
+      "end": 82.2
+    },
+    {
+      "word": "still",
+      "start": 82.2,
+      "end": 82.52
+    },
+    {
+      "word": "have",
+      "start": 82.52,
+      "end": 82.72
+    },
+    {
+      "word": "to",
+      "start": 82.72,
+      "end": 82.86
+    },
+    {
+      "word": "prove",
+      "start": 82.86,
+      "end": 83.08
+    },
+    {
+      "word": "their",
+      "start": 83.08,
+      "end": 83.28
+    },
+    {
+      "word": "value.",
+      "start": 83.28,
+      "end": 83.68
+    },
+    {
+      "word": "Ask",
+      "start": 84.4,
+      "end": 84.8
+    },
+    {
+      "word": "the",
+      "start": 84.8,
+      "end": 85.02
+    },
+    {
+      "word": "built",
+      "start": 85.02,
+      "end": 85.18
+    },
+    {
+      "word": "-in",
+      "start": 85.18,
+      "end": 85.36
+    },
+    {
+      "word": "assistant",
+      "start": 85.36,
+      "end": 85.68
+    },
+    {
+      "word": "for",
+      "start": 85.68,
+      "end": 85.98
+    },
+    {
+      "word": "guidance,",
+      "start": 85.98,
+      "end": 86.3
+    },
+    {
+      "word": "or",
+      "start": 86.82,
+      "end": 87.02
+    },
+    {
+      "word": "drive",
+      "start": 87.02,
+      "end": 87.32
+    },
+    {
+      "word": "the",
+      "start": 87.32,
+      "end": 87.5
+    },
+    {
+      "word": "laboratory",
+      "start": 87.5,
+      "end": 87.92
+    },
+    {
+      "word": "from",
+      "start": 87.92,
+      "end": 88.26
+    },
+    {
+      "word": "a",
+      "start": 88.26,
+      "end": 88.38
+    },
+    {
+      "word": "compatible",
+      "start": 88.38,
+      "end": 88.88
+    },
+    {
+      "word": "MCP",
+      "start": 88.88,
+      "end": 89.54
+    },
+    {
+      "word": "client.",
+      "start": 89.54,
+      "end": 89.98
+    },
+    {
+      "word": "The",
+      "start": 90.78,
+      "end": 90.96
+    },
+    {
+      "word": "companion",
+      "start": 90.96,
+      "end": 91.36
+    },
+    {
+      "word": "skill",
+      "start": 91.36,
+      "end": 91.78
+    },
+    {
+      "word": "helps",
+      "start": 91.78,
+      "end": 92.12
+    },
+    {
+      "word": "your",
+      "start": 92.12,
+      "end": 92.28
+    },
+    {
+      "word": "assistant",
+      "start": 92.28,
+      "end": 92.66
+    },
+    {
+      "word": "discover",
+      "start": 92.66,
+      "end": 93.08
+    },
+    {
+      "word": "tools",
+      "start": 93.08,
+      "end": 93.64
+    },
+    {
+      "word": "and",
+      "start": 93.82,
+      "end": 94.22
+    },
+    {
+      "word": "interpret",
+      "start": 94.22,
+      "end": 94.62
+    },
+    {
+      "word": "evidence.",
+      "start": 94.62,
+      "end": 95.14
+    },
+    {
+      "word": "Validated",
+      "start": 95.96,
+      "end": 96.5
+    },
+    {
+      "word": "workflows",
+      "start": 96.5,
+      "end": 96.88
+    },
+    {
+      "word": "span",
+      "start": 96.88,
+      "end": 97.36
+    },
+    {
+      "word": "Mac,",
+      "start": 97.36,
+      "end": 97.66
+    },
+    {
+      "word": "Windows,",
+      "start": 98.28,
+      "end": 98.54
+    },
+    {
+      "word": "Linux,",
+      "start": 99.04,
+      "end": 99.2
+    },
+    {
+      "word": "Docker,",
+      "start": 99.72,
+      "end": 99.84
+    },
+    {
+      "word": "and",
+      "start": 100.44,
+      "end": 100.5
+    },
+    {
+      "word": "OpenRouter.",
+      "start": 100.5,
+      "end": 101.08
+    },
+    {
+      "word": "Hardware",
+      "start": 101.76,
+      "end": 102.28
+    },
+    {
+      "word": "results",
+      "start": 102.28,
+      "end": 102.64
+    },
+    {
+      "word": "remain",
+      "start": 102.64,
+      "end": 102.96
+    },
+    {
+      "word": "specific",
+      "start": 102.96,
+      "end": 103.56
+    },
+    {
+      "word": "to",
+      "start": 103.56,
+      "end": 103.78
+    },
+    {
+      "word": "the",
+      "start": 103.78,
+      "end": 103.88
+    },
+    {
+      "word": "model,",
+      "start": 103.88,
+      "end": 104.2
+    },
+    {
+      "word": "task,",
+      "start": 104.62,
+      "end": 104.86
+    },
+    {
+      "word": "and",
+      "start": 105.26,
+      "end": 105.52
+    },
+    {
+      "word": "configuration",
+      "start": 105.52,
+      "end": 106.04
+    },
+    {
+      "word": "you",
+      "start": 106.04,
+      "end": 106.44
+    },
+    {
+      "word": "test.",
+      "start": 106.44,
+      "end": 106.88
+    },
+    {
+      "word": "Open",
+      "start": 107.44,
+      "end": 107.86
+    },
+    {
+      "word": "Source,",
+      "start": 107.86,
+      "end": 108.28
+    },
+    {
+      "word": "MIT",
+      "start": 108.84,
+      "end": 109.22
+    },
+    {
+      "word": "licensed.",
+      "start": 109.22,
+      "end": 109.9
+    },
+    {
+      "word": "LLM",
+      "start": 111.28,
+      "end": 111.78
+    },
+    {
+      "word": "optimize.",
+      "start": 111.78,
+      "end": 112.28
+    },
+    {
+      "word": "Find",
+      "start": 112.88,
+      "end": 113.16
+    },
+    {
+      "word": "a",
+      "start": 113.16,
+      "end": 113.28
+    },
+    {
+      "word": "better",
+      "start": 113.28,
+      "end": 113.48
+    },
+    {
+      "word": "fit",
+      "start": 113.48,
+      "end": 113.68
+    },
+    {
+      "word": "for",
+      "start": 113.68,
+      "end": 113.86
+    },
+    {
+      "word": "your",
+      "start": 113.86,
+      "end": 114
+    },
+    {
+      "word": "task",
+      "start": 114,
+      "end": 114.44
+    },
+    {
+      "word": "on",
+      "start": 114.44,
+      "end": 114.9
+    },
+    {
+      "word": "the",
+      "start": 114.9,
+      "end": 115.02
+    },
+    {
+      "word": "hardware",
+      "start": 115.02,
+      "end": 115.32
+    },
+    {
+      "word": "you",
+      "start": 115.32,
+      "end": 115.58
+    },
+    {
+      "word": "have.",
+      "start": 115.58,
+      "end": 115.82
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+1
+00:00:01,200 --> 00:00:04,240
+Small hardware, specialised intelligence.
+
+2
+00:00:05,020 --> 00:00:07,100
+Meet LLM-Optimise.
+
+3
+00:00:08,337 --> 00:00:10,577
+Explore what your hardware can really do.
+
+4
+00:00:11,317 --> 00:00:14,817
+Balance speed, memory, and cost while keeping
+task
+
+5
+00:00:14,697 --> 00:00:15,797
+quality in view.
+
+6
+00:00:17,057 --> 00:00:20,517
+Choose a model, add representative examples, and
+set
+
+7
+00:00:20,397 --> 00:00:22,097
+your quality and resource limits.
+
+8
+00:00:22,757 --> 00:00:24,497
+Start with a baseline you can measure.
+
+9
+00:00:25,527 --> 00:00:26,827
+Run bounded experiments.
+
+10
+00:00:27,447 --> 00:00:29,907
+Compare latency, memory, and accuracy.
+
+11
+00:00:30,427 --> 00:00:32,727
+Then inspect the measured trade-offs before you
+
+12
+00:00:32,607 --> 00:00:33,767
+choose a configuration.
+
+13
+00:00:35,130 --> 00:00:39,950
+Explore context sizes, quantized caches, and
+accelerator settings
+
+14
+00:00:39,830 --> 00:00:42,910
+with controlled searches and clear evidence for
+every
+
+15
+00:00:42,790 --> 00:00:43,370
+result.
+
+16
+00:00:44,720 --> 00:00:48,380
+One shared application engine connects the
+visual workspace,
+
+17
+00:00:48,900 --> 00:00:51,460
+command line, and MCP interface.
+
+18
+00:00:52,100 --> 00:00:56,260
+Python coordinates workflows while an optional
+Rust supervisor
+
+19
+00:00:56,140 --> 00:00:58,180
+manages model processes.
+
+20
+00:00:59,530 --> 00:01:01,410
+Route agents using your priorities.
+
+21
+00:01:02,010 --> 00:01:06,210
+Calibrate on scored tasks, reuse exact
+responses, and
+
+22
+00:01:06,090 --> 00:01:08,370
+unload idle models to recover memory.
+
+23
+00:01:09,540 --> 00:01:11,680
+Describe a solution with your chosen model.
+
+24
+00:01:12,120 --> 00:01:14,900
+Review the changes, then build and test a
+
+25
+00:01:14,780 --> 00:01:18,160
+disposable copy in Docker with bounded repair
+loops.
+
+26
+00:01:19,467 --> 00:01:22,627
+Use Soup to train task adapters, reload them,
+
+27
+00:01:22,687 --> 00:01:23,607
+and compare results.
+
+28
+00:01:24,307 --> 00:01:27,667
+Keep held-out evaluations separate, so smaller
+models
+
+29
+00:01:27,547 --> 00:01:29,147
+still have to prove their value.
+
+30
+00:01:30,277 --> 00:01:33,017
+Ask the built-in assistant for guidance, or
+
+31
+00:01:32,897 --> 00:01:35,977
+drive the laboratory from a compatible MCP
+client.
+
+32
+00:01:36,657 --> 00:01:39,637
+The companion skill helps your assistant
+discover tools
+
+33
+00:01:39,697 --> 00:01:41,137
+and interpret evidence.
+
+34
+00:01:42,360 --> 00:01:47,020
+Validated workflows span Mac, Windows, Linux,
+Docker, and
+
+35
+00:01:46,900 --> 00:01:47,600
+OpenRouter.
+
+36
+00:01:48,160 --> 00:01:51,380
+Hardware results remain specific to the model,
+task,
+
+37
+00:01:51,660 --> 00:01:53,400
+and configuration you test.
+
+38
+00:01:54,363 --> 00:01:56,943
+Open Source, MIT licensed.
+
+39
+00:01:58,203 --> 00:01:59,323
+LLM-Optimise.
+
+40
+00:01:59,803 --> 00:02:01,943
+Find a better fit for your task on
+
+41
+00:02:01,823 --> 00:02:02,863
+the hardware you have.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "LLM-Optimise"
+  short_description: "Operate and interpret the existing optimisation lab"
+  default_prompt: "Use $llm-optimise to inspect my lab and run a bounded comparison with explicit quality and memory limits."

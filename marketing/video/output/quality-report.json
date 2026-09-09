@@ -1,0 +1,25 @@
+{
+  "film": "LLM-Optimise-product-film.mp4",
+  "sha256": "bdff602347a6568c2c573ff40346917c5aa97a185f3ce0e87919f650c192ac56",
+  "bytes": 10345001,
+  "duration_seconds": 125.966667,
+  "video": {
+    "codec_name": "h264",
+    "width": 1920,
+    "height": 1080,
+    "r_frame_rate": "30/1",
+    "nb_frames": "3779"
+  },
+  "audio": {
+    "codec_name": "aac",
+    "sample_rate": "48000",
+    "channels": 2
+  },
+  "measured_lufs": -14.52,
+  "measured_true_peak_dbtp": -1.38,
+  "caption_cues": 41,
+  "actual_word_timestamps": 238,
+  "scenes": 12,
+  "review_frames": "encoded-contact-sheet.jpg",
+  "validation": "Encoded format, duration, captions in every scene, audio loudness and peak checks passed. Contact sheet requires visual review."
+}

@@ -1,0 +1,50 @@
+{
+  "recorded_date": "2026-09-09",
+  "host": "Apple M4, 24 GiB unified memory",
+  "capacity_search": {
+    "job_id": "058f824fdde1",
+    "model": "Qwen2.5-Coder-1.5B-Instruct-Q4_K_M.gguf",
+    "dataset": "examples/tasks.jsonl",
+    "cpu_threads": 4,
+    "gpu_layers": 0,
+    "contexts": [512, 1024],
+    "max_rss_gib": 4,
+    "min_available_gib": 1,
+    "minimum_quality": 0.9,
+    "schema_constrained": true,
+    "trials": 2,
+    "eligible": 2,
+    "elapsed_seconds": 9.248,
+    "selected": "capacity-002",
+    "selection_rule": "Largest passing context in this bounded search",
+    "observations": [
+      {"id": "capacity-001", "quality": 1.0, "latency_ms_displayed": 245.7, "rss_gib_displayed": 1.96},
+      {"id": "capacity-002", "quality": 1.0, "latency_ms_displayed": 277.1, "rss_gib_displayed": 1.99}
+    ],
+    "limitations": "Six smoke tasks and one measured repeat; CPU-only run. Sampled RSS is not total GPU allocation. No hardware ceiling or domain generalisation claim."
+  },
+  "development": {
+    "project": "temperature-specialist",
+    "provider_model": "openrouter-gpt-4.1-nano",
+    "request": "Add Kelvin and lowercase temperature units, preserve unsupported-unit rejection and add tests",
+    "reported_cost_usd": 0.000228,
+    "reviewed_files": 2,
+    "container_job_id": "769b3c4a4d52",
+    "image": "python:3.12-slim-bookworm",
+    "memory_mib": 128,
+    "cpu_limit": 1,
+    "network": false,
+    "tests_passed": 3,
+    "exit_code": 0
+  },
+  "chat": {
+    "provider_model": "openrouter-gpt-4.1-nano",
+    "prompt": "Explain how to run a fair constrained-hardware experiment in three short steps. Keep the answer under 100 words.",
+    "reported_cost_usd": 0.000379,
+    "response_received": true
+  },
+  "mcp": {
+    "evidence": "mcp-live.json",
+    "claim": "Installed wheel reached the actual existing GUI job through a real stdio SDK client. Hosted connectors were not configured or tested."
+  }
+}

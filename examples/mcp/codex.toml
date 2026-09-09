@@ -1,0 +1,9 @@
+# Replace paths. This file is an example, not an installed client configuration.
+[mcp_servers.llm-optimise]
+command = "/absolute/path/to/LLM-Optimise/.venv/bin/python"
+args = ["-m", "llm_optimise.mcp_server", "--workspace", "/absolute/path/to/LLM-Optimise", "--runtime", "/absolute/path/to/llama-server"]
+
+# For an independently started HTTP transport, use a separate entry such as:
+# [mcp_servers.llm-optimise-http]
+# url = "http://127.0.0.1:8766/mcp"
+# bearer_token_env_var = "LLM_OPTIMISE_MCP_TOKEN"

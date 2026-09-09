@@ -1,0 +1,57 @@
+{
+  "review_date": "2026-09-09",
+  "scope": [
+    "src/llm_optimise/mcp_bridge.py",
+    "src/llm_optimise/mcp_catalog.py",
+    "src/llm_optimise/mcp_server.py",
+    "tests/test_mcp.py"
+  ],
+  "independent_review": {
+    "client": "authenticated Claude Code CLI",
+    "requested_model": "claude-opus-5",
+    "reported_canonical_model": "claude-opus-5",
+    "reported_provider": "firstParty",
+    "status": "success",
+    "duration_ms": 400933,
+    "permissions": "Read, Grep and Glob only; no execution or edits"
+  },
+  "dispositions": [
+    {
+      "finding": "Resolved symlink aliases could widen the executable allowlist to another Python environment.",
+      "resolution": "Require the exact operator-allowed executable spelling and unchanged file digest. Validate experiment input spellings before handling parser-resolved binary paths.",
+      "status": "fixed_and_regression_tested"
+    },
+    {
+      "finding": "Byte paging could split UTF-8 characters; per-page redaction could miss a secret crossing pages.",
+      "resolution": "Redact the complete bounded report, then page on UTF-8 boundaries. Cap source reports at 8 MiB and each returned page at 32 KiB.",
+      "status": "fixed_and_regression_tested"
+    },
+    {
+      "finding": "Malformed non-ASCII HTTP headers could cause an unauthenticated server error.",
+      "resolution": "Decode ASGI headers as latin-1 and reject non-ASCII bearer values cleanly; retain exact Host and Origin checks.",
+      "status": "fixed_and_regression_tested"
+    },
+    {
+      "finding": "The GUI session token changes when the App restarts.",
+      "resolution": "Document restarting MCP after an App restart. Preserve the explicit no-hidden-retry policy for mutations with uncertain outcomes.",
+      "status": "documented_limitation"
+    },
+    {
+      "finding": "Action consent fields must represent operator authorization, rather than fabricated consent.",
+      "resolution": "Keep explicit existing action flags and conservative mutation annotations. The companion skill requires existing user authorization for reviewed execution, provider data transfer and training network access, without duplicating authorization already granted.",
+      "status": "clarified_trust_boundary"
+    }
+  ],
+  "validation": {
+    "command": "PYTHONPATH=src .venv/bin/pytest tests/test_mcp.py -q",
+    "result": "13 passed in 7.00s",
+    "ruff": "check and format --check passed for the three MCP modules, dedicated test file and example client",
+    "coverage": "Real stdio and authenticated HTTP SDK clients against an isolated App, dataset artifact writes, shared job lifecycle and cancellation, proposal stale guards, schemas, path boundaries, runtime identity, resource budgets, JWT claims and OAuth resource metadata"
+  },
+  "limitations": [
+    "No hosted ChatGPT or Claude connection was established by this review.",
+    "No public HTTPS service or external OAuth identity provider was deployed.",
+    "JWT tests use local signing fixtures; they do not prove deployment-specific OAuth interoperability.",
+    "No provider charges, inference downloads or generated-code execution were part of these MCP tests."
+  ]
+}

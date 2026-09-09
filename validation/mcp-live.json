@@ -1,0 +1,21 @@
+{
+  "transport": "stdio",
+  "installation": "built wheel",
+  "tools": [
+    "discover",
+    "hardware",
+    "read_action",
+    "execute_action",
+    "job_status",
+    "job_result",
+    "cancel_job",
+    "artifact_read"
+  ],
+  "action_count": 35,
+  "ram_total_gib": 24.0,
+  "shared_gui_job": "058f824fdde1",
+  "status": "complete",
+  "result_characters": 14309,
+  "read_only": true,
+  "provider_calls": 0
+}
