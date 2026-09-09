@@ -170,7 +170,7 @@ class App:
         config["dataset"] = str((self.workspace / config["dataset"]).resolve())
         for candidate in config.get("candidates", []):
             if candidate.get("backend", "llama.cpp") == "llama.cpp":
-                for key in ("model", "draft_model"):
+                for key in ("model", "draft_model", "supervisor_executable"):
                     if candidate.get(key):
                         candidate[key] = str((self.workspace / candidate[key]).resolve())
                 exe = candidate.get("executable", "llama-server")

@@ -201,8 +201,12 @@ fn run() -> Result<i32, Box<dyn std::error::Error>> {
     };
     #[cfg(not(unix))]
     let worker_signal: Option<i32> = None;
+    #[cfg(unix)]
+    let missing_status_code = 128 + worker_signal.unwrap_or(1);
+    #[cfg(not(unix))]
+    let missing_status_code = 129;
     let code = if reason == "exited" {
-        status.code().unwrap_or(128 + worker_signal.unwrap_or(1))
+        status.code().unwrap_or(missing_status_code)
     } else if reason == "timeout" {
         124
     } else if reason == "rss_limit" {

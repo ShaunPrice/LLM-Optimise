@@ -2,6 +2,7 @@
 
 import json
 import os
+import platform
 import sys
 import textwrap
 import threading
@@ -19,6 +20,29 @@ from llm_optimise.exploration import (
     run_exploration,
     runtime_capabilities,
 )
+
+
+def _diagnostics(result, output):
+    """Keep fixture failures actionable on CI, including failed pre-metric trials."""
+    logs = {}
+    for path in sorted(output.rglob("trial-*.log")):
+        with path.open("rb") as stream:
+            stream.seek(max(0, path.stat().st_size - 4096))
+            logs[str(path.relative_to(output))] = stream.read(4096).decode(
+                "utf-8", errors="replace"
+            )
+    return json.dumps(
+        {
+            "platform": platform.platform(),
+            "python": sys.version,
+            "executable": sys.executable,
+            "pytest_rss_gib": psutil.Process().memory_info().rss / (1024**3),
+            "result": result,
+            "server_log_tails": logs,
+        },
+        indent=2,
+        default=str,
+    )
 
 
 @pytest.fixture
@@ -48,8 +72,10 @@ def lab(tmp_path):
         class Handler(BaseHTTPRequestHandler):
             def log_message(self, *args): pass
             def do_GET(self):
+                print('fixture GET ' + self.path, flush=True)
                 self.send_response(200); self.end_headers(); self.wfile.write(b'{}')
             def do_POST(self):
+                print('fixture POST ' + self.path, flush=True)
                 data = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
                 self.send_response(200); self.end_headers()
                 if self.path == '/apply-template':
@@ -62,7 +88,9 @@ def lab(tmp_path):
                 if '--spec-draft-model' in args:
                     final.update(draft_n=8, draft_n_accepted=6)
                 self.wfile.write(('data: ' + json.dumps(final) + '\\n\\n').encode()); self.wfile.flush()
-        ThreadingHTTPServer(('127.0.0.1', int(value('--port'))), Handler).serve_forever()
+        server = ThreadingHTTPServer(('127.0.0.1', int(value('--port'))), Handler)
+        print('fixture listening ' + repr(server.server_address) + ' pid=' + str(os.getpid()), flush=True)
+        server.serve_forever()
     """)
     )
     runtime.chmod(0o755)
@@ -140,10 +168,12 @@ def test_capacity_real_fixture_failure_cleanup_and_recovery(lab):
     spec, root, _ = lab
     spec["capacity"] = {"dimensions": {"context": [512, 4096, 8192]}, "recovery_timeout_s": 1}
     result = run_exploration(spec, root / "capacity")
-    assert result["selected_candidate"] == "capacity-001"
-    assert result["boundary"]["failure_class"] == "allocation_failure"
+    assert result["selected_candidate"] == "capacity-001", _diagnostics(result, root / "capacity")
+    assert result["boundary"]["failure_class"] == "allocation_failure", _diagnostics(
+        result, root / "capacity"
+    )
     assert len(result["trials"]) == 2  # Never attempt the higher unsafe point.
-    assert result["recovery"]["control_passed"]
+    assert result["recovery"]["control_passed"], _diagnostics(result, root / "capacity")
     assert result["recovery"]["control_candidate"] == "capacity-001"
     assert result["complete"]
     pids = [int(p) for p in (root / "good.gguf.pids").read_text().splitlines()]
@@ -173,7 +203,7 @@ def test_halving_uses_nested_common_dev_subsets_and_never_selects_on_heldout(lab
     )
     spec["search"] = {"task_budgets": [1, 2], "eta": 2, "heldout_dataset": str(heldout)}
     result = run_exploration(spec, root / "halving")
-    assert result["selected_candidate"] == "good"
+    assert result["selected_candidate"] == "good", _diagnostics(result, root / "halving")
     assert not result["heldout"]["passed"]
     assert result["heldout"]["used_for_selection"] is False
     assert [s["task_count"] for s in result["stages"]] == [1, 2, 4, 1]
@@ -218,7 +248,7 @@ def test_kv_preset_validates_combinations_and_executes(lab):
     spec.update(mode="kv", kv={"contexts": [512], "cache_types": ["f16", "q8_0"]})
     result = run_exploration(spec, root / "kv")
     assert len(result["trials"]) == 2
-    assert all(t["eligible"] for t in result["trials"])
+    assert all(t["eligible"] for t in result["trials"]), _diagnostics(result, root / "kv")
 
 
 def test_installed_runtime_probe_and_speculative_measured_counters(lab):
@@ -233,6 +263,9 @@ def test_installed_runtime_probe_and_speculative_measured_counters(lab):
         speculative={"draft_models": [str(root / "draft.gguf")], "draft_max": [4]},
     )
     result = run_exploration(spec, root / "speculation")
+    assert result["trials"] and all(t["eligible"] for t in result["trials"]), _diagnostics(
+        result, root / "speculation"
+    )
     baseline = next(t for t in result["trials"] if t["name"] == "spec-baseline")
     draft = next(t for t in result["trials"] if t["name"] != "spec-baseline")
     assert baseline["metrics"]["draft_acceptance_rate"] is None
@@ -275,6 +308,7 @@ def test_accelerator_comparison_uses_reported_device_not_filename(lab):
     assert command[command.index("--device") + 1] == "CUDA0"
     result = run_exploration(spec, root / "accelerators")
     assert len(result["trials"]) == 2
+    assert all(t["eligible"] for t in result["trials"]), _diagnostics(result, root / "accelerators")
     cuda = next(t for t in result["trials"] if t["candidate"]["accelerator"] == "cuda")
     # Enumeration fixture establishes API behaviour, not real accelerator telemetry.
     assert cuda["memory"]["gpu_peak_gib"] is None
@@ -369,6 +403,7 @@ def test_model_change_between_stages_stops_search(lab):
 
     def mutate_after_trial(event):
         if event["phase"] == "trial_complete":
+            assert event["trial"]["eligible"], _diagnostics(event, root / "changed")
             (root / "good.gguf").write_bytes(b"changed after this worker loaded")
 
     with pytest.raises(ValueError, match="changed after exploration planning"):

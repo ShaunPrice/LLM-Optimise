@@ -65,7 +65,7 @@ Neither tiny training exercise establishes useful domain quality. The Omen model
 
 ## Implemented workbench validation — 9 September 2026
 
-The 16 roadmap additions now have executable paths shared by the GUI and CLI. The integrated local Python suite passes **315 tests**, including real fixture processes, budget/cache/contract tests, grouped datasets, isolated training worker controls, lifecycle admission, cancellation and native process integration. Ruff checks and formatting pass; both JavaScript files pass syntax checks. The wheel builds, and the Docker application successfully runs `workbench status` with networking disabled and a 128 MiB container limit. These software checks do not establish every accelerator or domain workload.
+The 16 roadmap additions now have executable paths shared by the GUI and CLI. The integrated local Python suite passes **316 tests**, including real fixture processes, budget/cache/contract tests, grouped datasets, isolated training worker controls, lifecycle admission, cancellation and native process integration. Ruff checks and formatting pass; both JavaScript files pass syntax checks. The wheel builds, and the Docker application successfully runs `workbench status` with networking disabled and a 128 MiB container limit. These software checks do not establish every accelerator or domain workload.
 
 | Live check | Observed result | Evidence |
 |---|---|---|
@@ -78,6 +78,6 @@ The 16 roadmap additions now have executable paths shared by the GUI and CLI. Th
 | Rust supervisor on native Omen Windows | Built with the installed Rust/MSVC toolchain; job assignment, exit42, RSS termination, deadline, child cancellation and orphan cleanup passed. | [Windows native proof](../native/validation/windows-x64-supervisor-validation.json) |
 | Tauri on Mac | Native webview, owned Python service HTML/state, shutdown cleanup and mounted DMG layout checked. Development bundle is unsigned for distribution and not notarized. | [Desktop validation](../desktop/README.md#validation) |
 
-The GUI dataset workflow and bounded real CPU capacity search were exercised through browser controls. The new workbench exposes 25 guided tools in six areas, shares job progress/cancellation with the main application, and retains request/evidence inspection.
+The GUI dataset workflow and [bounded real CPU capacity search](../validation/workbench/mac-gui-capacity.json) were exercised through browser controls. The new workbench exposes 25 guided tools in six areas, shares job progress/cancellation with the main application, and retains request/evidence inspection.
 
 Additional accelerator inference paths, real speculative-decoding benefits, student quality after distillation, native Windows Soup training, and signed production installer acceptance remain unvalidated. Prior Omen Soup tests use WSL/CUDA. The native supervisor memory comparison excludes model memory, the Python API, browser/webview helpers and GPU allocations. Sampled limits can miss short-lived spikes; Metal allocation remains unknown.

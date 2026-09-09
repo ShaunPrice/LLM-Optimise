@@ -1,0 +1,84 @@
+{
+  "mode": "capacity",
+  "complete": true,
+  "selected_candidate": "capacity-002",
+  "selection_passed": true,
+  "elapsed_s": 8.807142833946273,
+  "source": "GUI Run capacity search against existing local llama.cpp on Apple M4; six smoke tasks, one measured repeat.",
+  "trials": [
+    {
+      "name": "capacity-001",
+      "context": 512,
+      "metrics": {
+        "quality": 1.0,
+        "latency_p50_s": 0.2695001040119678,
+        "latency_p95_s": 0.4259048014646396,
+        "ttft_p50_s": 0.2361058124806732,
+        "ttft_p95_s": 0.3161101659061387,
+        "decode_tokens_s": 51.2171305713939,
+        "end_to_end_tokens_s": 12.71241537659971,
+        "requests": 6,
+        "truncated_requests": 0,
+        "draft_tokens": null,
+        "accepted_draft_tokens": null,
+        "draft_acceptance_rate": null,
+        "quality_by_task": {
+          "colour": 1.0,
+          "json-extraction": 1.0,
+          "name": 1.0,
+          "number": 1.0,
+          "sentiment-negative": 1.0,
+          "sentiment-positive": 1.0
+        }
+      },
+      "memory": {
+        "rss_peak_gib": 1.9640655517578125,
+        "gpu_peak_gib": 0.0,
+        "system_available_min_gib": 4.412994384765625,
+        "samples": 49,
+        "gpu_samples": 0,
+        "scope": "managed process tree",
+        "gpu_source": "CPU explicitly forced",
+        "violation": null,
+        "sample_interval_s": 0.05
+      }
+    },
+    {
+      "name": "capacity-002",
+      "context": 1024,
+      "metrics": {
+        "quality": 1.0,
+        "latency_p50_s": 0.2383545000338927,
+        "latency_p95_s": 0.6394570937554818,
+        "ttft_p50_s": 0.2183260210440494,
+        "ttft_p95_s": 0.40470653129159473,
+        "decode_tokens_s": 47.15574003245545,
+        "end_to_end_tokens_s": 12.11703900627727,
+        "requests": 6,
+        "truncated_requests": 0,
+        "draft_tokens": null,
+        "accepted_draft_tokens": null,
+        "draft_acceptance_rate": null,
+        "quality_by_task": {
+          "colour": 1.0,
+          "json-extraction": 1.0,
+          "name": 1.0,
+          "number": 1.0,
+          "sentiment-negative": 1.0,
+          "sentiment-positive": 1.0
+        }
+      },
+      "memory": {
+        "rss_peak_gib": 1.978546142578125,
+        "gpu_peak_gib": 0.0,
+        "system_available_min_gib": 4.062835693359375,
+        "samples": 51,
+        "gpu_samples": 0,
+        "scope": "managed process tree",
+        "gpu_source": "CPU explicitly forced",
+        "violation": null,
+        "sample_interval_s": 0.05
+      }
+    }
+  ]
+}

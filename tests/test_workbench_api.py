@@ -89,3 +89,30 @@ def test_focused_generation_blocks_missing_facts_before_provider(tmp_path):
             }
         )
     assert not app.jobs
+
+
+def test_managed_supervisor_path_uses_workspace_not_service_cwd(tmp_path, monkeypatch):
+    from llm_optimise import managed
+
+    app = App(tmp_path)
+    (tmp_path / "model.gguf").write_bytes(b"fixture")
+    captured = []
+
+    def backend(candidate, *args):
+        captured.append(candidate)
+        raise RuntimeError("stop before launch")
+
+    monkeypatch.setattr(managed, "Backend", backend)
+    monkeypatch.setattr(managed, "sample_headroom", lambda: {"unified_memory": True})
+    try:
+        with pytest.raises(RuntimeError, match="stop before launch"):
+            app.managed.start(
+                {
+                    "model": "model.gguf",
+                    "gpu_layers": 0,
+                    "supervisor_executable": "native/llm-supervisor",
+                }
+            )
+        assert captured[0].supervisor_executable == str(tmp_path / "native/llm-supervisor")
+    finally:
+        app.managed.close()
