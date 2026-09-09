@@ -1,0 +1,29 @@
+{
+  "exit_code": 0,
+  "timed_out": false,
+  "cancelled": false,
+  "stdout": "",
+  "stderr": "test_normalise (test_specialised.TestExtraction.test_normalise) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n",
+  "image": "python:3.12-slim-bookworm",
+  "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+  "command": [
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "limits": {
+    "memory_mib": 128,
+    "cpus": 1.0,
+    "timeout_s": 30.0,
+    "network": false,
+    "pids": 128
+  },
+  "elapsed_s": 0.42550537502393126,
+  "copied_files": 1,
+  "artifact_dir": "<workspace>/runs/docker-validation-bookworm/workspace",
+  "evidence": "Docker process execution; inspect logs for test count and assertions"
+}

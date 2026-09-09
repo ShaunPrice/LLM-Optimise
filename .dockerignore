@@ -1,0 +1,15 @@
+.git
+.venv
+.work
+.llm-optimise
+models
+runs
+projects
+validation
+__pycache__
+.pytest_cache
+.ruff_cache
+dist
+*.gguf
+*.safetensors
+.env*

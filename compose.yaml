@@ -1,0 +1,21 @@
+services:
+  lab:
+    build: .
+    ports:
+      - "127.0.0.1:8765:8765"
+    volumes:
+      - lab-data:/workspace
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 128
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    restart: "no"
+volumes:
+  lab-data:

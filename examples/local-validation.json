@@ -1,0 +1,30 @@
+{
+  "name": "Apple M4 CPU and Metal smoke comparison",
+  "dataset": "tasks.jsonl",
+  "repeats": 2,
+  "warmup": 1,
+  "max_tokens": 48,
+  "max_trials": 16,
+  "limits": {
+    "min_quality": 0.9,
+    "max_rss_gib": 4,
+    "min_available_gib": 1
+  },
+  "candidates": [
+    {
+      "name": "small-model",
+      "model": "../models/SmolLM2-135M-Instruct-Q4_K_M.gguf",
+      "executable": "../.work/llama/llama-b10873/llama-server",
+      "sweep": {
+        "model": [
+          "../models/SmolLM2-135M-Instruct-Q4_K_M.gguf",
+          "../models/SmolLM2-135M-Instruct-Q8_0.gguf"
+        ],
+        "gpu_layers": [
+          0,
+          -1
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "upstream": {
+    "date": "2026-09-08T11:55:17Z",
+    "sha": "254351e10331e360b5d75e26aabe0a4e591e16a4"
+  },
+  "checks": [
+    {
+      "engine": "soup-stream",
+      "field_names_match_source": true
+    },
+    {
+      "engine": "soup-qlora",
+      "field_names_match_source": true
+    },
+    {
+      "engine": "soup-mlx",
+      "field_names_match_source": true
+    }
+  ],
+  "evidence": "AST field-name verification against downloaded upstream schema; not execution of Soup validators or training"
+}

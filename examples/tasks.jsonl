@@ -1,0 +1,6 @@
+{"id": "sentiment-positive", "prompt": "Classify the sentiment as positive or negative. Answer with one word. Text: This works perfectly and I love it.", "expected": "positive"}
+{"id": "sentiment-negative", "prompt": "Classify the sentiment as positive or negative. Answer with one word. Text: It broke immediately and I hate it.", "expected": "negative"}
+{"id": "colour", "prompt": "Extract the colour. Answer with one word. Text: The box is blue.", "expected": "blue"}
+{"id": "name", "prompt": "Extract the person's first name. Answer with one word. Text: Alice installed the sensor.", "expected": "Alice"}
+{"id": "number", "prompt": "What is 2 + 3? Answer with only the number.", "expected": 5, "evaluator": "numeric"}
+{"id": "json-extraction", "prompt": "Extract the name and count from: Alice has 3 sensors. Return only a JSON object with keys name and count.", "expected": {"name": "Alice", "count": 3}, "evaluator": "json", "json_schema": {"type": "object", "properties": {"name": {"type": "string"}, "count": {"type": "integer"}}, "required": ["name", "count"], "additionalProperties": false}}

@@ -1,0 +1,52 @@
+{
+  "date": "2026-09-09",
+  "host": "macOS Apple M4",
+  "browser_workflows": {
+    "code_proposal_generated": true,
+    "reviewed_before_apply": true,
+    "files_applied": [
+      "normalise.py",
+      "tests/test_normalise.py"
+    ],
+    "container_tests": {
+      "exit_code": 0,
+      "timed_out": false,
+      "cancelled": false,
+      "output_limit_exceeded": false,
+      "stdout": "",
+      "stderr": "test_normalise_temperature_C (test_normalise.TestNormalise.test_normalise_temperature_C) ... ok\ntest_normalise_temperature_F (test_normalise.TestNormalise.test_normalise_temperature_F) ... ok\ntest_normalise_temperature_F2 (test_normalise.TestNormalise.test_normalise_temperature_F2) ... ok\ntest_normalise_temperature_X (test_normalise.TestNormalise.test_normalise_temperature_X) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n",
+      "image": "python:3.12-slim-bookworm",
+      "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "limits": {
+        "memory_mib": 128,
+        "cpus": 1,
+        "timeout_s": 30,
+        "network": false,
+        "pids": 128
+      },
+      "elapsed_s": 0.6452816659584641,
+      "copied_files": 2,
+      "artifact_dir": "<workspace>/runs/containers/48847688cae7/workspace",
+      "evidence": "Docker process execution; inspect logs for test count and assertions"
+    },
+    "chat_local_response": true,
+    "cloud_requests": false
+  },
+  "docker_application": {
+    "image_id": "sha256:7595d2a977518c782c87383f426688530f9bd66e1f3afd096df4b05bda424e52",
+    "state_and_icon_http": true,
+    "memory_mib": 256,
+    "cpus": 1,
+    "read_only": true
+  },
+  "scope": "Live checks of this workflow, not a general code-model quality evaluation"
+}

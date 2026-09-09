@@ -1,0 +1,15 @@
+{
+  "name": "specialised-task-baseline",
+  "dataset": "tasks.jsonl",
+  "repeats": 3,
+  "warmup": 1,
+  "max_tokens": 48,
+  "max_trials": 16,
+  "limits": {"min_quality": 0.9, "max_rss_gib": 4, "min_available_gib": 1},
+  "candidates": [{
+    "name": "small-model",
+    "model": "../models/SmolLM2-135M-Instruct-Q4_K_M.gguf",
+    "executable": "llama-server",
+    "sweep": {"threads": [2, 4], "context": [512, 2048], "gpu_layers": [0, -1]}
+  }]
+}
