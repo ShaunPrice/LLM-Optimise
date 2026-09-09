@@ -354,7 +354,9 @@ class Backend:
             {"role": "system", "content": task.system},
             {"role": "user", "content": task.prompt},
         ]
-        started = time.monotonic()
+        # Python <=3.12 uses a coarse Windows monotonic clock. Request metrics
+        # need the performance counter to resolve fast local responses and TTFT.
+        started = time.perf_counter()
         if self.candidate.backend == "llama.cpp":
             template = request_json(
                 self.endpoint + "/apply-template",
@@ -397,7 +399,7 @@ class Backend:
         terminal = False
         truncated = False
         drafted, accepted, speculation_source = None, None, None
-        remaining = timeout - (time.monotonic() - started)
+        remaining = timeout - (time.perf_counter() - started)
         if remaining <= 0:
             raise TimeoutError("prompt preparation exceeded timeout")
         for event in stream_json(url, payload, remaining, self.key, check):
@@ -427,13 +429,13 @@ class Backend:
                 prompt_tokens = usage.get("prompt_tokens", prompt_tokens)
             if content:
                 if ttft is None:
-                    ttft = time.monotonic() - started
+                    ttft = time.perf_counter() - started
                 text.append(content)
         if not terminal:
             raise RuntimeError("stream ended without a completion marker; partial output rejected")
         return Generation(
             "".join(text),
-            time.monotonic() - started,
+            time.perf_counter() - started,
             ttft,
             tokens,
             decode,

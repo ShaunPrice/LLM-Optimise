@@ -3,6 +3,7 @@ import subprocess
 import sys
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from types import SimpleNamespace
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -154,6 +155,35 @@ def test_partial_stream_cannot_pass_as_complete(tmp_path, monkeypatch):
     monkeypatch.setattr(backend_module, "stream_json", lambda *a, **k: iter([{"content": "yes"}]))
     with pytest.raises(RuntimeError, match="completion marker"):
         b.generate(Task("t", "hi", "yes"), 10, 42, 2, lambda: None)
+
+
+@pytest.mark.parametrize("provider", ["llama.cpp", "openai"])
+def test_submillisecond_requests_survive_a_coarse_monotonic_clock(tmp_path, monkeypatch, provider):
+    ticks = iter([10.0, 10.0001, 10.0002, 10.0003])
+    monkeypatch.setattr(
+        backend_module,
+        "time",
+        SimpleNamespace(monotonic=lambda: 10.0, perf_counter=lambda: next(ticks)),
+    )
+    monkeypatch.setattr(backend_module, "request_json", lambda *a, **k: {"prompt": "hello"})
+    event = (
+        {"content": "yes", "stop": True}
+        if provider == "llama.cpp"
+        else {"choices": [{"delta": {"content": "yes"}, "finish_reason": "stop"}]}
+    )
+    budgets = []
+
+    def stream(_url, _payload, remaining, _key, _check):
+        budgets.append(remaining)
+        yield event
+
+    monkeypatch.setattr(backend_module, "stream_json", stream)
+    backend = Backend(Candidate(name="timer", model="fixture", backend=provider), tmp_path / "log")
+    backend.endpoint = "http://127.0.0.1"
+    measured = backend.generate(Task("timer", "hi", "yes"), 10, 42, 2, lambda: None)
+    assert measured.latency_s == pytest.approx(0.0003)
+    assert measured.ttft_s == pytest.approx(0.0002)
+    assert budgets == [pytest.approx(1.9999)]
 
 
 def test_process_cleanup(tmp_path):
