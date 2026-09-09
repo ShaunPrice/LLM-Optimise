@@ -1,0 +1,37 @@
+
+Loading weights:   0%|          | 0/272 [00:00<?, ?it/s]
+Loading weights:   1%|          | 3/272 [00:00<00:11, 23.38it/s]
+Loading weights:  22%|██▏       | 60/272 [00:00<00:00, 311.33it/s]
+Loading weights:  52%|█████▏    | 141/272 [00:00<00:00, 524.52it/s]
+Loading weights:  77%|███████▋  | 210/272 [00:00<00:00, 584.85it/s]
+Loading weights: 100%|█████████▉| 271/272 [00:00<00:00, 585.83it/s]
+Loading weights: 100%|██████████| 272/272 [00:00<00:00, 508.33it/s]
+{
+  "mode": "resident",
+  "missing_adapter_keys": [],
+  "saved_loaded_max_weight_error": 0.0,
+  "loaded_nonzero_lora_B_tensors": 60,
+  "saved_tensor_count": 120,
+  "heldout_smoke": [
+    {
+      "input": "I really enjoyed the result.",
+      "expected": "positive",
+      "output": "The sentiment of the result is positive.",
+      "base_adapter_max_logit_difference": 0.796875,
+      "finite_logits": true,
+      "generated_tokens": 8
+    },
+    {
+      "input": "This result is awful.",
+      "expected": "negative",
+      "output": "The sentiment is negative. Output the label",
+      "base_adapter_max_logit_difference": 0.796875,
+      "finite_logits": true,
+      "generated_tokens": 8
+    }
+  ],
+  "elapsed_seconds": 4.021986040999991,
+  "cuda_peak_allocated_gib": 0.1395115852355957,
+  "cuda_peak_reserved_gib": 0.158203125,
+  "status": "passed"
+}

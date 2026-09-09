@@ -1,0 +1,12 @@
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=10", "output": "normal"}
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=15", "output": "normal"}
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=20", "output": "normal"}
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=25", "output": "normal"}
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=30", "output": "normal"}
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=35", "output": "normal"}
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=85", "output": "alarm"}
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=90", "output": "alarm"}
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=95", "output": "alarm"}
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=100", "output": "alarm"}
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=105", "output": "alarm"}
+{"instruction": "Classify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.", "input": "temperature=110", "output": "alarm"}

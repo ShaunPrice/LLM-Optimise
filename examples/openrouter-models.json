@@ -1,0 +1,44 @@
+[
+  {
+    "id": "openrouter-gpt-4.1-nano",
+    "model": "openai/gpt-4.1-nano",
+    "provider": "openai",
+    "location": "cloud",
+    "base_url": "https://openrouter.ai/api/v1",
+    "context_window": 1047576,
+    "max_output_tokens": 2048,
+    "api_key_env": "OPENROUTER_API_KEY",
+    "input_cost_per_million": 0.09999999999999999,
+    "output_cost_per_million": 0.39999999999999997,
+    "latency_ms": null,
+    "quality": null,
+    "ram_gib": null,
+    "gpu_gib": null,
+    "capabilities": [
+      "chat",
+      "code"
+    ],
+    "supports_json_schema": true
+  },
+  {
+    "id": "openrouter-gpt-4.1-mini",
+    "model": "openai/gpt-4.1-mini",
+    "provider": "openai",
+    "location": "cloud",
+    "base_url": "https://openrouter.ai/api/v1",
+    "context_window": 1047576,
+    "max_output_tokens": 2048,
+    "api_key_env": "OPENROUTER_API_KEY",
+    "input_cost_per_million": 0.39999999999999997,
+    "output_cost_per_million": 1.5999999999999999,
+    "latency_ms": null,
+    "quality": null,
+    "ram_gib": null,
+    "gpu_gib": null,
+    "capabilities": [
+      "chat",
+      "code"
+    ],
+    "supports_json_schema": true
+  }
+]

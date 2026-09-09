@@ -1,0 +1,36 @@
+{
+  "route": {
+    "model_id": "openrouter-gpt-4.1-nano",
+    "estimated_cost_usd": 0.0014146999999999999,
+    "estimated_latency_ms": null,
+    "reasons": [
+      "user-pinned selected_model 'openrouter-gpt-4.1-nano'; passed placement, capability, context and budget checks",
+      "estimated cost 0.001415 USD for 10051 input + 1024 output tokens (user-supplied per-token prices)",
+      "latency estimate unavailable",
+      "runs cloud: openai model openai/gpt-4.1-nano"
+    ],
+    "alternatives": [
+      {
+        "model_id": "openrouter-gpt-4.1-mini",
+        "estimated_cost_usd": 0.005658799999999999,
+        "estimated_latency_ms": null
+      }
+    ],
+    "rejections": {},
+    "token_estimate_note": "conservative UTF-8 byte proxy plus framing reserve; not an exact tokenizer count"
+  },
+  "completion": {
+    "text": "{\"reply\":\"A tiny smoke dataset cannot reliably establish domain quality.\",\"experiment\":null}",
+    "model_id": "openrouter-gpt-4.1-nano",
+    "latency_ms": 1791.8549579335377,
+    "input_tokens": 3360,
+    "output_tokens": 19,
+    "accounted_cost_usd": 0.0003436,
+    "provider_reported_cost_usd": 0.0003436,
+    "response_id": "gen-1788950669-RaGheRYaEqCfTr9KAOdw",
+    "resolved_model": "openai/gpt-4.1-nano",
+    "cost_note": "computed from provider token counts and configured prices; not a provider billing receipt"
+  },
+  "reply": "A tiny smoke dataset cannot reliably establish domain quality.",
+  "experiment": null
+}

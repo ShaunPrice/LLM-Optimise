@@ -1,0 +1,8 @@
+{"instruction": "Classify the sentiment as positive or negative. Output only the label.", "input": "I love this tool.", "output": "positive"}
+{"instruction": "Classify the sentiment as positive or negative. Output only the label.", "input": "This device is terrible.", "output": "negative"}
+{"instruction": "Classify the sentiment as positive or negative. Output only the label.", "input": "The result is excellent.", "output": "positive"}
+{"instruction": "Classify the sentiment as positive or negative. Output only the label.", "input": "I hate the slow response.", "output": "negative"}
+{"instruction": "Classify the sentiment as positive or negative. Output only the label.", "input": "It works perfectly.", "output": "positive"}
+{"instruction": "Classify the sentiment as positive or negative. Output only the label.", "input": "The output is broken.", "output": "negative"}
+{"instruction": "Classify the sentiment as positive or negative. Output only the label.", "input": "I am delighted.", "output": "positive"}
+{"instruction": "Classify the sentiment as positive or negative. Output only the label.", "input": "I am disappointed.", "output": "negative"}

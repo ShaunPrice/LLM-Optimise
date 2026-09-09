@@ -1,0 +1,290 @@
+{
+  "resident": {
+    "mode": "resident",
+    "status": "passed",
+    "gpu_allocator_limit_gib": 4.0,
+    "measurement_note": "Process RSS sampled at 50 ms. CUDA allocated/reserved peaks cover this process, not whole-device usage.",
+    "setup_seconds": 20.525904083999997,
+    "train_and_save_seconds": 8.470192368,
+    "training_summary": {
+      "initial_loss": 0.8032540678977966,
+      "final_loss": 0.9897823333740234,
+      "duration": "0m",
+      "duration_secs": 8.088040590286255,
+      "output_dir": "<workspace>/adapter-resident",
+      "total_steps": 8
+    },
+    "global_step": 8,
+    "log_history": [
+      {
+        "loss": 0.8032540678977966,
+        "grad_norm": 1.2421875,
+        "learning_rate": 0.0002,
+        "entropy": 2.0946478843688965,
+        "num_tokens": 52.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.125,
+        "step": 1
+      },
+      {
+        "loss": 0.9570541381835938,
+        "grad_norm": 1.234375,
+        "learning_rate": 0.0001923879532511287,
+        "entropy": 2.292881965637207,
+        "num_tokens": 106.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.25,
+        "step": 2
+      },
+      {
+        "loss": 0.7829393148422241,
+        "grad_norm": 1.4765625,
+        "learning_rate": 0.00017071067811865476,
+        "entropy": 2.201542377471924,
+        "num_tokens": 159.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.375,
+        "step": 3
+      },
+      {
+        "loss": 0.9344621300697327,
+        "grad_norm": 1.3046875,
+        "learning_rate": 0.000138268343236509,
+        "entropy": 2.1271066665649414,
+        "num_tokens": 211.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.5,
+        "step": 4
+      },
+      {
+        "loss": 0.8197208642959595,
+        "grad_norm": 1.171875,
+        "learning_rate": 0.0001,
+        "entropy": 2.116067886352539,
+        "num_tokens": 264.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.625,
+        "step": 5
+      },
+      {
+        "loss": 0.8710145950317383,
+        "grad_norm": 1.3203125,
+        "learning_rate": 6.173165676349103e-05,
+        "entropy": 2.1619322299957275,
+        "num_tokens": 317.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.75,
+        "step": 6
+      },
+      {
+        "loss": 0.8526193499565125,
+        "grad_norm": 1.5859375,
+        "learning_rate": 2.9289321881345254e-05,
+        "entropy": 2.0993971824645996,
+        "num_tokens": 369.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.875,
+        "step": 7
+      },
+      {
+        "loss": 0.9897823333740234,
+        "grad_norm": 1.375,
+        "learning_rate": 7.612046748871327e-06,
+        "entropy": 2.11588454246521,
+        "num_tokens": 422.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 1.0,
+        "step": 8
+      },
+      {
+        "train_runtime": 7.4472,
+        "train_samples_per_second": 1.074,
+        "train_steps_per_second": 1.074,
+        "total_flos": 269490523392.0,
+        "train_loss": 0.8763558492064476,
+        "epoch": 1.0,
+        "step": 8
+      }
+    ],
+    "changed_trainable_tensors": 120,
+    "trainable_tensors": 120,
+    "cuda_peak_allocated_gib": 0.28009605407714844,
+    "cuda_peak_reserved_gib": 0.3125,
+    "elapsed_seconds": 33.806202252,
+    "peak_rss_gib": 2.148590087890625,
+    "artifacts": {
+      "tokenizer.json": {
+        "bytes": 3522871,
+        "sha256": "bf346d64f6f0fbcefb4c1b6928a98241467dff36c6fbae5fe1785c4ff90667f4"
+      },
+      "adapter_config.json": {
+        "bytes": 1099,
+        "sha256": "01f9d490e8a2084d7d003a6871f1a295d7acfb8b46c798d7c0f70c25aa04c231"
+      },
+      "adapter_model.safetensors": {
+        "bytes": 476344,
+        "sha256": "018fd988ce8510a49b5ca0a41c2e7fdac533f664357a2e89b869e2c841c26584"
+      },
+      "chat_template.jinja": {
+        "bytes": 368,
+        "sha256": "872be49dbb638044ad01b60388f48d469ff2980e5f0dccdc22ec907db54d0788"
+      },
+      "training_args.bin": {
+        "bytes": 5649,
+        "sha256": "d54f7027299351fedc66c276234824cb2dc873e7e0a84eeb48aad8ed49d6821e"
+      },
+      "tokenizer_config.json": {
+        "bytes": 452,
+        "sha256": "47b4a92de79d133d06b4cec56e9b8226d2be0b62936209577181d5a76444a08a"
+      },
+      "README.md": {
+        "bytes": 1491,
+        "sha256": "4b1ecf83b4970c8ed2aa989265abfcbd013fa52d6238a5325ad45bb64df09db9"
+      }
+    }
+  },
+  "stream": {
+    "mode": "stream",
+    "status": "passed",
+    "gpu_allocator_limit_gib": 4.0,
+    "measurement_note": "Process RSS sampled at 50 ms. CUDA allocated/reserved peaks cover this process, not whole-device usage.",
+    "setup_seconds": 9.318712985999994,
+    "train_and_save_seconds": 5.853970352999994,
+    "training_summary": {
+      "initial_loss": 0.8110974431037903,
+      "final_loss": 1.0077699422836304,
+      "duration": "0m",
+      "duration_secs": 5.594173908233643,
+      "output_dir": "<workspace>/adapter-stream",
+      "total_steps": 8
+    },
+    "global_step": 8,
+    "log_history": [
+      {
+        "loss": 0.8110974431037903,
+        "grad_norm": 1.09375,
+        "learning_rate": 0.0002,
+        "entropy": 2.08738112449646,
+        "num_tokens": 52.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.125,
+        "step": 1
+      },
+      {
+        "loss": 0.9625182151794434,
+        "grad_norm": 1.09375,
+        "learning_rate": 0.0001923879532511287,
+        "entropy": 2.276211977005005,
+        "num_tokens": 106.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.25,
+        "step": 2
+      },
+      {
+        "loss": 0.8002781867980957,
+        "grad_norm": 1.34375,
+        "learning_rate": 0.00017071067811865476,
+        "entropy": 2.181774377822876,
+        "num_tokens": 159.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.375,
+        "step": 3
+      },
+      {
+        "loss": 0.9711808562278748,
+        "grad_norm": 1.171875,
+        "learning_rate": 0.000138268343236509,
+        "entropy": 2.083991765975952,
+        "num_tokens": 211.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.5,
+        "step": 4
+      },
+      {
+        "loss": 0.8338993191719055,
+        "grad_norm": 1.0703125,
+        "learning_rate": 0.0001,
+        "entropy": 2.1105268001556396,
+        "num_tokens": 264.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.625,
+        "step": 5
+      },
+      {
+        "loss": 0.9065672755241394,
+        "grad_norm": 1.171875,
+        "learning_rate": 6.173165676349103e-05,
+        "entropy": 2.1473777294158936,
+        "num_tokens": 317.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.75,
+        "step": 6
+      },
+      {
+        "loss": 0.8993667364120483,
+        "grad_norm": 1.4140625,
+        "learning_rate": 2.9289321881345254e-05,
+        "entropy": 2.071735143661499,
+        "num_tokens": 369.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 0.875,
+        "step": 7
+      },
+      {
+        "loss": 1.0077699422836304,
+        "grad_norm": 1.234375,
+        "learning_rate": 7.612046748871327e-06,
+        "entropy": 2.107262134552002,
+        "num_tokens": 422.0,
+        "mean_token_accuracy": 0.8571428656578064,
+        "epoch": 1.0,
+        "step": 8
+      },
+      {
+        "train_runtime": 5.0227,
+        "train_samples_per_second": 1.593,
+        "train_steps_per_second": 1.593,
+        "total_flos": 2151217827072.0,
+        "train_loss": 0.899084746837616,
+        "epoch": 1.0,
+        "step": 8
+      }
+    ],
+    "changed_trainable_tensors": 120,
+    "trainable_tensors": 120,
+    "cuda_peak_allocated_gib": 0.2187671661376953,
+    "cuda_peak_reserved_gib": 0.220703125,
+    "elapsed_seconds": 15.829994640999999,
+    "peak_rss_gib": 2.229907989501953,
+    "artifacts": {
+      "tokenizer.json": {
+        "bytes": 3522871,
+        "sha256": "bf346d64f6f0fbcefb4c1b6928a98241467dff36c6fbae5fe1785c4ff90667f4"
+      },
+      "adapter_config.json": {
+        "bytes": 1099,
+        "sha256": "7f0c705a3f6456e682d4befe93ef649242f49d6417695d76ad65bb6592e9e02a"
+      },
+      "adapter_model.safetensors": {
+        "bytes": 476344,
+        "sha256": "ce261a88167f5f809f87ce7c70a1c0ebea1b3473912a2206582370ccef75428a"
+      },
+      "chat_template.jinja": {
+        "bytes": 368,
+        "sha256": "872be49dbb638044ad01b60388f48d469ff2980e5f0dccdc22ec907db54d0788"
+      },
+      "training_args.bin": {
+        "bytes": 5649,
+        "sha256": "b3f96b60b3b288343f7fa86fc61a841576235dfb008ee6fa26de55b3e4e83f03"
+      },
+      "tokenizer_config.json": {
+        "bytes": 452,
+        "sha256": "47b4a92de79d133d06b4cec56e9b8226d2be0b62936209577181d5a76444a08a"
+      },
+      "README.md": {
+        "bytes": 1487,
+        "sha256": "5ad8cf230693135fb949bdef6a4643cbb55ae533e245044341ea41da0c1d3e6a"
+      }
+    }
+  }
+}

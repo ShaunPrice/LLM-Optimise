@@ -1,0 +1,230 @@
+Loading tokenizer: <workspace>/model
+╭────────────────────── Layer streaming disk pre-flight ───────────────────────╮
+│ HF/local source: 0.27 GB                                                     │
+│ Soup materialized copy: 0.00 GB (no write required)                          │
+│ Layer-shard cache: 0.07 GB (reusable)                                        │
+│ Projected total on disk: 0.34 GB                                             │
+│ Additional writes before training: 0.00 GB                                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Preparing layer shards ->
+<default-soup-cache>/<test-model-slug>
+╭─────────────────────────── training.stream_layers ───────────────────────────╮
+│ Layer streaming BETA — arch llama, tier ram                                  │
+│   base store   0.05 GB across 30 layers (pinned)                             │
+│   VRAM buffers 2 x 2 MB + 1 x 0 MB large-layer slot = 4 MB                   │
+│   resident     57 MB extras + adapters                                       │
+│   peak VRAM    ~0.17 GB at batch 1 x seq 128 (logits 0.09 GB)                │
+│   free VRAM    24.19 GB                                                      │
+│   forecast     78874-115992 tok/s — a compute-bound bound, not a promise     │
+│                (from 93.62 TFLOPS measured on this card now using bfloat16 @ │
+│ 1582 MHz)                                                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Layer streaming is BETA: slower than resident training, but this model may not
+run resident on this card at all.
+expandable_segments allocator hint not enabled: CUDA was already initialised
+before Soup could set it — the allocator reads PYTORCH_CUDA_ALLOC_CONF once, at
+context creation
+Layer streaming ready: 30 layers, 0.05 GB pinned RAM store, 2 x 2 MB decoder
+buffers + 1 x 0 MB large-layer slot
+LoRA applied: 230,400 trainable / 134,515,008 total (0.17%)
+
+Map:   0%|          | 0/8 [00:00<?, ? examples/s][transformers] return_assistant_tokens_mask==True but chat template does not contain `{% generation %}` keyword.
+
+Map: 100%|██████████| 8/8 [00:00<00:00, 165.16 examples/s]
+Gradient checkpointing: handled per-layer by layer streaming (HF's own is left
+off to avoid double recompute)
+
+Truncating train dataset:   0%|          | 0/8 [00:00<?, ? examples/s]
+Truncating train dataset: 100%|██████████| 8/8 [00:00<00:00, 4982.84 examples/s]
+
+  0%|          | 0/8 [00:00<?, ?it/s]
+ 12%|█▎        | 1/8 [00:02<00:20,  2.87s/it]
+
+
+ 12%|█▎        | 1/8 [00:02<00:20,  2.87s/it]
+ 25%|██▌       | 2/8 [00:03<00:08,  1.50s/it]
+
+
+ 25%|██▌       | 2/8 [00:03<00:08,  1.50s/it]
+ 38%|███▊      | 3/8 [00:03<00:05,  1.05s/it]
+
+
+ 38%|███▊      | 3/8 [00:03<00:05,  1.05s/it]
+ 50%|█████     | 4/8 [00:04<00:03,  1.15it/s]
+
+
+ 50%|█████     | 4/8 [00:04<00:03,  1.15it/s]
+ 62%|██████▎   | 5/8 [00:04<00:02,  1.38it/s]
+
+
+ 62%|██████▎   | 5/8 [00:04<00:02,  1.38it/s]
+ 75%|███████▌  | 6/8 [00:05<00:01,  1.62it/s]
+
+
+ 75%|███████▌  | 6/8 [00:05<00:01,  1.62it/s]
+
+
+ 88%|████████▊ | 7/8 [00:05<00:00,  1.62it/s]
+100%|██████████| 8/8 [00:05<00:00,  2.47it/s]
+
+
+100%|██████████| 8/8 [00:05<00:00,  2.47it/s]
+
+
+100%|██████████| 8/8 [00:05<00:00,  2.47it/s]
+100%|██████████| 8/8 [00:05<00:00,  1.34it/s]
+{'loss': '0.8111', 'grad_norm': '1.094', 'learning_rate': '0.0002', 'entropy': '2.087', 'num_tokens': '52', 'mean_token_accuracy': '0.8571', 'epoch': '0.125'}
+{'loss': '0.9625', 'grad_norm': '1.094', 'learning_rate': '0.0001924', 'entropy': '2.276', 'num_tokens': '106', 'mean_token_accuracy': '0.8571', 'epoch': '0.25'}
+{'loss': '0.8003', 'grad_norm': '1.344', 'learning_rate': '0.0001707', 'entropy': '2.182', 'num_tokens': '159', 'mean_token_accuracy': '0.8571', 'epoch': '0.375'}
+{'loss': '0.9712', 'grad_norm': '1.172', 'learning_rate': '0.0001383', 'entropy': '2.084', 'num_tokens': '211', 'mean_token_accuracy': '0.8571', 'epoch': '0.5'}
+{'loss': '0.8339', 'grad_norm': '1.07', 'learning_rate': '0.0001', 'entropy': '2.111', 'num_tokens': '264', 'mean_token_accuracy': '0.8571', 'epoch': '0.625'}
+{'loss': '0.9066', 'grad_norm': '1.172', 'learning_rate': '6.173e-05', 'entropy': '2.147', 'num_tokens': '317', 'mean_token_accuracy': '0.8571', 'epoch': '0.75'}
+{'loss': '0.8994', 'grad_norm': '1.414', 'learning_rate': '2.929e-05', 'entropy': '2.072', 'num_tokens': '369', 'mean_token_accuracy': '0.8571', 'epoch': '0.875'}
+{'loss': '1.008', 'grad_norm': '1.234', 'learning_rate': '7.612e-06', 'entropy': '2.107', 'num_tokens': '422', 'mean_token_accuracy': '0.8571', 'epoch': '1'}
+{'train_runtime': '5.963', 'train_samples_per_second': '1.342', 'train_steps_per_second': '1.342', 'train_loss': '0.8991', 'epoch': '1'}
+{
+  "mode": "stream",
+  "status": "passed",
+  "gpu_allocator_limit_gib": 4.0,
+  "measurement_note": "Process RSS sampled at 50 ms. CUDA allocated/reserved peaks cover this process, not whole-device usage.",
+  "setup_seconds": 6.488553469999999,
+  "initial_trainable_sha256": "89564bae5aa26838ee2a97f9b10e25b9033727cf27f31058ef1bc0058cb33114",
+  "train_and_save_seconds": 7.165775968999981,
+  "training_summary": {
+    "initial_loss": 0.8110974431037903,
+    "final_loss": 1.0077699422836304,
+    "duration": "0m",
+    "duration_secs": 6.513922214508057,
+    "output_dir": "<workspace>/adapter-stream",
+    "total_steps": 8
+  },
+  "global_step": 8,
+  "log_history": [
+    {
+      "loss": 0.8110974431037903,
+      "grad_norm": 1.09375,
+      "learning_rate": 0.0002,
+      "entropy": 2.08738112449646,
+      "num_tokens": 52.0,
+      "mean_token_accuracy": 0.8571428656578064,
+      "epoch": 0.125,
+      "step": 1
+    },
+    {
+      "loss": 0.9625182151794434,
+      "grad_norm": 1.09375,
+      "learning_rate": 0.0001923879532511287,
+      "entropy": 2.276211977005005,
+      "num_tokens": 106.0,
+      "mean_token_accuracy": 0.8571428656578064,
+      "epoch": 0.25,
+      "step": 2
+    },
+    {
+      "loss": 0.8002781867980957,
+      "grad_norm": 1.34375,
+      "learning_rate": 0.00017071067811865476,
+      "entropy": 2.181774377822876,
+      "num_tokens": 159.0,
+      "mean_token_accuracy": 0.8571428656578064,
+      "epoch": 0.375,
+      "step": 3
+    },
+    {
+      "loss": 0.9711808562278748,
+      "grad_norm": 1.171875,
+      "learning_rate": 0.000138268343236509,
+      "entropy": 2.083991765975952,
+      "num_tokens": 211.0,
+      "mean_token_accuracy": 0.8571428656578064,
+      "epoch": 0.5,
+      "step": 4
+    },
+    {
+      "loss": 0.8338993191719055,
+      "grad_norm": 1.0703125,
+      "learning_rate": 0.0001,
+      "entropy": 2.1105268001556396,
+      "num_tokens": 264.0,
+      "mean_token_accuracy": 0.8571428656578064,
+      "epoch": 0.625,
+      "step": 5
+    },
+    {
+      "loss": 0.9065672755241394,
+      "grad_norm": 1.171875,
+      "learning_rate": 6.173165676349103e-05,
+      "entropy": 2.1473777294158936,
+      "num_tokens": 317.0,
+      "mean_token_accuracy": 0.8571428656578064,
+      "epoch": 0.75,
+      "step": 6
+    },
+    {
+      "loss": 0.8993667364120483,
+      "grad_norm": 1.4140625,
+      "learning_rate": 2.9289321881345254e-05,
+      "entropy": 2.071735143661499,
+      "num_tokens": 369.0,
+      "mean_token_accuracy": 0.8571428656578064,
+      "epoch": 0.875,
+      "step": 7
+    },
+    {
+      "loss": 1.0077699422836304,
+      "grad_norm": 1.234375,
+      "learning_rate": 7.612046748871327e-06,
+      "entropy": 2.107262134552002,
+      "num_tokens": 422.0,
+      "mean_token_accuracy": 0.8571428656578064,
+      "epoch": 1.0,
+      "step": 8
+    },
+    {
+      "train_runtime": 5.9629,
+      "train_samples_per_second": 1.342,
+      "train_steps_per_second": 1.342,
+      "total_flos": 2151217827072.0,
+      "train_loss": 0.899084746837616,
+      "epoch": 1.0,
+      "step": 8
+    }
+  ],
+  "changed_trainable_tensors": 120,
+  "trainable_tensors": 120,
+  "cuda_peak_allocated_gib": 0.2187662124633789,
+  "cuda_peak_reserved_gib": 0.220703125,
+  "elapsed_seconds": 27.852262432999964,
+  "peak_rss_gib": 2.2022933959960938,
+  "artifacts": {
+    "tokenizer.json": {
+      "bytes": 3522871,
+      "sha256": "bf346d64f6f0fbcefb4c1b6928a98241467dff36c6fbae5fe1785c4ff90667f4"
+    },
+    "adapter_config.json": {
+      "bytes": 1099,
+      "sha256": "7f0c705a3f6456e682d4befe93ef649242f49d6417695d76ad65bb6592e9e02a"
+    },
+    "adapter_model.safetensors": {
+      "bytes": 476344,
+      "sha256": "ce261a88167f5f809f87ce7c70a1c0ebea1b3473912a2206582370ccef75428a"
+    },
+    "chat_template.jinja": {
+      "bytes": 368,
+      "sha256": "872be49dbb638044ad01b60388f48d469ff2980e5f0dccdc22ec907db54d0788"
+    },
+    "training_args.bin": {
+      "bytes": 5649,
+      "sha256": "b3f96b60b3b288343f7fa86fc61a841576235dfb008ee6fa26de55b3e4e83f03"
+    },
+    "tokenizer_config.json": {
+      "bytes": 451,
+      "sha256": "61a6c7fcaf88a9f7e8cd21eebd10bccce6eb9b2a31c64d1efbdadfec5e86f97e"
+    },
+    "README.md": {
+      "bytes": 1487,
+      "sha256": "5ad8cf230693135fb949bdef6a4643cbb55ae533e245044341ea41da0c1d3e6a"
+    }
+  }
+}

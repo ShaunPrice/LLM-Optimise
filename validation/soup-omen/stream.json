@@ -1,0 +1,37 @@
+{
+  "base": "model",
+  "task": "sft",
+  "backend": "transformers",
+  "data": {
+    "train": "train.jsonl",
+    "format": "alpaca",
+    "val_split": 0.0,
+    "max_length": 128
+  },
+  "training": {
+    "epochs": 1,
+    "lr": 0.0002,
+    "batch_size": 1,
+    "gradient_accumulation_steps": 1,
+    "seed": 42,
+    "data_seed": 42,
+    "warmup_ratio": 0.0,
+    "lora": {
+      "r": 4,
+      "alpha": 8,
+      "dropout": 0.0,
+      "target_modules": [
+        "q_proj",
+        "v_proj"
+      ]
+    },
+    "quantization": "4bit",
+    "gradient_checkpointing": true,
+    "save_steps": 100,
+    "logging_steps": 1,
+    "stream_layers": true,
+    "stream_source": "ram",
+    "stream_buffers": 2
+  },
+  "output": "adapter-stream"
+}

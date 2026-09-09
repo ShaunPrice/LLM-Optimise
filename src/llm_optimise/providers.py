@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import time
 from urllib.error import HTTPError
+from urllib.parse import urlsplit
 from urllib.request import Request
 
 from .network import open_request, validate_local_destination
@@ -49,6 +51,8 @@ def complete(model, messages, max_tokens, *, timeout=120, json_schema=None):
             "max_completion_tokens": max_tokens,
             "stream": False,
         }
+        if urlsplit(model.base_url).hostname == "openrouter.ai":
+            body["provider"] = {"allow_fallbacks": False, "require_parameters": True}
         if json_schema is not None and model.supports_json_schema:
             body["response_format"] = {
                 "type": "json_schema",
@@ -92,6 +96,16 @@ def complete(model, messages, max_tokens, *, timeout=120, json_schema=None):
         input_tokens, output_tokens = usage.get("prompt_tokens"), usage.get("completion_tokens")
     if not isinstance(text, str) or not text.strip():
         raise RuntimeError("model returned no text")
+    reported_cost = (
+        usage.get("cost") if urlsplit(model.base_url).hostname == "openrouter.ai" else None
+    )
+    if (
+        isinstance(reported_cost, bool)
+        or not isinstance(reported_cost, (int, float))
+        or not math.isfinite(reported_cost)
+        or reported_cost < 0
+    ):
+        reported_cost = None
     cost = None
     if (
         input_tokens is not None
@@ -110,5 +124,8 @@ def complete(model, messages, max_tokens, *, timeout=120, json_schema=None):
         "input_tokens": input_tokens,
         "output_tokens": output_tokens,
         "accounted_cost_usd": cost,
+        "provider_reported_cost_usd": reported_cost,
+        "response_id": data.get("id"),
+        "resolved_model": data.get("model"),
         "cost_note": "computed from provider token counts and configured prices; not a provider billing receipt",
     }

@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-09",
+  "host": "Omen",
+  "platform": "Ubuntu 24.04 WSL2 on Windows 11 Pro",
+  "cpu": "Intel Core Ultra 9 275HX",
+  "host_ram_gib": 63.42,
+  "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "device_vram_mib": 24463,
+  "driver": "610.62",
+  "soup_commit": "254351e10331e360b5d75e26aabe0a4e591e16a4",
+  "model": "HuggingFaceTB/SmolLM2-135M-Instruct",
+  "model_revision": "12fd25f77366fa6b3b4b768ec3050bf629380bac",
+  "passes": [
+    "actual resident NF4 SFT",
+    "actual RAM layer-streamed NF4 SFT",
+    "fresh-process adapter reload and inference for both"
+  ],
+  "task_quality_passed": false,
+  "measurement_scope": {
+    "rss": "training process sampled every 50 ms",
+    "cuda": "PyTorch allocator high-water marks from this process; exclude CUDA driver/context and other processes",
+    "budget": "4 GiB PyTorch allocator limit; not a total GPU-memory cap"
+  },
+  "run_order": {
+    "first_pass": [
+      "resident",
+      "stream"
+    ],
+    "warmed_explicit_seed_pass": [
+      "stream",
+      "resident"
+    ]
+  },
+  "caveats": [
+    "One tiny eight-example, eight-step smoke test per mode; not a domain-quality benchmark.",
+    "No native Windows training execution; the host uses its existing WSL Ubuntu environment.",
+    "Initial trainable-parameter fingerprints include names and differ across modes; numerical initialisation parity was not established.",
+    "No speedup or hardware-limit claim from these small sequential runs.",
+    "Neither model returned the exact required label on the two held-out prompts.",
+    "Device memory after training was sampled separately, not measured as a peak."
+  ]
+}

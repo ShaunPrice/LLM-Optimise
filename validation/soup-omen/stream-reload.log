@@ -1,0 +1,37 @@
+
+Loading weights:   0%|          | 0/272 [00:00<?, ?it/s]
+Loading weights:   1%|          | 3/272 [00:00<00:10, 25.06it/s]
+Loading weights:  22%|██▏       | 61/272 [00:00<00:00, 325.70it/s]
+Loading weights:  51%|█████▏    | 140/272 [00:00<00:00, 523.33it/s]
+Loading weights:  75%|███████▍  | 203/272 [00:00<00:00, 563.06it/s]
+Loading weights:  97%|█████████▋| 265/272 [00:00<00:00, 578.23it/s]
+Loading weights: 100%|██████████| 272/272 [00:00<00:00, 507.18it/s]
+{
+  "mode": "stream",
+  "missing_adapter_keys": [],
+  "saved_loaded_max_weight_error": 0.0,
+  "loaded_nonzero_lora_B_tensors": 60,
+  "saved_tensor_count": 120,
+  "heldout_smoke": [
+    {
+      "input": "I really enjoyed the result.",
+      "expected": "positive",
+      "output": "The sentiment of the result is positive.",
+      "base_adapter_max_logit_difference": 0.90625,
+      "finite_logits": true,
+      "generated_tokens": 8
+    },
+    {
+      "input": "This result is awful.",
+      "expected": "negative",
+      "output": "The sentiment is negative. Output only the",
+      "base_adapter_max_logit_difference": 0.90625,
+      "finite_logits": true,
+      "generated_tokens": 8
+    }
+  ],
+  "elapsed_seconds": 4.95501578599999,
+  "cuda_peak_allocated_gib": 0.1395115852355957,
+  "cuda_peak_reserved_gib": 0.158203125,
+  "status": "passed"
+}

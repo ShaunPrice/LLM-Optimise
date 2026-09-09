@@ -100,3 +100,11 @@ A cost or latency constraint controls selection against supplied estimates. It c
 ## Structured code output
 
 Managed llama.cpp models enable `supports_json_schema: true`. Develop and CLI `code` then request schema-constrained JSON through the OpenAI-compatible adapter. Other endpoints default to false; enable the field in advanced registry JSON only if your endpoint supports `response_format` with `json_schema`. This improves output syntax, not semantic correctness: review and test generated code. Anthropic requests currently use the prompted JSON format without this extension.
+
+## OpenRouter
+
+Register an OpenAI-compatible model with base URL `https://openrouter.ai/api/v1`, the full provider/model identifier and `api_key_env: "OPENROUTER_API_KEY"`. [Example registry](../examples/openrouter-models.json) contains the two models used in live validation; its prices are a dated snapshot, so refresh them from your agreement or OpenRouter before treating them as current.
+
+For Chat, Develop and CLI `agent`/`code` requests to this official endpoint, the application disables gateway provider fallbacks and requires support for requested parameters. It records OpenRouter's returned `usage.cost` separately from its own token-price calculation, along with response ID and resolved model. The GUI displays reported cost when available. Other compatible gateways may have their own internal routing policies; configure those separately. [Authentication](https://openrouter.ai/docs/api_reference/authentication), [provider controls](https://openrouter.ai/docs/guides/routing/provider-selection), [response schema](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion).
+
+Keep the actual credential in your environment or existing credential manager. The registry contains only its variable name. Testing uses synthetic tasks; no source repository or private document needs to be sent to a cloud model.

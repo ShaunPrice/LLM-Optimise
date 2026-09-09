@@ -272,3 +272,52 @@ def test_schema_output_only_when_provider_declares_support(endpoint):
     assert schema["json_schema"]["schema"]["required"] == ["summary", "files"]
     run_agent([model(url)], [{"role": "user", "content": "code"}], max_tokens=10, capability="code")
     assert "response_format" not in handler.requests[-1][1]
+
+
+def test_openrouter_cost_and_no_gateway_fallback(monkeypatch):
+    import io
+
+    from llm_optimise import providers
+
+    captured = []
+
+    def respond(request, **kwargs):
+        captured.append(json.loads(request.data))
+        return io.BytesIO(
+            json.dumps(
+                {
+                    "id": "generation-test",
+                    "model": "openai/test",
+                    "choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}],
+                    "usage": {"prompt_tokens": 5, "completion_tokens": 2, "cost": 0.000004},
+                }
+            ).encode()
+        )
+
+    monkeypatch.setattr(providers, "open_request", respond)
+    monkeypatch.setenv("TEST_ROUTER_KEY", "fixture-only")
+    m = ProviderModel(
+        id="or",
+        model="openai/test",
+        provider="openai",
+        location="cloud",
+        base_url="https://openrouter.ai/api/v1",
+        context_window=10000,
+        max_output_tokens=100,
+        api_key_env="TEST_ROUTER_KEY",
+    )
+    result = complete(m, [{"role": "user", "content": "hello"}], 10)
+    assert captured[0]["provider"] == {"allow_fallbacks": False, "require_parameters": True}
+    assert result["provider_reported_cost_usd"] == 0.000004
+    assert result["accounted_cost_usd"] is None
+    assert result["response_id"] == "generation-test"
+    assert "fixture-only" not in json.dumps(result)
+
+
+def test_nonbenchmark_validation_artifacts_do_not_break_lab_state(tmp_path):
+    from llm_optimise.server import App
+
+    directory = tmp_path / "validation" / "provider"
+    directory.mkdir(parents=True)
+    (directory / "results.json").write_text(json.dumps({"status": "passed", "calls": 14}))
+    assert App(tmp_path)._results() == []

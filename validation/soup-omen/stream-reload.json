@@ -1,0 +1,29 @@
+{
+  "mode": "stream",
+  "missing_adapter_keys": [],
+  "saved_loaded_max_weight_error": 0.0,
+  "loaded_nonzero_lora_B_tensors": 60,
+  "saved_tensor_count": 120,
+  "heldout_smoke": [
+    {
+      "input": "I really enjoyed the result.",
+      "expected": "positive",
+      "output": "The sentiment of the result is positive.",
+      "base_adapter_max_logit_difference": 0.90625,
+      "finite_logits": true,
+      "generated_tokens": 8
+    },
+    {
+      "input": "This result is awful.",
+      "expected": "negative",
+      "output": "The sentiment is negative. Output only the",
+      "base_adapter_max_logit_difference": 0.90625,
+      "finite_logits": true,
+      "generated_tokens": 8
+    }
+  ],
+  "elapsed_seconds": 4.95501578599999,
+  "cuda_peak_allocated_gib": 0.1395115852355957,
+  "cuda_peak_reserved_gib": 0.158203125,
+  "status": "passed"
+}

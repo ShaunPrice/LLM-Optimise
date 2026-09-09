@@ -1,0 +1,68 @@
+{
+  "date": "2026-09-09",
+  "status": "passed",
+  "calls": 14,
+  "provider_reported_total_cost_usd": 0.001015,
+  "all_costs_reported": true,
+  "estimated_maximum_request_cost_sum_usd": 0.0057037999999999985,
+  "prices_source": "https://openrouter.ai/api/v1/models",
+  "model_tests": [
+    {
+      "model": "openai/gpt-4.1-nano",
+      "tasks": 6,
+      "quality": 1.0,
+      "latency_median_ms": 1368.3344374294393
+    },
+    {
+      "model": "openai/gpt-4.1-mini",
+      "tasks": 6,
+      "quality": 1.0,
+      "latency_median_ms": 1159.154666471295
+    }
+  ],
+  "code_container": {
+    "exit_code": 0,
+    "timed_out": false,
+    "cancelled": false,
+    "output_limit_exceeded": false,
+    "stdout": "",
+    "stderr": "test_celsius_unchanged (test_normalise.TestNormaliseTemperature.test_celsius_unchanged) ... ok\ntest_fahrenheit_to_celsius (test_normalise.TestNormaliseTemperature.test_fahrenheit_to_celsius) ... ok\ntest_invalid_unit_raises (test_normalise.TestNormaliseTemperature.test_invalid_unit_raises) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+    "image": "python:3.12-slim-bookworm",
+    "image_id": "sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254",
+    "command": [
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "limits": {
+      "memory_mib": 128,
+      "cpus": 1.0,
+      "timeout_s": 30.0,
+      "network": false,
+      "pids": 128
+    },
+    "elapsed_s": 0.5397860410157591,
+    "copied_files": 2,
+    "artifact_dir": "<workspace>/runs/openrouter/container/workspace",
+    "evidence": "Docker process execution; inspect logs for test count and assertions"
+  },
+  "limitations": [
+    "Six synthetic tasks per model are a protocol/quality smoke check, not domain competence.",
+    "One request per task; latency observations are not a comparative benchmark.",
+    "Reported per-request OpenRouter cost is retained separately from catalogue-price estimates.",
+    "No account balance or secret credential is included."
+  ],
+  "gui_chat": {
+    "status": "passed",
+    "model": "openai/gpt-4.1-nano",
+    "latency_ms": 1791.8549579335377,
+    "provider_reported_cost_usd": 0.0003436,
+    "console_errors": []
+  },
+  "total_cloud_calls_including_gui": 15,
+  "total_reported_cost_usd_including_gui": 0.0013586
+}

@@ -54,6 +54,13 @@ class App:
                 continue
             try:
                 value = json.loads(path.read_text(encoding="utf-8"))
+                if (
+                    not isinstance(value, dict)
+                    or not isinstance(value.get("name"), str)
+                    or not isinstance(value.get("trials"), list)
+                    or not isinstance(value.get("frontier"), list)
+                ):
+                    continue
                 run_id = path.parent.name
                 if run_id in seen:
                     continue

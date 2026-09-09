@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "fresh_process_reload": true,
+  "adapter_tensor_count": 96,
+  "all_saved_tensors_attached_exactly": true,
+  "nonzero_lora_b_tensors": 48,
+  "all_adapter_values_finite": true,
+  "baseline_vs_adapter_max_abs_logit_difference": 7.89453125,
+  "inference_prompt": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nClassify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.\n\ntemperature=70<|im_end|>\n<|im_start|>assistant\n",
+  "baseline_generation": "alarm",
+  "adapted_generation": "normal",
+  "expected_for_this_example": "normal",
+  "max_generated_tokens": 12,
+  "sampling_temperature": 0,
+  "elapsed_s": 1.5631908749928698,
+  "mlx_peak_memory_bytes": 371359092,
+  "ru_maxrss_bytes": 688553984,
+  "adapter_bytes": 1091411,
+  "adapter_sha256": "957c103a13028c039d821556c308b574ec491085e715b7fd8b31341a89510110"
+}

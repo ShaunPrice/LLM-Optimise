@@ -20,7 +20,7 @@ The application is a lightweight Python control layer with a browser interface. 
 | **Develop** | Describe a solution using your chosen model and selected project files. Review proposed files and diffs, apply with stale-file protection, then build or test a disposable copy in Docker. |
 | **Chat** | Discuss the tools, hardware and recorded results with a selected model. Review suggested local experiments and choose when to run them. |
 | **Model router** | Explicit local/cloud/mixed placement; cost, performance or balanced ranking; limits for cost, latency, quality, declared RAM and GPU memory. Inspect selections and exclusions. |
-| **Training** | Export Soup streaming, resident QLoRA and MLX configuration recipes. Training is executed separately with Soup; no live fine-tuning result is claimed. |
+| **Training** | Export Soup streaming, resident QLoRA and MLX configuration recipes. Training is executed separately with Soup; see the live training/reload evidence below. |
 | **CLI + containers** | Run the same core workflows from scripts. Package the GUI/CLI in Docker, or run generated project tests with CPU, RAM, timeout and network limits. |
 
 <p align="center"><img src="docs/assets/experiment-lab.png" alt="Experiment lab showing measured CPU and Metal configurations, quality gates and memory comparisons" width="100%"></p>
@@ -59,6 +59,10 @@ On an **Apple M4 with 24 GiB unified memory**, the Qwen2.5-Coder-1.5B Q4 model s
 
 These are **six-task smoke-test observations**, with three measured repetitions per task, not a domain-quality benchmark or a hardware limit. RSS is not total unified GPU allocation; Metal GPU memory is recorded as unknown. The CPU and Metal candidates remain separate where telemetry is incomparable. [Method, raw observations and limitations →](docs/validation.md)
 
+## Cloud and training checks
+
+OpenRouter completed 15 live requests for **US$0.0013586**, including GUI chat and code generation followed by passing container tests. Soup completed real training and fresh adapter reload on **Mac MLX** and **Omen CUDA through WSL**, including resident and streamed layers on Omen. These bounded fixtures validate the integration, not domain quality or hardware ceilings. [Detailed evidence →](docs/validation.md)
+
 ## Optimisation that remains inspectable
 
 - **Quality first:** a fast answer that fails your specialised task stays rejected.
@@ -78,6 +82,7 @@ These are **six-task smoke-test observations**, with three measured repetitions 
 | [Routing and credentials](docs/agent-routing.md) | Registry schema, local/cloud policy, budgets and provider compatibility |
 | [Development workflow](docs/development.md) | Context selection, proposals, diffs, apply and generated-project testing |
 | [Docker](docs/docker.md) | Application packaging, host runtimes, resource limits and container builds/tests |
+| [Performance roadmap](docs/performance-roadmap.md) | Prioritised features, Rust/PyO3/Tauri options and measurement gates |
 | [Research and Soup](docs/training-research.md) | Primary sources, integration decisions and experimental training paths |
 | [Architecture](docs/architecture.md) | Components, request flow, artifacts and trust boundaries |
 | [Validation](docs/validation.md) | Actual hardware/software evidence and remaining coverage limits |
@@ -86,6 +91,6 @@ These are **six-task smoke-test observations**, with three measured repetitions 
 
 ## Project status
 
-**Version 0.1.0 — working experimental application.** Native CPU/Metal inference, generated-project container testing and browser workflows have live validation on this Mac. CI checks Python code on Linux, macOS and Windows. NVIDIA memory telemetry and accelerator execution on Linux/Windows need validation on those machines. Cloud adapters have local protocol tests; no paid cloud request was used during development. Soup integration currently exports recipes.
+**Version 0.1.0 — working experimental application.** Native CPU/Metal inference, generated-project container testing and browser workflows have live validation on this Mac. CI checks Python code on Linux, macOS and Windows. OpenRouter cloud calls and Soup training/reload on Mac MLX and Omen CUDA/WSL also pass live validation. The GUI exports training recipes; the live training tests run separately. Native Windows training and llama.cpp NVIDIA telemetry still need hardware validation.
 
 This repository contains no model weights or credentials. Third-party runtimes, models and services retain their own licences and terms. The private application code is covered by [LICENSE](LICENSE).

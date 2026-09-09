@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "scope": "Live Soup CLI MLX SFT, adapter save, fresh-process reload and bounded inference smoke test; not a hardware ceiling or domain quality benchmark.",
+  "recorded_date": "2026-09-09",
+  "upstream": {
+    "repo": "https://github.com/MakazhanAlpamys/Soup",
+    "revision": "254351e10331e360b5d75e26aabe0a4e591e16a4",
+    "version": "0.74.0"
+  },
+  "machine": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "chip": "Apple M4",
+    "unified_memory_bytes": 25769803776
+  },
+  "model": {
+    "model_id": "mlx-community/Qwen2.5-0.5B-Instruct-4bit",
+    "revision": "a5339a4131f135d0fdc6a5c8b5bbed2753bbe0f3",
+    "download_bytes": 289598797,
+    "files": [
+      {
+        "path": "added_tokens.json",
+        "bytes": 605
+      },
+      {
+        "path": "config.json",
+        "bytes": 783
+      },
+      {
+        "path": "merges.txt",
+        "bytes": 1671853
+      },
+      {
+        "path": "model.safetensors",
+        "bytes": 278064920
+      },
+      {
+        "path": "model.safetensors.index.json",
+        "bytes": 44209
+      },
+      {
+        "path": "special_tokens_map.json",
+        "bytes": 613
+      },
+      {
+        "path": "tokenizer.json",
+        "bytes": 7031673
+      },
+      {
+        "path": "tokenizer_config.json",
+        "bytes": 7308
+      },
+      {
+        "path": "vocab.json",
+        "bytes": 2776833
+      }
+    ],
+    "weights_sha256": "ddffab9cbc7bf6dde941c6724841eeca8981fcfa81ca20ff8efff1396326d153"
+  },
+  "training": {
+    "run_id": "run_20260909_203519_aaaadc5a",
+    "experiment_name": "m4-mlx-sft-smoke",
+    "created_at": "2026-09-09T20:35:19.656477",
+    "status": "completed",
+    "device": "mlx",
+    "device_name": "Apple Silicon (Apple M4)",
+    "gpu_memory": "24.0 GB (unified)",
+    "initial_loss": 1.1002026796340942,
+    "final_loss": 0.15329742431640625,
+    "total_steps": 12,
+    "duration_secs": 8.061414957046509,
+    "output_dir": "<workspace>/runs/soup-mac/adapter",
+    "base_model": "<workspace>/.work/soup-mac/model",
+    "task": "sft",
+    "cost_usd": null,
+    "cost_gpu_label": null,
+    "run_kind": "train",
+    "pid": null,
+    "command_digest": null,
+    "log_path": null,
+    "exit_code": null
+  },
+  "process_metrics": {
+    "exit_code": 0,
+    "elapsed_s": 12.181179790990427,
+    "mlx_peak_memory_bytes": 416653170,
+    "ru_maxrss_bytes": 569573376,
+    "mlx_memory_limit_bytes": 3221225472,
+    "mlx_cache_limit_bytes": 268435456,
+    "versions": {
+      "mlx": "0.32.2",
+      "mlx-lm": "0.31.3",
+      "soup-cli": "0.74.0",
+      "transformers": "5.16.1",
+      "psutil": "7.2.2"
+    },
+    "python": "3.12.13 (main, Mar  3 2026, 12:39:30) [Clang 17.0.0 (clang-1700.6.3.2)]"
+  },
+  "rss_monitor": {
+    "exit_code": 0,
+    "elapsed_s": 13.32717333396431,
+    "sampled_peak_rss_bytes": 558923776,
+    "minimum_host_available_bytes": 4388864000,
+    "sampling_interval_s": 0.05,
+    "termination_reason": null
+  },
+  "per_step_metrics": [
+    {
+      "id": 1,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 1,
+      "epoch": 0.08333333333333333,
+      "loss": 1.1002026796340942,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 0.1799067529987061,
+      "gpu_mem": "0.365 GB",
+      "timestamp": "2026-09-09T20:35:30.050378"
+    },
+    {
+      "id": 2,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 2,
+      "epoch": 0.16666666666666666,
+      "loss": 0.807209312915802,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 3.4122132854038316,
+      "gpu_mem": "0.417 GB",
+      "timestamp": "2026-09-09T20:35:30.347904"
+    },
+    {
+      "id": 3,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 3,
+      "epoch": 0.25,
+      "loss": 0.20141851902008057,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 10.479919197670505,
+      "gpu_mem": "0.417 GB",
+      "timestamp": "2026-09-09T20:35:30.444066"
+    },
+    {
+      "id": 4,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 4,
+      "epoch": 0.3333333333333333,
+      "loss": 0.4551753103733063,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 9.604318037666934,
+      "gpu_mem": "0.417 GB",
+      "timestamp": "2026-09-09T20:35:30.548952"
+    },
+    {
+      "id": 5,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 5,
+      "epoch": 0.4166666666666667,
+      "loss": 0.11315182596445084,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 11.04089908820952,
+      "gpu_mem": "0.417 GB",
+      "timestamp": "2026-09-09T20:35:30.640346"
+    },
+    {
+      "id": 6,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 6,
+      "epoch": 0.5,
+      "loss": 1.125112533569336,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 11.338789853118746,
+      "gpu_mem": "0.417 GB",
+      "timestamp": "2026-09-09T20:35:30.729367"
+    },
+    {
+      "id": 7,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 7,
+      "epoch": 0.5833333333333334,
+      "loss": 0.04501275345683098,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 10.62092113972155,
+      "gpu_mem": "0.417 GB",
+      "timestamp": "2026-09-09T20:35:30.824402"
+    },
+    {
+      "id": 8,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 8,
+      "epoch": 0.6666666666666666,
+      "loss": 0.6376426219940186,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 11.342369425520182,
+      "gpu_mem": "0.417 GB",
+      "timestamp": "2026-09-09T20:35:30.913507"
+    },
+    {
+      "id": 9,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 9,
+      "epoch": 0.75,
+      "loss": 0.31235194206237793,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 10.22935931074657,
+      "gpu_mem": "0.417 GB",
+      "timestamp": "2026-09-09T20:35:31.012230"
+    },
+    {
+      "id": 10,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 10,
+      "epoch": 0.8333333333333334,
+      "loss": 0.36392930150032043,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 10.534618730941231,
+      "gpu_mem": "0.417 GB",
+      "timestamp": "2026-09-09T20:35:31.108064"
+    },
+    {
+      "id": 11,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 11,
+      "epoch": 0.9166666666666666,
+      "loss": 0.4412628412246704,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 10.997495847287063,
+      "gpu_mem": "0.417 GB",
+      "timestamp": "2026-09-09T20:35:31.199962"
+    },
+    {
+      "id": 12,
+      "run_id": "run_20260909_203519_aaaadc5a",
+      "step": 12,
+      "epoch": 1.0,
+      "loss": 0.15329742431640625,
+      "val_loss": null,
+      "lr": 0.00019999999494757503,
+      "grad_norm": 0.0,
+      "speed": 10.65892596250673,
+      "gpu_mem": "0.417 GB",
+      "timestamp": "2026-09-09T20:35:31.294967"
+    }
+  ],
+  "supervised_tokens": 36,
+  "adapter_reload": {
+    "status": "passed",
+    "fresh_process_reload": true,
+    "adapter_tensor_count": 96,
+    "all_saved_tensors_attached_exactly": true,
+    "nonzero_lora_b_tensors": 48,
+    "all_adapter_values_finite": true,
+    "baseline_vs_adapter_max_abs_logit_difference": 7.89453125,
+    "inference_prompt": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nClassify this fictional sensor reading. Reply only normal if temperature < 80, otherwise alarm.\n\ntemperature=70<|im_end|>\n<|im_start|>assistant\n",
+    "baseline_generation": "alarm",
+    "adapted_generation": "normal",
+    "expected_for_this_example": "normal",
+    "max_generated_tokens": 12,
+    "sampling_temperature": 0,
+    "elapsed_s": 1.5631908749928698,
+    "mlx_peak_memory_bytes": 371359092,
+    "ru_maxrss_bytes": 688553984,
+    "adapter_bytes": 1091411,
+    "adapter_sha256": "957c103a13028c039d821556c308b574ec491085e715b7fd8b31341a89510110"
+  },
+  "dataset_sha256": "d3b17e324d2c4186788b8db520780ed1de595b44641b60452a4446bea2b692fe",
+  "config": {
+    "base": "<workspace>/.work/soup-mac/model",
+    "task": "sft",
+    "backend": "mlx",
+    "data": {
+      "train": "<workspace>/runs/soup-mac/train.jsonl",
+      "format": "alpaca",
+      "val_split": 0,
+      "max_length": 128
+    },
+    "training": {
+      "epochs": 1,
+      "lr": 0.0002,
+      "batch_size": 1,
+      "lora": {
+        "r": 4,
+        "alpha": 8
+      },
+      "quantization": "4bit",
+      "gradient_checkpointing": true,
+      "gradient_accumulation_steps": 1,
+      "logging_steps": 1,
+      "save_steps": 12
+    },
+    "output": "<workspace>/runs/soup-mac/adapter",
+    "experiment_name": "m4-mlx-sft-smoke"
+  },
+  "limitations": [
+    "Twelve synthetic training samples and one held-out inference illustration do not establish task generalisation.",
+    "MLX allocated memory and process RSS overlap within unified memory and must not be added together.",
+    "Peak memory in mlx-lm stdout uses decimal GB; this artifact stores bytes.",
+    "Mac test uses MLX resident quantised LoRA, not Soup layer streaming.",
+    "No CUDA, CPU-only training, or MPS layer-streaming result is implied.",
+    "Dependency and model download time is excluded from training/process measurements.",
+    "MLX memory limit and RSS watchdog are experiment controls, not OS-enforced total-machine limits.",
+    "Soup displays seed 42 (unset default); the training entry explicitly seeds mx.random with 20260909. Numerical determinism across hosts and runs was not tested."
+  ],
+  "effective_adapter_config": {
+    "fine_tune_type": "lora",
+    "model": "<workspace>/.work/soup-mac/model",
+    "num_layers": 24,
+    "batch_size": 1,
+    "iters": 12,
+    "learning_rate": 0.0002,
+    "steps_per_report": 1,
+    "steps_per_eval": 1000,
+    "steps_per_save": 12,
+    "max_seq_length": 128,
+    "adapter_path": "<workspace>/runs/soup-mac/adapter",
+    "lora_parameters": {
+      "rank": 4,
+      "scale": 2.0,
+      "dropout": 0.05,
+      "keys": [
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ]
+    },
+    "mask_prompt": false,
+    "response_token_mask": true,
+    "train_on_responses_only": true,
+    "grad_checkpoint": true,
+    "grad_accumulation_steps": 1
+  }
+}

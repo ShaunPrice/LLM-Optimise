@@ -455,7 +455,8 @@
   function routingChip(route, completion = {}) {
     const pieces = [route && route.model_id ? route.model_id : "Configured model"];
     if (number(completion.latency_ms) !== null) pieces.push(format(completion.latency_ms) + " ms");
-    if (number(completion.accounted_cost_usd) !== null) pieces.push("$" + format(completion.accounted_cost_usd, 6));
+    if (number(completion.provider_reported_cost_usd) !== null) pieces.push("$" + format(completion.provider_reported_cost_usd, 6) + " reported");
+    else if (number(completion.accounted_cost_usd) !== null) pieces.push("$" + format(completion.accounted_cost_usd, 6) + " calculated");
     else if (route && number(route.estimated_cost_usd) !== null) pieces.push("estimated $" + format(route.estimated_cost_usd, 6));
     return element("div", { class: "route-chip" }, pieces.join(" · "));
   }

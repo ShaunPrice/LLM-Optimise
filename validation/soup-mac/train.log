@@ -1,0 +1,62 @@
+Loading config from
+<workspace>/runs/soup-mac/soup.json...
+╭─────────────────────────────── Training Setup ───────────────────────────────╮
+│ Device:  Apple Silicon (Apple M4)                                            │
+│ Memory:  24.0 GB (unified)                                                   │
+│ Model:   <workspace>/.work/soup-mac/model       │
+│ Task:    sft                                                                 │
+│ Backend: mlx                                                                 │
+│ LoRA:    r=4, alpha=8                                                        │
+│ Quant:   4bit                                                                │
+│ Seed:    42 (unset default)                                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Loading dataset...
+Loaded: 12 train samples
+Run ID: run_20260909_203519_aaaadc5a
+Setting up model + trainer...
+Loading MLX model: <workspace>/.work/soup-mac/model
+MLX model loaded: <workspace>/.work/soup-mac/model
+(task=sft, lora_r=4)
+Training started!
+
+MLX backend: target_modules: auto cannot be resolved for all architectures;
+defaulting to ['self_attn.q_proj', 'self_attn.v_proj']
+Starting training..., iters: 12
+Iter 1: Train loss 1.100, Learning Rate 2.000e-04, It/sec 0.180, Tokens/sec 0.540, Trained Tokens 3, Peak mem 0.365 GB
+Iter 2: Train loss 0.807, Learning Rate 2.000e-04, It/sec 3.412, Tokens/sec 10.237, Trained Tokens 6, Peak mem 0.417 GB
+Iter 3: Train loss 0.201, Learning Rate 2.000e-04, It/sec 10.480, Tokens/sec 31.440, Trained Tokens 9, Peak mem 0.417 GB
+Iter 4: Train loss 0.455, Learning Rate 2.000e-04, It/sec 9.604, Tokens/sec 28.813, Trained Tokens 12, Peak mem 0.417 GB
+Iter 5: Train loss 0.113, Learning Rate 2.000e-04, It/sec 11.041, Tokens/sec 33.123, Trained Tokens 15, Peak mem 0.417 GB
+Iter 6: Train loss 1.125, Learning Rate 2.000e-04, It/sec 11.339, Tokens/sec 34.016, Trained Tokens 18, Peak mem 0.417 GB
+Iter 7: Train loss 0.045, Learning Rate 2.000e-04, It/sec 10.621, Tokens/sec 31.863, Trained Tokens 21, Peak mem 0.417 GB
+Iter 8: Train loss 0.638, Learning Rate 2.000e-04, It/sec 11.342, Tokens/sec 34.027, Trained Tokens 24, Peak mem 0.417 GB
+Iter 9: Train loss 0.312, Learning Rate 2.000e-04, It/sec 10.229, Tokens/sec 30.688, Trained Tokens 27, Peak mem 0.417 GB
+Iter 10: Train loss 0.364, Learning Rate 2.000e-04, It/sec 10.535, Tokens/sec 31.604, Trained Tokens 30, Peak mem 0.417 GB
+Iter 11: Train loss 0.441, Learning Rate 2.000e-04, It/sec 10.997, Tokens/sec 32.992, Trained Tokens 33, Peak mem 0.417 GB
+Iter 12: Train loss 0.153, Learning Rate 2.000e-04, It/sec 10.659, Tokens/sec 31.977, Trained Tokens 36, Peak mem 0.417 GB
+Iter 12: Saved adapter weights to <workspace>/runs/soup-mac/adapter/adapters.safetensors and <workspace>/runs/soup-mac/adapter/0000012_adapters.safetensors.
+Saved final weights to <workspace>/runs/soup-mac/adapter/adapters.safetensors.
+╭────────────────────── Soup Training: m4-mlx-sft-smoke ───────────────────────╮
+│ Epoch 1.0/1   100%                                                           │
+│ Step:  12/12                                                                 │
+│ Loss:  0.1533    LR: 2.00e-04                                                │
+│ Speed: 10.66 it/s                                                            │
+│ GPU peak: 0.417 GB                                                           │
+╰────────────────────────── Apple Silicon (Apple M4) ──────────────────────────╯MLX training complete:
+<workspace>/runs/soup-mac/adapter
+╭───────────────────────────── Training Complete! ─────────────────────────────╮
+│ Loss: 1.1002 -> 0.1533                                                       │
+│ Duration: 8s                                                                 │
+│ Output: <workspace>/runs/soup-mac/adapter       │
+│ Run ID: run_20260909_203519_aaaadc5a                                         │
+│                                                                              │
+│ Quick test:  soup chat --model                                               │
+│ <workspace>/runs/soup-mac/adapter               │
+│ Push to HF:  soup push --model                                               │
+│ <workspace>/runs/soup-mac/adapter               │
+│ Merge LoRA:  soup merge --adapter                                            │
+│ <workspace>/runs/soup-mac/adapter               │
+│ Export GGUF: soup export --model                                             │
+│ <workspace>/runs/soup-mac/adapter               │
+│ Run details: soup runs show run_20260909_203519_aaaadc5a                     │
+╰──────────────────────────────────────────────────────────────────────────────╯

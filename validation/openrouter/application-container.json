@@ -1,0 +1,9 @@
+{
+  "image_id": "sha256:0057de1839e53610b7e85114d9ba3856de47f98b6ae9dcb7ebccfa4d3942ee83",
+  "state_and_icon_http": true,
+  "memory_mib": 256,
+  "cpus": 1,
+  "read_only": true,
+  "date": "2026-09-09",
+  "scope": "Application startup, API state and bundled PNG icon after OpenRouter changes; no cloud calls in this check."
+}
