@@ -178,7 +178,10 @@ def test_submillisecond_requests_survive_a_coarse_monotonic_clock(tmp_path, monk
         yield event
 
     monkeypatch.setattr(backend_module, "stream_json", stream)
-    backend = Backend(Candidate(name="timer", model="fixture", backend=provider), tmp_path / "log")
+    backend = Backend(
+        Candidate(name="timer", model="fixture", backend=provider, endpoint="http://127.0.0.1"),
+        tmp_path / "log",
+    )
     backend.endpoint = "http://127.0.0.1"
     measured = backend.generate(Task("timer", "hi", "yes"), 10, 42, 2, lambda: None)
     assert measured.latency_s == pytest.approx(0.0003)
