@@ -21,8 +21,13 @@ From the repository root:
 ```bash
 npm ci --prefix desktop
 python scripts/build-bundled-runtime.py
-npm run build --prefix desktop -- --config src-tauri/tauri.bundle.conf.json -- --locked
+# Linux only: preserve symbols in libraries that use modern RELR relocations.
+# Run this before the build command on Linux:
+# export NO_STRIP=1
+npm run build --prefix desktop -- --verbose --config src-tauri/tauri.bundle.conf.json -- --locked
 ```
+
+On Linux, run `export NO_STRIP=1` before the build. The runtime builder removes unused Tk components and checks the remaining ELF dependencies; the desktop uses WebKitGTK. On Intel Mac, the builder compiles the pinned current cryptography release against pinned static OpenSSL because current upstream wheels do not include Intel macOS. This requires additional build time, but no Homebrew runtime installation. Source hashes and build dependencies are recorded under `packaging/`.
 
 The build creates `desktop/src-tauri/resources/runtime/` with the interpreter, installed application, manifest, launchers and runtime licenses. The release-only configuration maps that directory to `runtime/` in the installed app resources, alongside `service.py`. Platform configurations select `app` on macOS, `nsis` on Windows and `deb,appimage` on Linux. Normal `cargo check` does not require the generated runtime directory.
 

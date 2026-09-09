@@ -1,0 +1,103 @@
+{
+  "schema": "llm-optimise-installer-release/v1",
+  "version": "0.1.1",
+  "tag": "v0.1.1-experimental",
+  "verified_at_utc": "2026-09-09T14:14:58.719210+00:00",
+  "build_source_commit": "1348ed16bbe3618fa3eb00c55dc34b78e816c1bd",
+  "installer_ci": "https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34360866325",
+  "application_ci": "https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34360825437",
+  "application_ci_jobs_passed": 10,
+  "python_bundled": "3.12.14",
+  "app_and_mcp_bundled": true,
+  "distribution_signed": false,
+  "notarized": false,
+  "platforms": {
+    "macos-arm64": {
+      "passed": true,
+      "package_routes": [
+        "dmg"
+      ],
+      "report": "validation-macos-arm64.json"
+    },
+    "macos-x64": {
+      "passed": true,
+      "package_routes": [
+        "dmg"
+      ],
+      "report": "validation-macos-x64.json"
+    },
+    "windows-x64": {
+      "passed": true,
+      "package_routes": [
+        "nsis"
+      ],
+      "report": "validation-windows-x64.json"
+    },
+    "linux-x64": {
+      "passed": true,
+      "package_routes": [
+        "deb",
+        "appimage"
+      ],
+      "report": "validation-linux-x64.json"
+    },
+    "linux-arm64": {
+      "passed": true,
+      "package_routes": [
+        "deb",
+        "appimage"
+      ],
+      "report": "validation-linux-arm64.json"
+    }
+  },
+  "artifacts": [
+    {
+      "file": "LLM-Optimise-0.1.1-macos-arm64.dmg",
+      "bytes": 84348954,
+      "sha256": "02df224441f5437be85d8edabf4ac3b41713ba6910bbf888a0537fba8218d243"
+    },
+    {
+      "file": "LLM-Optimise-0.1.1-macos-x64.dmg",
+      "bytes": 78464697,
+      "sha256": "196f0d1c772f08b08b2b6f26adad4ad467c4b243843716de0bbfc1c621c0c7a5"
+    },
+    {
+      "file": "LLM-Optimise-0.1.1-windows-x64-setup.exe",
+      "bytes": 32500910,
+      "sha256": "f084ee12ce7f10b05f3456815552c3296a83409f647693f875b205ec02f2fea3"
+    },
+    {
+      "file": "LLM-Optimise-0.1.1-linux-x64.AppImage",
+      "bytes": 121133560,
+      "sha256": "16c210c8005efda7269f3456eab29a37078b4a9e5ff5f008a7fa9a88a8f47b39"
+    },
+    {
+      "file": "LLM-Optimise-0.1.1-linux-x64.deb",
+      "bytes": 82752064,
+      "sha256": "689f7681ef4165d56a877a2ecda40a074db484b9242b48b007d1c2c58f25593e"
+    },
+    {
+      "file": "LLM-Optimise-0.1.1-linux-arm64.AppImage",
+      "bytes": 112286216,
+      "sha256": "876901c34907b69585c229f167ec5bd3052e840cc92ea2de301aa5afaa243a00"
+    },
+    {
+      "file": "LLM-Optimise-0.1.1-linux-arm64.deb",
+      "bytes": 69826452,
+      "sha256": "2cd9a4de004bf898a5a913ca59d125d99e59d1758e17d298dbb31ba5cf1c7419"
+    }
+  ],
+  "limits": [
+    "Native CI installer acceptance, plus local Apple Silicon DMG acceptance; no installer hardware validation on Omen.",
+    "macOS 15 CI; package declares macOS 12 minimum, with static Intel dependency audit. Historical macOS versions not executed.",
+    "Windows x64 acceptance on the windows-latest hosted runner: Windows Server 2025 build 26100, image windows-2025-vs2026 20260824.214.3. Not every Windows version or managed policy was tested.",
+    "Linux x64 Ubuntu 22.04 and ARM64 Ubuntu 24.04. AppImage tested by extraction; no claim across all distributions or FUSE configurations.",
+    "Models, inference engines, GPU drivers, Soup training environments and Docker are separate. These checks do not measure inference performance or model quality.",
+    "Unsigned experimental distribution; no Apple notarization, Authenticode or automatic updater."
+  ],
+  "additional_local_acceptance": {
+    "platform": "Apple Silicon Mac",
+    "report": "validation-local-macos-arm64.json",
+    "passed": true
+  }
+}

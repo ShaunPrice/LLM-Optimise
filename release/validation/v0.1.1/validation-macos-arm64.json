@@ -1,0 +1,52 @@
+{
+  "platform": "Darwin",
+  "architecture": "arm64",
+  "passed": true,
+  "checks": {
+    "dmg": {
+      "bundled_imports_passed": true,
+      "cli_help_passed": true,
+      "mcp_help_passed": true,
+      "cli_and_mcp_launchers_passed": true,
+      "interpreter_relative": "python/bin/python3",
+      "python_version": "3.12.14",
+      "app_version": "0.1.1",
+      "independent_of_system_python": true,
+      "native": {
+        "schema_version": 1,
+        "platform": "darwin",
+        "architecture": "arm64",
+        "binary_name": "llm-optimise-desktop",
+        "validation_scope": "installed binary, bundled runtime, native webview, HTTP and owned service cleanup",
+        "status": "passed",
+        "native_tauri_webview_loaded": true,
+        "bundled_python_verified": true,
+        "explicit_python_override_absent": true,
+        "python_environment_injection_removed": true,
+        "interpreter_location": "current application resource_dir/runtime",
+        "python_version": "3.12.14",
+        "package_version": "0.1.1",
+        "runtime_selection_persisted_without_absolute_interpreter": true,
+        "first_run_sample_tasks_available": true,
+        "python_sidecar_http_passed": true,
+        "application_state_http_passed": true,
+        "owned_sidecar_pid_exited": true,
+        "owned_service_listener_closed": true,
+        "load_and_http_check_seconds": 3.921880750000014,
+        "elapsed_seconds": 4.681712375000018
+      }
+    }
+  },
+  "installation": "Mounted verified DMG, copied app to a relocated path with spaces, launched and removed app",
+  "workspace_preserved_after_uninstall": true,
+  "artifacts": [
+    {
+      "file": "LLM-Optimise-0.1.1-macos-arm64.dmg",
+      "sha256": "02df224441f5437be85d8edabf4ac3b41713ba6910bbf888a0537fba8218d243"
+    }
+  ],
+  "limitations": [
+    "No distribution signing/notarization claim",
+    "Native hosted-runner acceptance is distinct from inference or accelerator validation"
+  ]
+}

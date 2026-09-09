@@ -1,0 +1,52 @@
+{
+  "platform": "Windows",
+  "architecture": "AMD64",
+  "passed": true,
+  "checks": {
+    "nsis": {
+      "bundled_imports_passed": true,
+      "cli_help_passed": true,
+      "mcp_help_passed": true,
+      "cli_and_mcp_launchers_passed": true,
+      "interpreter_relative": "python/python.exe",
+      "python_version": "3.12.14",
+      "app_version": "0.1.1",
+      "independent_of_system_python": true,
+      "native": {
+        "schema_version": 1,
+        "platform": "win32",
+        "architecture": "AMD64",
+        "binary_name": "llm-optimise-desktop.exe",
+        "validation_scope": "installed binary, bundled runtime, native webview, HTTP and owned service cleanup",
+        "status": "passed",
+        "native_tauri_webview_loaded": true,
+        "bundled_python_verified": true,
+        "explicit_python_override_absent": true,
+        "python_environment_injection_removed": true,
+        "interpreter_location": "current application resource_dir/runtime",
+        "python_version": "3.12.14",
+        "package_version": "0.1.1",
+        "runtime_selection_persisted_without_absolute_interpreter": true,
+        "first_run_sample_tasks_available": true,
+        "python_sidecar_http_passed": true,
+        "application_state_http_passed": true,
+        "owned_sidecar_pid_exited": true,
+        "owned_service_listener_closed": true,
+        "load_and_http_check_seconds": 4.047846599999957,
+        "elapsed_seconds": 5.651116600000023
+      }
+    }
+  },
+  "installation": "Per-user NSIS silent install, real native launch, and uninstall",
+  "workspace_preserved_after_uninstall": true,
+  "artifacts": [
+    {
+      "file": "LLM-Optimise-0.1.1-windows-x64-setup.exe",
+      "sha256": "f084ee12ce7f10b05f3456815552c3296a83409f647693f875b205ec02f2fea3"
+    }
+  ],
+  "limitations": [
+    "No distribution signing/notarization claim",
+    "Native hosted-runner acceptance is distinct from inference or accelerator validation"
+  ]
+}

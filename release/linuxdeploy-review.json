@@ -1,0 +1,161 @@
+{
+  "schema": "llm-optimise-linuxdeploy-review/v1",
+  "verified_at_utc": "2026-09-09T13:56:03+00:00",
+  "scope": "Isolated packaging-tool compatibility reproduction; full desktop installer acceptance is recorded separately by CI.",
+  "initial_ci_run": "https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34356623961",
+  "targeted_ci_run": "https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34357943974",
+  "targeted_ci_source_commit": "d812e71dbf0e134872b17cf95737e2803c8311d2",
+  "full_installer_status": "passed for Linux x64 and ARM64 diagnostic candidates",
+  "confirmed_ci_failure": {
+    "run": "https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34357943974",
+    "architectures": [
+      "linux-x64",
+      "linux-arm64"
+    ],
+    "stage": "linuxdeploy dependency discovery before symbol stripping",
+    "error": "Could not find dependency: libtcl9tk9.0.so",
+    "referring_module": "python/lib/python3.12/lib-dynload/_tkinter.cpython-312-ARCH-linux-gnu.so",
+    "resolution": "Prune unused tkinter, Tcl/Tk, their toolkit extensions and demos from the private Linux application runtime; preserve distribution licenses and audit all remaining ELF files. The application uses Tauri WebView."
+  },
+  "runtime_pruning_validation": {
+    "script": "scripts/prune-linux-runtime.py",
+    "tests": "tests/test_linux_runtime_prune.py: 4 passed",
+    "archive_sha256": "577b4bec0793ad1ff0cbff9adbd0df078eddde38a4c41bf5d83ad381a85ee39d",
+    "archive_source": "packaging/python-runtime.json: linux-arm64",
+    "removed_regular_files": 325,
+    "removed_file_content_bytes": 11010160,
+    "size_scope": "Raw pinned archive before the builder's existing header/test/demo pruning; not compressed installer size or additional savings after previous pruning.",
+    "remaining_dynamic_elf_files_checked": 5,
+    "remaining_ldd_dependencies": "all resolved on isolated Debian 12 arm64",
+    "pruned_runtime_linuxdeploy_exit_code": 0,
+    "pruned_runtime_linuxdeploy_options": "NO_STRIP=1 APPIMAGE_EXTRACT_AND_RUN=1 linuxdeploy-aarch64.AppImage --appimage-extract-and-run --verbosity 0 --appdir AppDir",
+    "post_linuxdeploy_imports": [
+      "ssl",
+      "sqlite3",
+      "ctypes",
+      "multiprocessing",
+      "hashlib",
+      "urllib.request"
+    ],
+    "post_linuxdeploy_openssl": "OpenSSL 3.5.8 25 Aug 2026",
+    "post_linuxdeploy_sqlite": "3.53.1",
+    "scope": "Exact standalone Python archive and exact Tauri helper tested locally. CI runs pruning and ldd checks after package installation, then tests the complete native installers."
+  },
+  "environment": {
+    "architecture": "aarch64",
+    "distribution": "Debian 12 container on Docker Desktop",
+    "image": "rust:1-slim-bookworm@sha256:ebd900bae66fd508b466cef82d64a83a5fb34682e4c8b2797a42908bddc95a57",
+    "compiler": "GCC 12.2.0-14+deb12u1",
+    "libc": "glibc 2.36-9+deb12u14",
+    "linker": "LLD 22.1.8, bundled with rustc 1.98.1 (48a229cea 2026-09-01)",
+    "limits": {
+      "cpus": 2,
+      "memory_bytes": 2147483648,
+      "network": "none during execution"
+    }
+  },
+  "tool": {
+    "url": "https://github.com/tauri-apps/binary-releases/releases/download/linuxdeploy/linuxdeploy-aarch64.AppImage",
+    "sha256": "b12b5cc57bd0921e1f98d73f58aa364503bc1a27f54b7a69fd2870bce7fa2f55",
+    "version": "1-alpha, commit 4b24a49, build 5, 2024-07-24 15:38:46 UTC"
+  },
+  "reproduction": {
+    "working_directory": "Fresh container-local scratch directory, with the downloaded and hash-verified helper copied into it.",
+    "fixture_c": "#include <stdio.h>\nstatic const char message[] = \"LLM-Optimise Linux packaging fixture\";\nstatic const char *messages[] = {message, message};\nint main(void) { puts(messages[0]); return 0; }\n",
+    "commands": [
+      "linker_dir=$(printf '%s\\n' /usr/local/rustup/toolchains/*/lib/rustlib/aarch64-unknown-linux-gnu/bin/gcc-ld | head -1)",
+      "cc -O0 -B\"$linker_dir\" -fuse-ld=lld -Wl,-z,pack-relative-relocs fixture.c -o fixture",
+      "readelf -S fixture",
+      "./fixture",
+      "APPIMAGE_EXTRACT_AND_RUN=1 ./linuxdeploy-aarch64.AppImage --appimage-extract-and-run --verbosity 0 --appdir baseline.AppDir --executable fixture",
+      "NO_STRIP=1 APPIMAGE_EXTRACT_AND_RUN=1 ./linuxdeploy-aarch64.AppImage --appimage-extract-and-run --verbosity 0 --appdir no-strip.AppDir --executable fixture",
+      "./no-strip.AppDir/usr/bin/fixture"
+    ]
+  },
+  "results": {
+    "fixture_contains_relr_dyn": true,
+    "fixture_runs_before_packaging": true,
+    "baseline_exit_code": 1,
+    "baseline_error": "Strip call failed: unknown type [0x13] section .relr.dyn; Unable to recognise the format of the input file.",
+    "no_strip_exit_code": 0,
+    "no_strip_preserves_rpath_processing": true,
+    "packaged_fixture_runs": true
+  },
+  "fix": {
+    "environment": {
+      "NO_STRIP": "1"
+    },
+    "diagnostics": "Pass --verbose to tauri build so linuxdeploy stderr is retained.",
+    "tradeoff": "linuxdeploy retains existing symbol data instead of stripping copied binaries; installer size may increase. Dependency copying and RPATH processing continue.",
+    "scope": "This validates the RELR compatibility mitigation in the exact aarch64 helper. The subsequent verbose CI log established a separate unused Tk dependency failure before stripping; NO_STRIP alone did not fix the installer."
+  },
+  "primary_sources": [
+    "https://github.com/linuxdeploy/linuxdeploy/blob/master/src/core/appdir.cpp",
+    "https://docs.rs/tauri-bundler/latest/src/tauri_bundler/bundle/linux/appimage/linuxdeploy.rs.html"
+  ],
+  "full_installer_acceptance": {
+    "run_url": "https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34359340452",
+    "source_commit": "2728c2b927280d068bdf1bfcdace7e3169c78552",
+    "status": "success",
+    "scope": "Diagnostic candidates: native deb install/launch/remove and extracted portable AppImage launch. Final release artifacts are rebuilt and validated separately.",
+    "platforms": {
+      "linux-arm64": {
+        "runner": "Ubuntu 24.04 ARM64",
+        "job_url": "https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34359340452/job/102492037807",
+        "passed": true,
+        "checks": {
+          "deb": {
+            "bundled_imports_passed": true,
+            "independent_of_system_python": true,
+            "native_tauri_webview_loaded": true,
+            "bundled_python_verified": true,
+            "python_sidecar_http_passed": true,
+            "application_state_http_passed": true,
+            "owned_sidecar_pid_exited": true,
+            "owned_service_listener_closed": true
+          },
+          "appimage": {
+            "bundled_imports_passed": true,
+            "independent_of_system_python": true,
+            "native_tauri_webview_loaded": true,
+            "bundled_python_verified": true,
+            "python_sidecar_http_passed": true,
+            "application_state_http_passed": true,
+            "owned_sidecar_pid_exited": true,
+            "owned_service_listener_closed": true
+          }
+        },
+        "workspace_preserved_after_uninstall": true
+      },
+      "linux-x64": {
+        "runner": "Ubuntu 22.04 x64",
+        "job_url": "https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34359340452/job/102492037717",
+        "passed": true,
+        "checks": {
+          "deb": {
+            "bundled_imports_passed": true,
+            "independent_of_system_python": true,
+            "native_tauri_webview_loaded": true,
+            "bundled_python_verified": true,
+            "python_sidecar_http_passed": true,
+            "application_state_http_passed": true,
+            "owned_sidecar_pid_exited": true,
+            "owned_service_listener_closed": true
+          },
+          "appimage": {
+            "bundled_imports_passed": true,
+            "independent_of_system_python": true,
+            "native_tauri_webview_loaded": true,
+            "bundled_python_verified": true,
+            "python_sidecar_http_passed": true,
+            "application_state_http_passed": true,
+            "owned_sidecar_pid_exited": true,
+            "owned_service_listener_closed": true
+          }
+        },
+        "workspace_preserved_after_uninstall": true
+      }
+    },
+    "cli_validation_limit": "The diagnostic verifier only checked exit status for the CLI and MCP module invocations. Its CLI invocation was subsequently found to call a module without a main entry point. CLI behavior is not established by this diagnostic; final release verification separately requires meaningful help output from the corrected module and both supplied launchers."
+  }
+}

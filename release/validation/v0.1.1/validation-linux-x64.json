@@ -1,0 +1,89 @@
+{
+  "platform": "Linux",
+  "architecture": "x86_64",
+  "passed": true,
+  "checks": {
+    "deb": {
+      "bundled_imports_passed": true,
+      "cli_help_passed": true,
+      "mcp_help_passed": true,
+      "cli_and_mcp_launchers_passed": true,
+      "interpreter_relative": "python/bin/python3",
+      "python_version": "3.12.14",
+      "app_version": "0.1.1",
+      "independent_of_system_python": true,
+      "native": {
+        "schema_version": 1,
+        "platform": "linux",
+        "architecture": "x86_64",
+        "binary_name": "llm-optimise-desktop",
+        "validation_scope": "installed binary, bundled runtime, native webview, HTTP and owned service cleanup",
+        "status": "passed",
+        "native_tauri_webview_loaded": true,
+        "bundled_python_verified": true,
+        "explicit_python_override_absent": true,
+        "python_environment_injection_removed": true,
+        "interpreter_location": "current application resource_dir/runtime",
+        "python_version": "3.12.14",
+        "package_version": "0.1.1",
+        "runtime_selection_persisted_without_absolute_interpreter": true,
+        "first_run_sample_tasks_available": true,
+        "python_sidecar_http_passed": true,
+        "application_state_http_passed": true,
+        "owned_sidecar_pid_exited": true,
+        "owned_service_listener_closed": true,
+        "load_and_http_check_seconds": 1.0677968009999859,
+        "elapsed_seconds": 1.6356522709999695
+      }
+    },
+    "appimage": {
+      "bundled_imports_passed": true,
+      "cli_help_passed": true,
+      "mcp_help_passed": true,
+      "cli_and_mcp_launchers_passed": true,
+      "interpreter_relative": "python/bin/python3",
+      "python_version": "3.12.14",
+      "app_version": "0.1.1",
+      "independent_of_system_python": true,
+      "native": {
+        "schema_version": 1,
+        "platform": "linux",
+        "architecture": "x86_64",
+        "binary_name": "AppRun",
+        "validation_scope": "installed binary, bundled runtime, native webview, HTTP and owned service cleanup",
+        "status": "passed",
+        "native_tauri_webview_loaded": true,
+        "bundled_python_verified": true,
+        "explicit_python_override_absent": true,
+        "python_environment_injection_removed": true,
+        "interpreter_location": "current application resource_dir/runtime",
+        "python_version": "3.12.14",
+        "package_version": "0.1.1",
+        "runtime_selection_persisted_without_absolute_interpreter": true,
+        "first_run_sample_tasks_available": true,
+        "python_sidecar_http_passed": true,
+        "application_state_http_passed": true,
+        "owned_sidecar_pid_exited": true,
+        "owned_service_listener_closed": true,
+        "load_and_http_check_seconds": 0.5681654750000007,
+        "elapsed_seconds": 1.1832904000000326
+      }
+    }
+  },
+  "installation": "Native deb install/launch/remove; portable AppImage extraction/launch",
+  "workspace_preserved_after_uninstall": true,
+  "artifacts": [
+    {
+      "file": "LLM-Optimise-0.1.1-linux-x64.AppImage",
+      "sha256": "16c210c8005efda7269f3456eab29a37078b4a9e5ff5f008a7fa9a88a8f47b39"
+    },
+    {
+      "file": "LLM-Optimise-0.1.1-linux-x64.deb",
+      "sha256": "689f7681ef4165d56a877a2ecda40a074db484b9242b48b007d1c2c58f25593e"
+    }
+  ],
+  "limitations": [
+    "No distribution signing/notarization claim",
+    "Native hosted-runner acceptance is distinct from inference or accelerator validation"
+  ]
+}

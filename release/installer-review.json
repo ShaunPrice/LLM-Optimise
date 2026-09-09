@@ -15,12 +15,12 @@
     {
       "finding": "The native validator requires an empty workspace, while the package verifier seeded a preservation marker before launch and reused a workspace between Linux package checks.",
       "assessment": "Confirmed from both call sites and the validator guard; independently identified during integration before the review returned.",
-      "disposition": "Passed to the packaging owner for fresh per-package workspaces and preservation markers written after launch and before uninstall."
+      "disposition": "Fixed: each package uses a fresh workspace; the preservation marker is written after native validation and checked after uninstall. Exact release acceptance is recorded separately."
     },
     {
       "finding": "Windows argument-list serialization quotes NSIS /D= and _?= tails containing spaces.",
       "assessment": "Confirmed against the NSIS command-line specification, which requires these final tails to be unquoted.",
-      "disposition": "Passed to the packaging owner for an explicit Windows command line with shell=False and the NSIS-specific final path syntax.",
+      "disposition": "Fixed: explicit shell=False Windows command line with the NSIS-specific final unquoted path syntax. Verified by native per-user install and uninstall into a path containing spaces.",
       "source": "https://nsis.sourceforge.io/Docs/Chapter3.html#installerusagecommon"
     },
     {

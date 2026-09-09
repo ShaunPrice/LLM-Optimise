@@ -77,7 +77,7 @@ The 16 roadmap additions now have executable paths shared by the GUI and CLI. Th
 | Docker components and repair | Python/Rust each passed three host-scored component cases. Python and Rust repair failed first then passed second; original projects unchanged. Node JUnit passed. Fake printed test counts were rejected. Timeout failures remained in results alongside subsequent successes. Model responses in these repair tests were controlled fixtures. | [Component/repair evidence](../validation/workbench/docker-components-repair.json) |
 | Rust supervisor on Mac | Three repeats of equal process workloads. Median idle supervisor RSS ~7.83 MiB Rust versus ~18.17 MiB Python; median startup ~4.74/28.43 ms. Cancellation ~44.94/47.77 ms, similar in this sample. | [Full profile](../native/validation/macos-arm64-supervisor-profile.json) |
 | Rust supervisor on native Omen Windows | Built with the installed Rust/MSVC toolchain; job assignment, exit42, RSS termination, deadline, child cancellation and orphan cleanup passed. | [Windows native proof](../native/validation/windows-x64-supervisor-validation.json) |
-| Tauri on Mac | Native webview, owned Python service HTML/state, shutdown cleanup and mounted DMG layout checked. Development bundle is unsigned for distribution and not notarized. | [Desktop validation](../desktop/README.md#validation) |
+| Tauri on Mac | Native webview, owned Python service HTML/state, shutdown cleanup and mounted DMG layout checked. Development bundle is unsigned for distribution and not notarized. | [Desktop validation](../desktop/README.md#native-installation-validation) |
 
 The GUI dataset workflow and [bounded real CPU capacity search](../validation/workbench/mac-gui-capacity.json) were exercised through browser controls. The new workbench exposes 25 guided tools in six areas, shares job progress/cancellation with the main application, and retains request/evidence inspection.
 
@@ -92,3 +92,19 @@ The optional MCP interface uses actual official-SDK clients over stdio and authe
 These checks establish the local protocol and shared application behavior. They do not establish a live hosted ChatGPT/Claude connector, external OAuth identity provider, secure tunnel or public HTTPS deployment. [Client configuration and deployment requirements](mcp.md)
 
 The marketing film uses actual application captures, including a two-configuration CPU capacity search and generated Python changes passing three Docker tests with a 128 MiB memory cap. The Soup image is labelled recipe preparation; live training evidence above remains separate. [Demonstration observations](../validation/marketing-workflows.json) · [Video production and encoded quality checks](../marketing/video/README.md)
+
+## Standalone installers — 10 September 2026 (Australia/Sydney)
+
+The **0.1.1 experimental installers** bundle Python 3.12.14, the application and MCP dependencies. All five native target jobs passed for build source `1348ed16bbe3618fa3eb00c55dc34b78e816c1bd`, producing seven packages. All ten application CI jobs passed for the same source. [Release manifest and exact package hashes](../release/validation/v0.1.1/installer-release.json) · [Installer CI](https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34360866325) · [Application CI](https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34360825437)
+
+| Target | Native acceptance | Evidence |
+|---|---|---|
+| Mac Apple Silicon | macOS 15 DMG mount, relocated app launch and removal; the exact DMG also passed locally on the development Mac | [CI](../release/validation/v0.1.1/validation-macos-arm64.json) · [Local Mac](../release/validation/v0.1.1/validation-local-macos-arm64.json) |
+| Mac Intel | macOS 15 DMG mount, relocated app launch and removal; pinned current cryptography built with static OpenSSL | [Intel Mac](../release/validation/v0.1.1/validation-macos-x64.json) |
+| Windows x64 | Windows Server 2025 build 26100: per-user NSIS installation into a path with spaces, real native launch and uninstall | [Windows](../release/validation/v0.1.1/validation-windows-x64.json) |
+| Linux x64 | Ubuntu 22.04: Debian installation/launch/removal and extracted AppImage launch | [Linux x64](../release/validation/v0.1.1/validation-linux-x64.json) |
+| Linux ARM64 | Ubuntu 24.04: Debian installation/launch/removal and extracted AppImage launch | [Linux ARM64](../release/validation/v0.1.1/validation-linux-arm64.json) |
+
+Each package check asserts bundled Python imports and relocation, meaningful help output from both supplied CLI/MCP launchers and module entry points, real webview page load, local HTML/state API responses, sample-task availability, owned-service shutdown and workspace preservation. The local integrated Python suite passed 346 tests during installer development. An independent Opus 5 source review identified NSIS argument quoting and workspace-fixture issues that were fixed before final acceptance. [Review and dispositions](../release/installer-review.json)
+
+The packages are unsigned for distribution and not notarized. Older macOS versions, other Windows versions and managed policies, additional Linux distributions, FUSE launch paths and Omen installer hardware acceptance are not established by this run. Models, GPU drivers, inference engines, Soup environments and Docker remain separate installations. Installer checks establish application packaging behavior, not model quality or inference performance. [Installation guide](install.md)
