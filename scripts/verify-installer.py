@@ -59,16 +59,23 @@ def runtime_checks(resources, workspace):
     observation = json.loads(subprocess.check_output([str(python), "-I", "-c", code], env=env))
     if not Path(observation["prefix"]).resolve().is_relative_to(runtime.resolve()):
         raise ValueError("Installed Python prefix is outside the package")
-    run([python, "-I", "-m", "llm_optimise.cli", "--help"], env=env, stdout=subprocess.DEVNULL)
-    run(
-        [python, "-I", "-m", "llm_optimise.mcp_server", "--help"],
-        env=env,
-        stdout=subprocess.DEVNULL,
-    )
+    for name, module in (
+        ("llm-optimise", "llm_optimise"),
+        ("llm-optimise-mcp", "llm_optimise.mcp_server"),
+    ):
+        launcher = runtime / (name + (".cmd" if os.name == "nt" else ""))
+        for command in ([python, "-I", "-m", module, "--help"], [launcher, "--help"]):
+            help_text = subprocess.check_output(
+                [str(part) for part in command], env=env, text=True, timeout=30
+            )
+            expected = "workbench" if module == "llm_optimise" else "--workspace"
+            if "usage:" not in help_text or expected not in help_text:
+                raise ValueError(f"Installed {name} did not expose its command-line interface")
     return {
         "bundled_imports_passed": True,
         "cli_help_passed": True,
         "mcp_help_passed": True,
+        "cli_and_mcp_launchers_passed": True,
         "interpreter_relative": manifest["interpreter"],
         "python_version": manifest["python_version"],
         "app_version": observation["version"],

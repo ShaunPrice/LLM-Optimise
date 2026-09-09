@@ -76,7 +76,7 @@ def extract_archive(archive, target, root="python"):
 
 def write_launchers(output, windows):
     for name, module in (
-        ("llm-optimise", "llm_optimise.cli"),
+        ("llm-optimise", "llm_optimise"),
         ("llm-optimise-mcp", "llm_optimise.mcp_server"),
     ):
         if windows:
@@ -490,8 +490,13 @@ def main(argv=None):
             ):
                 raise ValueError("Relocated cryptography/OpenSSL versions differ from source pins")
             (relocated / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-        run([python, "-I", "-m", "llm_optimise.cli", "--help"])
-        run([python, "-I", "-m", "llm_optimise.mcp_server", "--help"])
+        for module in ("llm_optimise", "llm_optimise.mcp_server"):
+            help_text = subprocess.check_output(
+                [str(python), "-I", "-m", module, "--help"], env=env, text=True, timeout=30
+            )
+            expected = "workbench" if module == "llm_optimise" else "--workspace"
+            if "usage:" not in help_text or expected not in help_text:
+                raise ValueError(f"Bundled {module} did not expose its command-line interface")
         if output.exists():
             shutil.rmtree(output)
         shutil.move(str(relocated), output)

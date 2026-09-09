@@ -48,7 +48,7 @@ def prune_toolkit(runtime: Path) -> dict:
         if file.is_file() and not file.is_symlink()
     ]
     removed_bytes = sum(file.stat().st_size for file in files)
-    removed = [str(path.relative_to(runtime)) for path in targets]
+    removed = [path.relative_to(runtime).as_posix() for path in targets]
     for path in targets:
         if path.is_dir() and not path.is_symlink():
             shutil.rmtree(path)
@@ -72,7 +72,7 @@ def audit_elf(runtime: Path, runner=subprocess.run) -> dict:
         with path.open("rb") as stream:
             if stream.read(4) != b"\x7fELF":
                 continue
-        relative = str(path.relative_to(runtime))
+        relative = path.relative_to(runtime).as_posix()
         result = runner(["ldd", str(path)], capture_output=True, text=True, timeout=30)
         output = result.stdout + result.stderr
         if "not found" in output:
