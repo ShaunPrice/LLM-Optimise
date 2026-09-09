@@ -168,3 +168,8 @@ llm-optimise report runs/domain-baseline/results.json --output runs/domain-basel
 Changed inputs or runtime reject resume. External endpoint runs cannot resume because a remote server's model identity may change. Preserve the original configuration and artifacts, use a fresh output directory for changed experiments, and record external model/runtime identity independently.
 
 The CLI returns `2` when a run is incomplete or has no eligible frontier. This is useful in automation and is not interchangeable with an application configuration error. See [CLI reference](cli-reference.md).
+
+
+## Experimental workbench additions
+
+The [Workbench guide](workbench.md) documents executable dataset, adapter, search, calibration, caching, context, distillation, component, repair and model-lifecycle workflows shared by the GUI and CLI. Native process supervision and desktop packaging are documented under [native](../native/README.md) and [desktop](../desktop/README.md).

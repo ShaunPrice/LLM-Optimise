@@ -38,6 +38,8 @@ def parse_models(data):
         values = dict(entry)
         if "capabilities" in values:
             values["capabilities"] = tuple(values["capabilities"])
+        if "task_classes" in values:
+            values["task_classes"] = tuple(values["task_classes"])
         result.append(ProviderModel(**values))
     if len({m.id for m in result}) != len(result):
         raise ValueError("model IDs must be unique")

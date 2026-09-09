@@ -38,3 +38,8 @@ Soup is evolving rapidly. Upstream release notes include adapter-loading and tra
 7. Calibrate the routing catalogue from representative agent tasks. Declared costs, quality and memory are estimates until backed by measurements; avoid transferring a six-task smoke score to unrelated code generation.
 
 The first live validation demonstrates an application workflow and one useful structured-output improvement. It does not establish the limits of an M4, NVIDIA GPU, or any model family. See [validation evidence](validation.md).
+
+
+## Experimental workbench additions
+
+The [Workbench guide](workbench.md) documents executable dataset, adapter, search, calibration, caching, context, distillation, component, repair and model-lifecycle workflows shared by the GUI and CLI. Native process supervision and desktop packaging are documented under [native](../native/README.md) and [desktop](../desktop/README.md).

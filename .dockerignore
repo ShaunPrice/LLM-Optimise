@@ -13,3 +13,6 @@ dist
 *.gguf
 *.safetensors
 .env*
+
+native
+desktop

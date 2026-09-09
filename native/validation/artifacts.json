@@ -1,0 +1,18 @@
+{
+  "macos_arm64": {
+    "filename": "llm-supervisor",
+    "bytes": 648976,
+    "sha256": "965c45d9598a3160db5727b11f74c1e0355de95d5f037c3686ac9be2d3d868fc"
+  },
+  "windows_x64": {
+    "filename": "llm-supervisor-windows-x64.exe",
+    "bytes": 519680,
+    "sha256": "03eab00d9d9121acc6d50dd0876825a7545c6f202edaf324411c4633368c0cdb"
+  },
+  "source_scope": {
+    "license": "MIT",
+    "cargo_lock_sha256": "5159801d12ebe3fed20983f161e4061ddfb682daa1ae25d791ac595c668b9a73",
+    "rust_minimum": "1.95",
+    "linux_runtime_validated": false
+  }
+}

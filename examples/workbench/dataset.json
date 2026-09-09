@@ -1,0 +1,11 @@
+{
+  "name": "Alarm labels demonstration",
+  "seed": 42,
+  "ratios": {"train": 0.5, "tune": 0.25, "held_out": 0.25},
+  "rows": [
+    {"id":"a","prompt":"Classify temperature 90 C with limit 70 C. Return alarm or normal.","expected":"alarm","group":"unit-a","task_class":"alarms-v1","error_cost":5},
+    {"id":"b","prompt":"Classify temperature 30 C with limit 70 C. Return alarm or normal.","expected":"normal","group":"unit-b","task_class":"alarms-v1"},
+    {"id":"c","prompt":"Classify temperature 80 C with limit 70 C. Return alarm or normal.","expected":"alarm","group":"unit-c","task_class":"alarms-v1","error_cost":5},
+    {"id":"d","prompt":"Classify temperature 20 C with limit 70 C. Return alarm or normal.","expected":"normal","group":"unit-d","task_class":"alarms-v1"}
+  ]
+}

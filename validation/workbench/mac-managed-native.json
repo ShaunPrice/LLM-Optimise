@@ -1,0 +1,73 @@
+{
+  "registration": {
+    "model_id": "managed-native-smoke",
+    "endpoint": "http://127.0.0.1:63103",
+    "revision": "f530705d447660a4336c329981af164b471b60b974b1d808d57e8ec9fe23b239",
+    "requirements": {
+      "ram_gib": 1.6498650088906288,
+      "gpu_gib": 0,
+      "working_ram_gib": 0.125,
+      "max_concurrency": 1,
+      "max_rss_gib": 3,
+      "max_gpu_gib": null
+    },
+    "admission_note": "Weight/context formula is an estimate unless overridden; live free-memory admission and optional sampled process caps remain separate."
+  },
+  "first": {
+    "text": "YES",
+    "latency_ms": 77.56891590543091,
+    "cache_hit": false,
+    "accounted_cost_usd": 0.0
+  },
+  "cached": {
+    "text": "YES",
+    "latency_ms": 0.5227499641478062,
+    "cache_hit": true,
+    "accounted_cost_usd": 0.0
+  },
+  "unloaded": {
+    "closed": false,
+    "active_leases": 0,
+    "max_active_leases": 2,
+    "max_models": 2,
+    "reserved_ram_gib": 0.0,
+    "reserved_gpu_gib": 0.0,
+    "last_headroom": {
+      "ram_available_gib": 4.02581787109375,
+      "gpu_available_gib": null,
+      "unified_memory": true,
+      "sampled_at": 1788953744.0180311,
+      "gpu_scope": "minimum free memory across reported NVIDIA GPUs"
+    },
+    "last_error": null,
+    "monitor_interval_s": 0.5,
+    "measurement_scope": "sampled owned process tree RSS/NVIDIA memory; short peaks may be missed; unknown GPU memory is null",
+    "models": [],
+    "settings": {
+      "max_active_leases": 2,
+      "max_models": 2,
+      "min_ram_gib": 1,
+      "min_gpu_gib": 0.25,
+      "idle_timeout_s": 1
+    },
+    "registered": [
+      {
+        "id": "managed-native-smoke",
+        "model": "<workspace>/models/Qwen2.5-Coder-1.5B-Instruct-Q4_K_M.gguf",
+        "context": 1024,
+        "requirements": {
+          "ram_gib": 1.6498650088906288,
+          "gpu_gib": 0,
+          "working_ram_gib": 0.125,
+          "max_concurrency": 1,
+          "max_rss_gib": 3,
+          "max_gpu_gib": null
+        }
+      }
+    ]
+  },
+  "reloaded": {
+    "text": "NO",
+    "new_worker_pid": true
+  }
+}

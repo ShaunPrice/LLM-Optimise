@@ -94,3 +94,8 @@ Keep these claims separate when extending or evaluating the application:
 6. **Deployed:** the exact intended target and workload were checked separately.
 
 A calculator result or prepared Soup recipe establishes none of the later stages. Passing software tests verifies their covered contracts; it does not establish live accelerator, cloud-provider, training or deployment behaviour.
+
+
+## Experimental workbench additions
+
+The [Workbench guide](workbench.md) documents executable dataset, adapter, search, calibration, caching, context, distillation, component, repair and model-lifecycle workflows shared by the GUI and CLI. Native process supervision and desktop packaging are documented under [native](../native/README.md) and [desktop](../desktop/README.md).

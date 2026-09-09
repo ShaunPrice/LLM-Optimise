@@ -4,12 +4,17 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import secrets
 import shutil
+import signal
 import socket
 import subprocess
+import tempfile
+import threading
 import time
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
@@ -30,6 +35,106 @@ class Generation:
     prompt_tokens: int | None = None
     prompt_tokens_s: float | None = None
     truncated: bool = False
+    draft_tokens: int | None = None
+    accepted_draft_tokens: int | None = None
+    speculation_source: str | None = None
+
+
+def _probe_output(executable, option):
+    # A file-backed capture bounds in-memory output from a runtime's diagnostic command.
+    env = {k: v for k, v in os.environ.items() if not k.startswith("LLAMA_ARG_")}
+    with tempfile.TemporaryFile() as output:
+        try:
+            result = subprocess.run(
+                [executable, option],
+                stdout=output,
+                stderr=subprocess.STDOUT,
+                stdin=subprocess.DEVNULL,
+                timeout=10,
+                check=False,
+                env=env,
+            )
+            output.seek(0)
+            return result.returncode, output.read(256 * 1024).decode("utf-8", errors="replace")
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            return None, f"{type(exc).__name__}: diagnostic command failed"
+
+
+@lru_cache(maxsize=32)
+def _runtime_capabilities(executable, mtime_ns, size):
+    help_code, help_text = _probe_output(executable, "--help")
+    version_code, version = _probe_output(executable, "--version")
+    flags = sorted(set(re.findall(r"(?<![\w-])--[a-zA-Z][\w-]*", help_text)))
+    device_code, device_text = (None, "--list-devices not advertised")
+    if help_code == 0 and "--list-devices" in flags:
+        device_code, device_text = _probe_output(executable, "--list-devices")
+    devices = []
+    patterns = {"cuda": r"cuda", "metal": r"metal|^mtl", "vulkan": r"vulkan", "rocm": r"rocm|hip"}
+    if device_code == 0:
+        for line in device_text.splitlines():
+            match = re.match(r"\s*([\w.-]+):\s*(.+)", line)
+            if not match:
+                continue
+            for accelerator, pattern in patterns.items():
+                if re.search(pattern, match[1], re.I):
+                    devices.append(
+                        {"id": match[1], "accelerator": accelerator, "description": match[2]}
+                    )
+                    break
+    cpu = help_code == 0 and all(
+        f in flags for f in ("--gpu-layers", "--no-kv-offload", "--no-op-offload")
+    )
+    return {
+        "executable": executable,
+        "installed": True,
+        "version": version.strip() if version_code == 0 else None,
+        "help_available": help_code == 0,
+        "flags": flags,
+        "devices": devices,
+        "supported_accelerators": (["cpu"] if cpu else [])
+        + sorted({d["accelerator"] for d in devices}),
+        "device_probe_exit_code": device_code,
+        "device_probe": device_text.strip(),
+        "evidence": "installed runtime help and device enumeration; model execution remains untested",
+    }
+
+
+def runtime_capabilities(executable):
+    """Probe the exact installed executable; never infer support from a filename."""
+    resolved = shutil.which(str(executable))
+    if not resolved:
+        return {
+            "executable": str(executable),
+            "installed": False,
+            "flags": [],
+            "devices": [],
+            "supported_accelerators": [],
+            "evidence": "executable not found",
+        }
+    path = Path(resolved).resolve()
+    stat = path.stat()
+    # Return a copy so API callers cannot mutate cached capability evidence.
+    return json.loads(json.dumps(_runtime_capabilities(str(path), stat.st_mtime_ns, stat.st_size)))
+
+
+def _flag(capabilities, *choices):
+    if not capabilities.get("help_available"):
+        raise ValueError("installed runtime help probe failed; support cannot be verified")
+    for choice in choices:
+        if choice in capabilities["flags"]:
+            return choice
+    raise ValueError("installed runtime does not advertise required flag: " + " or ".join(choices))
+
+
+def speculation_counts(event):
+    """Read explicit counters only; missing counters are never inferred from output length."""
+    for label, values in (("terminal", event), ("timings", event.get("timings", {}))):
+        if not isinstance(values, dict):
+            continue
+        drafted, accepted = values.get("draft_n"), values.get("draft_n_accepted")
+        if type(drafted) is int and type(accepted) is int and 0 <= accepted <= drafted:
+            return drafted, accepted, f"{label}.draft_n / {label}.draft_n_accepted"
+    return None, None, None
 
 
 def request_json(url, payload=None, timeout=30, key=None):
@@ -109,8 +214,35 @@ def llama_command(candidate, port, key):
         cmd.append("--no-mmap")
     if candidate.gpu_layers == 0:
         cmd.extend(["--no-kv-offload", "--no-op-offload"])
+    capabilities = None
+    if candidate.accelerator != "auto" or candidate.device or candidate.draft_model:
+        capabilities = runtime_capabilities(exe)
+    if candidate.accelerator != "auto":
+        if candidate.accelerator not in capabilities["supported_accelerators"]:
+            raise ValueError(f"installed runtime cannot verify accelerator {candidate.accelerator}")
+    if candidate.device or candidate.accelerator not in ("auto", "cpu"):
+        eligible = [
+            d
+            for d in capabilities["devices"]
+            if candidate.accelerator in ("auto", d["accelerator"])
+        ]
+        device = candidate.device or (eligible[0]["id"] if eligible else None)
+        if device not in {d["id"] for d in eligible}:
+            raise ValueError("requested device was not enumerated for this accelerator")
+        cmd.extend([_flag(capabilities, "--device"), device])
     if candidate.draft_model:
-        cmd.extend(["--model-draft", candidate.draft_model])
+        cmd.extend(
+            [_flag(capabilities, "--spec-draft-model", "--model-draft"), candidate.draft_model]
+        )
+        if "--spec-type" in capabilities["flags"]:
+            cmd.extend(["--spec-type", "draft-simple"])
+        if candidate.draft_max is not None:
+            cmd.extend(
+                [_flag(capabilities, "--spec-draft-n-max", "--draft-max"), str(candidate.draft_max)]
+            )
+        if candidate.gpu_layers == 0:
+            cmd.extend([_flag(capabilities, "--spec-draft-ngl", "--gpu-layers-draft"), "0"])
+            cmd.extend([_flag(capabilities, "--spec-draft-device", "--device-draft"), "none"])
     return cmd
 
 
@@ -127,9 +259,14 @@ class Backend:
         self.version = None
         self.command = None
         self.started_at = None
+        self._close_lock = threading.Lock()
+        self._owns_process_group = False
+        self.native_worker = None
 
     @property
     def pid(self):
+        if self.native_worker:
+            return self.native_worker.pid
         return self.process.pid if self.process else None
 
     def launch(self):
@@ -167,7 +304,6 @@ class Backend:
         )
         self.version = (version.stdout + version.stderr).strip() or None
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
-        self.log = open(self.log_path, "wb")
         kwargs = (
             {"start_new_session": True}
             if os.name != "nt"
@@ -176,6 +312,15 @@ class Backend:
         # Prevent ambient llama environment settings from silently changing an experiment.
         env = {k: v for k, v in os.environ.items() if not k.startswith("LLAMA_ARG_")}
         self.started_at = time.monotonic()
+        if self.candidate.supervisor_executable:
+            from .native_runtime import NativeWorker
+
+            self.native_worker = NativeWorker(
+                self.candidate.supervisor_executable, cmd, self.log_path, env=env
+            )
+            self.process = self.native_worker.process
+            return
+        self.log = open(self.log_path, "wb")
         self.process = subprocess.Popen(
             cmd,
             stdin=subprocess.DEVNULL,
@@ -184,6 +329,7 @@ class Backend:
             env=env,
             **kwargs,
         )
+        self._owns_process_group = os.name != "nt"
 
     def ready(self, timeout, check):
         if not self.process:
@@ -250,6 +396,7 @@ class Backend:
         text, ttft, tokens, prompt_tokens, decode, prefill = [], None, None, None, None, None
         terminal = False
         truncated = False
+        drafted, accepted, speculation_source = None, None, None
         remaining = timeout - (time.monotonic() - started)
         if remaining <= 0:
             raise TimeoutError("prompt preparation exceeded timeout")
@@ -268,6 +415,7 @@ class Backend:
                     truncated = event.get("truncated", False) or (
                         event.get("stopped_limit", False) or event.get("stop_type") == "limit"
                     )
+                    drafted, accepted, speculation_source = speculation_counts(event)
             else:
                 choices = event.get("choices", [])
                 content = choices[0].get("delta", {}).get("content") or "" if choices else ""
@@ -292,29 +440,54 @@ class Backend:
             prompt_tokens,
             prefill,
             truncated,
+            drafted,
+            accepted,
+            speculation_source,
         )
 
     def close(self):
-        if self.process:
-            try:
-                root = psutil.Process(self.process.pid)
-                children = root.children(recursive=True)
-                for p in children:
+        # The cancellation guard and runner finally block may arrive together.
+        with self._close_lock:
+            if self.native_worker:
+                self.native_worker.close()
+                return
+            if self.process:
+                children = []
+                try:
+                    children = psutil.Process(self.process.pid).children(recursive=True)
+                except (psutil.Error, OSError):
+                    pass  # Still terminate our Popen child when process enumeration is restricted.
+                running = self.process.poll() is None
+                if running and self._owns_process_group:
                     try:
-                        p.terminate()
-                    except psutil.NoSuchProcess:
+                        os.killpg(self.process.pid, signal.SIGTERM)
+                    except (ProcessLookupError, PermissionError):
                         pass
-                if self.process.poll() is None:
-                    self.process.terminate()
-                _, alive = psutil.wait_procs(children, timeout=2)
-                for p in alive:
-                    p.kill()
+                for child in children:
+                    try:
+                        child.terminate()
+                    except psutil.Error:
+                        pass
+                if running:
+                    try:
+                        self.process.terminate()
+                    except ProcessLookupError:
+                        pass
                 try:
                     self.process.wait(timeout=3)
                 except subprocess.TimeoutExpired:
+                    if self._owns_process_group:
+                        try:
+                            os.killpg(self.process.pid, signal.SIGKILL)
+                        except (ProcessLookupError, PermissionError):
+                            pass
                     self.process.kill()
                     self.process.wait(timeout=3)
-            except psutil.NoSuchProcess:
-                pass
-        if self.log:
-            self.log.close()
+                _, alive = psutil.wait_procs(children, timeout=1)
+                for child in alive:
+                    try:
+                        child.kill()
+                    except psutil.Error:
+                        pass
+            if self.log:
+                self.log.close()

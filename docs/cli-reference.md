@@ -171,3 +171,8 @@ llm-optimise container --project projects/my-project --output runs/my-project-te
 | `130` | Keyboard interrupt handled by the CLI |
 
 An interrupt handled inside the experiment runner can instead produce an incomplete result and exit `2`. Preserve stdout/stderr and the result record when diagnosing an automated run.
+
+
+## Experimental workbench additions
+
+The [Workbench guide](workbench.md) documents executable dataset, adapter, search, calibration, caching, context, distillation, component, repair and model-lifecycle workflows shared by the GUI and CLI. Native process supervision and desktop packaging are documented under [native](../native/README.md) and [desktop](../desktop/README.md).

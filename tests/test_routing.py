@@ -157,10 +157,15 @@ class TestRoutePolicyValidation:
             RoutePolicy(objective="speed")
 
     @pytest.mark.parametrize("field", ["max_cost_usd", "max_latency_ms"])
-    @pytest.mark.parametrize("bad", [0, -1.0, float("nan"), float("inf"), True])
+    @pytest.mark.parametrize("bad", [-1.0, float("nan"), float("inf"), True])
     def test_rejects_bad_budgets(self, field, bad):
         with pytest.raises(ValueError):
             RoutePolicy(**{field: bad})
+
+    def test_zero_budget_only_allows_known_free_models(self):
+        assert RoutePolicy(max_cost_usd=0).max_cost_usd == 0
+        with pytest.raises(ValueError):
+            RoutePolicy(max_latency_ms=0)
 
     @pytest.mark.parametrize("bad", [-0.1, 1.5, float("nan")])
     def test_rejects_bad_min_quality(self, bad):

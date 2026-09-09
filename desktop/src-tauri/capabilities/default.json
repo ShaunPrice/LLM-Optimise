@@ -1,0 +1,1 @@
+{"identifier":"launcher","description":"Local launcher window only. The loopback lab has no native IPC permissions.","windows":["launcher"],"permissions":["core:default"]}

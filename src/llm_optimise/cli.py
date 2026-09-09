@@ -7,14 +7,16 @@ import json
 import sys
 from pathlib import Path
 
-from .agent import load_models, run_agent
+from .agent import load_models
 from .config import load_experiment
 from .hardware import detect_hardware
+from .intelligence import Intelligence
 from .planner import estimate_memory
 from .report import export_report
 from .routing import RoutePolicy, choose_route
 from .runner import run_experiment, write_json
 from .training import save_recipe, training_recipe
+from .workbench import OPERATIONS, execute_workbench
 from .workspace import apply_proposal, code_messages, prepare_proposal, read_context
 
 
@@ -99,6 +101,30 @@ def parser():
         p.add_argument("--max-ram-gib", type=float)
         p.add_argument("--max-gpu-gib", type=float)
         p.add_argument("--max-tokens", type=int, default=1024)
+        p.add_argument(
+            "--workspace", default=".", help="Workspace for measurements and opt-in exact cache"
+        )
+        p.add_argument(
+            "--task-class",
+            default="general",
+            help="Task family/version for scoped routing measurements",
+        )
+        p.add_argument(
+            "--calibrated",
+            action="store_true",
+            help="Use matching measured latency and conservative quality confidence",
+        )
+        if name != "route":
+            p.add_argument(
+                "--cache",
+                action="store_true",
+                help="Opt into exact response caching at temperature zero",
+            )
+            p.add_argument(
+                "--prefix-cache",
+                action="store_true",
+                help="Ask a compatible local endpoint to reuse its prompt prefix",
+            )
         if name == "route":
             p.add_argument("--input-tokens", type=int, default=1000)
             p.add_argument("--capability", default="chat")
@@ -108,6 +134,17 @@ def parser():
         if name == "code":
             p.add_argument("--project", required=True)
             p.add_argument("--context", nargs="*", default=[])
+            p.add_argument(
+                "--context-max-chars",
+                type=int,
+                help="Select relevant source chunks within this character budget",
+            )
+            p.add_argument(
+                "--required-fact",
+                action="append",
+                default=[],
+                help="Fact that must survive context selection; repeatable",
+            )
     apply = sub.add_parser(
         "apply", help="Apply a previously reviewed proposal; refuses stale files"
     )
@@ -118,7 +155,7 @@ def parser():
     )
     container.add_argument("--project", required=True)
     container.add_argument("--output", required=True)
-    container.add_argument("--runtime", choices=["python", "node"], default="python")
+    container.add_argument("--runtime", choices=["python", "node", "rust"], default="python")
     container.add_argument("--action", choices=["test", "build"], default="test")
     container.add_argument("--memory-mib", type=int, default=512)
     container.add_argument("--cpus", type=float, default=1)
@@ -126,6 +163,40 @@ def parser():
     container.add_argument("--network", action="store_true")
     container.add_argument("--pull", action="store_true")
     container.add_argument("--image")
+    workbench = sub.add_parser(
+        "workbench",
+        help="Run dataset, training, routing, component and repair workbench operations",
+    )
+    workbench.add_argument("operation", choices=OPERATIONS)
+    workbench.add_argument(
+        "--request", help="JSON request file; omitted only for status/cache-clear"
+    )
+    workbench.add_argument("--workspace", default=".")
+    workbench.add_argument("--output", help="New output directory for reproducible evidence")
+    workbench.add_argument("--models", help="Model registry; defaults to workspace settings")
+    explore = sub.add_parser(
+        "explore", help="Run capacity, KV, speculative, accelerator or multi-fidelity searches"
+    )
+    explore.add_argument("config")
+    explore.add_argument("--workspace", default=".")
+    explore.add_argument("--output")
+    explore.add_argument(
+        "--plan",
+        action="store_true",
+        help="Inspect capabilities and planned trials without model execution",
+    )
+    calibration = sub.add_parser(
+        "calibrate", help="Measure chosen endpoints on a task dataset for empirical routing"
+    )
+    calibration.add_argument("--models", required=True)
+    calibration.add_argument("--dataset", required=True)
+    calibration.add_argument("--task-class", required=True)
+    calibration.add_argument("--workspace", default=".")
+    calibration.add_argument("--output")
+    calibration.add_argument("--repeats", type=int, default=1)
+    calibration.add_argument("--max-requests", type=int, default=100)
+    calibration.add_argument("--max-cost-usd", type=float, default=0.1)
+    calibration.add_argument("--max-tokens", type=int, default=128)
     return root
 
 
@@ -191,6 +262,7 @@ def main(argv=None):
             emit(save_recipe(recipe, args.output))
         elif args.command in ("route", "agent", "code"):
             models = load_models(args.models)
+            intelligence = Intelligence(args.workspace)
             policy = RoutePolicy(
                 placement=args.placement,
                 objective=args.objective,
@@ -201,6 +273,10 @@ def main(argv=None):
                 max_gpu_gib=args.max_gpu_gib,
             )
             if args.command == "route":
+                if args.calibrated:
+                    models, _ = intelligence.calibrated_models(
+                        models, args.task_class, args.input_tokens
+                    )
                 result = choose_route(
                     models, policy, args.input_tokens, args.max_tokens, args.capability, args.model
                 )
@@ -209,18 +285,38 @@ def main(argv=None):
                     project = Path(args.project).resolve()
                     project.mkdir(parents=True, exist_ok=True)
                     context = read_context(project, args.context)
-                    messages = code_messages(args.message, context)
+                    selection = None
+                    if args.context_max_chars is not None:
+                        from .context import select_context
+
+                        selection = select_context(
+                            args.message,
+                            context,
+                            max_chars=args.context_max_chars,
+                            required_facts=args.required_fact,
+                        )
+                        if not selection["required_fact_gate"]:
+                            raise ValueError("selected context omits required facts")
+                    messages = code_messages(
+                        args.message,
+                        {"selected-context.txt": selection["text"]} if selection else context,
+                    )
                 else:
                     messages = [{"role": "user", "content": args.message}]
-                result = run_agent(
+                result = intelligence.run(
                     models,
                     messages,
                     policy,
                     args.model,
                     args.max_tokens,
                     "code" if args.command == "code" else "chat",
+                    task_class=args.task_class,
+                    cache=args.cache,
+                    calibrated=args.calibrated,
+                    prefix_cache=args.prefix_cache,
                 )
                 if args.command == "code":
+                    result["context_selection"] = selection
                     result["proposal"] = prepare_proposal(
                         project, result["completion"]["text"], context
                     )
@@ -255,6 +351,55 @@ def main(argv=None):
             proposal = record.get("proposal", record)
             emit({"files": apply_proposal(Path(args.project).resolve(), proposal)})
             write_json(args.proposal, record)
+        elif args.command in ("workbench", "explore", "calibrate"):
+
+            def progress(event):
+                print(json.dumps(event, allow_nan=False), file=sys.stderr, flush=True)
+
+            models = []
+            if args.command == "workbench":
+                operation = args.operation
+                if not args.request and operation not in {"status", "cache-clear"}:
+                    raise ValueError("this workbench operation requires --request JSON")
+                data = json.loads(Path(args.request).read_text()) if args.request else {}
+                registry = (
+                    Path(args.models)
+                    if args.models
+                    else Path(args.workspace) / ".llm-optimise" / "models.json"
+                )
+                models = load_models(registry) if registry.is_file() else []
+            elif args.command == "explore":
+                operation = "explore-plan" if args.plan else "explore-run"
+                data = json.loads(Path(args.config).read_text())
+            else:
+                operation = "calibrate"
+                data = {
+                    key: getattr(args, key)
+                    for key in (
+                        "dataset",
+                        "task_class",
+                        "repeats",
+                        "max_requests",
+                        "max_cost_usd",
+                        "max_tokens",
+                    )
+                }
+                models = load_models(args.models)
+            result = execute_workbench(
+                args.workspace,
+                operation,
+                data,
+                models=models,
+                output_dir=args.output,
+                progress=progress,
+            )
+            emit(result)
+            if (
+                result.get("passed") is False
+                or result.get("accepted") is False
+                or result.get("status") in {"failed", "cancelled", "timeout", "resource_limit"}
+            ):
+                return 2
         return 0
     except (ValueError, TypeError, KeyError, OSError, RuntimeError) as exc:
         print(f"Error: {exc}", file=sys.stderr)

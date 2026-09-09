@@ -108,3 +108,8 @@ Register an OpenAI-compatible model with base URL `https://openrouter.ai/api/v1`
 For Chat, Develop and CLI `agent`/`code` requests to this official endpoint, the application disables gateway provider fallbacks and requires support for requested parameters. It records OpenRouter's returned `usage.cost` separately from its own token-price calculation, along with response ID and resolved model. The GUI displays reported cost when available. Other compatible gateways may have their own internal routing policies; configure those separately. [Authentication](https://openrouter.ai/docs/api_reference/authentication), [provider controls](https://openrouter.ai/docs/guides/routing/provider-selection), [response schema](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion).
 
 Keep the actual credential in your environment or existing credential manager. The registry contains only its variable name. Testing uses synthetic tasks; no source repository or private document needs to be sent to a cloud model.
+
+
+## Experimental workbench additions
+
+The [Workbench guide](workbench.md) documents executable dataset, adapter, search, calibration, caching, context, distillation, component, repair and model-lifecycle workflows shared by the GUI and CLI. Native process supervision and desktop packaging are documented under [native](../native/README.md) and [desktop](../desktop/README.md).

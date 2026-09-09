@@ -32,8 +32,17 @@ class Candidate:
     constrain_json: bool = False
     draft_model: str | None = None
     api_key_env: str | None = None
+    accelerator: str = "auto"
+    device: str | None = None
+    draft_max: int | None = None
+    supervisor_executable: str | None = None
 
     def __post_init__(self):
+        if self.supervisor_executable is not None and (
+            not isinstance(self.supervisor_executable, str)
+            or not self.supervisor_executable.strip()
+        ):
+            raise ValueError("supervisor_executable must identify a native supervisor binary")
         if not self.name or not self.model:
             raise ValueError("Candidate name and model must be nonempty")
         if self.backend not in ("llama.cpp", "openai"):
@@ -56,6 +65,27 @@ class Candidate:
             raise ValueError("quantised V cache requires flash_attention=on")
         if self.backend == "openai" and not self.endpoint:
             raise ValueError("openai backend requires an explicit endpoint")
+        if self.accelerator not in ("auto", "cpu", "cuda", "metal", "vulkan", "rocm"):
+            raise ValueError("unsupported accelerator")
+        if self.accelerator == "cpu" and self.gpu_layers != 0:
+            raise ValueError("CPU accelerator requires gpu_layers=0")
+        if self.accelerator not in ("auto", "cpu") and self.gpu_layers == 0:
+            raise ValueError("an explicit accelerator requires GPU layer offload")
+        if self.device is not None and (
+            not isinstance(self.device, str)
+            or not self.device
+            or any(c.isspace() for c in self.device)
+            or self.device.startswith("-")
+        ):
+            raise ValueError("device must be a runtime device identifier")
+        if self.draft_max is not None:
+            positive(self.draft_max, "draft_max", integer=True)
+            if self.draft_max > 64 or not self.draft_model:
+                raise ValueError("draft_max requires a draft model and must be <=64")
+        if self.backend != "llama.cpp" and (
+            self.accelerator != "auto" or self.device is not None or self.draft_max is not None
+        ):
+            raise ValueError("accelerator and draft settings require a managed llama.cpp backend")
 
 
 @dataclass(frozen=True)
@@ -133,11 +163,12 @@ def _strict(cls, data):
     return cls(**data)
 
 
-def load_experiment(path: str | Path) -> Experiment:
-    path = Path(path).resolve()
-    data = json.loads(path.read_text(encoding="utf-8"))
+def parse_experiment(data: dict, base_dir: str | Path = ".") -> Experiment:
+    """Load the file schema from an object without creating a temporary config file."""
+    base_dir = Path(base_dir).resolve()
     if not isinstance(data, dict):
         raise ValueError("experiment must be a JSON object")
+    data = json.loads(json.dumps(data, allow_nan=False))
     candidates = []
     bound = data.get("max_trials", 32)
     positive(bound, "max_trials", integer=True)
@@ -163,15 +194,23 @@ def load_experiment(path: str | Path) -> Experiment:
             if item.get("backend", "llama.cpp") == "llama.cpp":
                 for key in ("model", "draft_model"):
                     if item.get(key):
-                        item[key] = str((path.parent / item[key]).resolve())
+                        item[key] = str((base_dir / item[key]).resolve())
                 exe = item.get("executable", "llama-server")
                 if "/" in exe or "\\" in exe:
-                    item["executable"] = str((path.parent / exe).resolve())
+                    item["executable"] = str((base_dir / exe).resolve())
+                native = item.get("supervisor_executable")
+                if native and ("/" in native or "\\" in native):
+                    item["supervisor_executable"] = str((base_dir / native).resolve())
             candidates.append(_strict(Candidate, item))
     data["candidates"] = tuple(candidates)
     data["limits"] = _strict(Limits, data.get("limits", {}))
-    data["dataset"] = str((path.parent / data["dataset"]).resolve())
+    data["dataset"] = str((base_dir / data["dataset"]).resolve())
     return _strict(Experiment, data)
+
+
+def load_experiment(path: str | Path) -> Experiment:
+    path = Path(path).resolve()
+    return parse_experiment(json.loads(path.read_text(encoding="utf-8")), path.parent)
 
 
 def digest(data: Any) -> str:

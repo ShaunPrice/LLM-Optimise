@@ -21,6 +21,7 @@ def training_recipe(engine, model, data, output, *, max_length=512, rank=8):
         "lora": {"r": rank, "alpha": rank * 2},
         "quantization": "4bit",
         "gradient_checkpointing": True,
+        "gradient_accumulation_steps": 1,
     }
     config = {
         "base": model,

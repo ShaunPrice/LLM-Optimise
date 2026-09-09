@@ -18,7 +18,17 @@ def estimate_input_tokens(messages):
     return sum(len(m["content"].encode("utf-8")) + 32 for m in messages) + 256
 
 
-def complete(model, messages, max_tokens, *, timeout=120, json_schema=None):
+def complete(
+    model,
+    messages,
+    max_tokens,
+    *,
+    timeout=120,
+    json_schema=None,
+    temperature=None,
+    seed=None,
+    prefix_cache=False,
+):
     if model.location == "local":
         validate_local_destination(model.base_url)
     key = os.environ.get(model.api_key_env) if model.api_key_env else None
@@ -61,6 +71,23 @@ def complete(model, messages, max_tokens, *, timeout=120, json_schema=None):
         url = model.base_url.rstrip("/") + "/chat/completions"
     else:
         raise ValueError("unsupported provider")
+    if temperature is not None:
+        if (
+            isinstance(temperature, bool)
+            or not isinstance(temperature, (int, float))
+            or not math.isfinite(temperature)
+            or not 0 <= temperature <= 2
+        ):
+            raise ValueError("temperature must be between 0 and 2")
+        body["temperature"] = temperature
+    if seed is not None:
+        if type(seed) is not int or model.provider != "openai":
+            raise ValueError("seed requires an integer and an OpenAI-compatible endpoint")
+        body["seed"] = seed
+    if prefix_cache:
+        if model.location != "local" or model.provider != "openai":
+            raise ValueError("prefix caching is only available for compatible local endpoints")
+        body["cache_prompt"] = True
     request = Request(url, data=json.dumps(body).encode(), headers=headers)
     started = time.monotonic()
     try:
@@ -127,5 +154,6 @@ def complete(model, messages, max_tokens, *, timeout=120, json_schema=None):
         "provider_reported_cost_usd": reported_cost,
         "response_id": data.get("id"),
         "resolved_model": data.get("model"),
+        "cached_input_tokens": (usage.get("prompt_tokens_details") or {}).get("cached_tokens"),
         "cost_note": "computed from provider token counts and configured prices; not a provider billing receipt",
     }

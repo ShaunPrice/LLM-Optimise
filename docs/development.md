@@ -81,3 +81,8 @@ GUI pending proposals are held in the current server process; completed job reco
 After a failed container run, read stdout/stderr and supply the relevant failure in a new request along with the affected files. Do not paste credentials or unrelated private files into context. Keep each request focused enough that its diff and tests can be reviewed together.
 
 When using cloud placement, both your instruction and selected file contents go to the configured provider. Changing routing later does not retract previously sent context. See [model routing](agent-routing.md) for credentials and destination rules.
+
+
+## Experimental workbench additions
+
+The [Workbench guide](workbench.md) documents executable dataset, adapter, search, calibration, caching, context, distillation, component, repair and model-lifecycle workflows shared by the GUI and CLI. Native process supervision and desktop packaging are documented under [native](../native/README.md) and [desktop](../desktop/README.md).

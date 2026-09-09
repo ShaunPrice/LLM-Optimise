@@ -1,0 +1,263 @@
+{
+  "component-python": {
+    "passed": true,
+    "runtime": "python",
+    "measurements": {
+      "rows": [
+        {
+          "id": "negative",
+          "repeat": 0,
+          "passed": true,
+          "actual": -4,
+          "exit_code": 0,
+          "timed_out": false,
+          "cancelled": false,
+          "latency_s": 0.7569483750266954,
+          "output_limit_exceeded": false
+        },
+        {
+          "id": "zero",
+          "repeat": 0,
+          "passed": true,
+          "actual": 0,
+          "exit_code": 0,
+          "timed_out": false,
+          "cancelled": false,
+          "latency_s": 0.8606441660085693,
+          "output_limit_exceeded": false
+        },
+        {
+          "id": "positive",
+          "repeat": 0,
+          "passed": true,
+          "actual": 14,
+          "exit_code": 0,
+          "timed_out": false,
+          "cancelled": false,
+          "latency_s": 0.5495090829208493,
+          "output_limit_exceeded": false
+        }
+      ],
+      "quality": 1.0,
+      "requests_completed": 3,
+      "requests_planned": 3,
+      "latency_p50_s": 0.7569483750266954,
+      "child_rss_highwater_kib": null,
+      "measurement": "Host-observed Docker command latency including container startup/teardown; no candidate-supplied timing or RSS is trusted."
+    },
+    "provider_calls": 0,
+    "provider_cost_usd": 0,
+    "cancelled": false,
+    "complete": true,
+    "deadline_exceeded": false,
+    "note": "Expected labels scored on host. Each case uses a fresh Docker container. No LLM or host execution of candidate code.",
+    "elapsed_s": 2.5248224589740857
+  },
+  "component-rust": {
+    "passed": true,
+    "runtime": "rust",
+    "measurements": {
+      "rows": [
+        {
+          "id": "negative",
+          "repeat": 0,
+          "passed": true,
+          "actual": -4,
+          "exit_code": 0,
+          "timed_out": false,
+          "cancelled": false,
+          "latency_s": 0.433915208093822,
+          "output_limit_exceeded": false
+        },
+        {
+          "id": "zero",
+          "repeat": 0,
+          "passed": true,
+          "actual": 0,
+          "exit_code": 0,
+          "timed_out": false,
+          "cancelled": false,
+          "latency_s": 0.4422393749700859,
+          "output_limit_exceeded": false
+        },
+        {
+          "id": "positive",
+          "repeat": 0,
+          "passed": true,
+          "actual": 14,
+          "exit_code": 0,
+          "timed_out": false,
+          "cancelled": false,
+          "latency_s": 0.4434319579740986,
+          "output_limit_exceeded": false
+        }
+      ],
+      "quality": 1.0,
+      "requests_completed": 3,
+      "requests_planned": 3,
+      "latency_p50_s": 0.4422393749700859,
+      "child_rss_highwater_kib": null,
+      "measurement": "Host-observed Docker command latency including container startup/teardown; no candidate-supplied timing or RSS is trusted."
+    },
+    "provider_calls": 0,
+    "provider_cost_usd": 0,
+    "cancelled": false,
+    "complete": true,
+    "deadline_exceeded": false,
+    "note": "Expected labels scored on host. Each case uses a fresh Docker container. No LLM or host execution of candidate code.",
+    "elapsed_s": 12.699527332908474,
+    "build": {
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_s": 1.0417323750443757
+    }
+  },
+  "repair-node": {
+    "passed": true,
+    "cancelled": false,
+    "cost_usd": 0.0,
+    "cost_totals": {
+      "provider_reported": 0.0,
+      "token_accounted": 0.0,
+      "route_estimated": 0.0
+    },
+    "unknown_cost_iterations": 0,
+    "budget_exceeded": false,
+    "budget_exhausted": false,
+    "stop_reason": "acceptance_passed",
+    "applied_to_project": false,
+    "iterations": [
+      {
+        "iteration": 1,
+        "cost_usd": 0.0,
+        "cost_source": "token_accounted",
+        "passed": true
+      }
+    ]
+  },
+  "repair-python": {
+    "passed": true,
+    "cancelled": false,
+    "cost_usd": 0.0,
+    "cost_totals": {
+      "provider_reported": 0.0,
+      "token_accounted": 0.0,
+      "route_estimated": 0.0
+    },
+    "unknown_cost_iterations": 0,
+    "budget_exceeded": false,
+    "budget_exhausted": false,
+    "stop_reason": "acceptance_passed",
+    "applied_to_project": false,
+    "iterations": [
+      {
+        "iteration": 1,
+        "cost_usd": 0.0,
+        "cost_source": "token_accounted",
+        "passed": false
+      },
+      {
+        "iteration": 2,
+        "cost_usd": 0.0,
+        "cost_source": "token_accounted",
+        "passed": true
+      }
+    ]
+  },
+  "repair-rust": {
+    "passed": true,
+    "cancelled": false,
+    "cost_usd": 0.0,
+    "cost_totals": {
+      "provider_reported": 0.0,
+      "token_accounted": 0.0,
+      "route_estimated": 0.0
+    },
+    "unknown_cost_iterations": 0,
+    "budget_exceeded": false,
+    "budget_exhausted": false,
+    "stop_reason": "acceptance_passed",
+    "applied_to_project": false,
+    "iterations": [
+      {
+        "iteration": 1,
+        "cost_usd": 0.0,
+        "cost_source": "token_accounted",
+        "passed": false
+      },
+      {
+        "iteration": 2,
+        "cost_usd": 0.0,
+        "cost_source": "token_accounted",
+        "passed": true
+      }
+    ]
+  },
+  "spoof-python": {
+    "passed": false,
+    "cancelled": false,
+    "cost_usd": 0.0,
+    "cost_totals": {
+      "provider_reported": 0.0,
+      "token_accounted": 0.0,
+      "route_estimated": 0.0
+    },
+    "unknown_cost_iterations": 0,
+    "budget_exceeded": false,
+    "budget_exhausted": false,
+    "stop_reason": "iteration_limit",
+    "applied_to_project": false,
+    "iterations": [
+      {
+        "iteration": 1,
+        "cost_usd": 0.0,
+        "cost_source": "token_accounted",
+        "passed": false
+      }
+    ]
+  },
+  "timeout-python": {
+    "passed": false,
+    "runtime": "python",
+    "measurements": {
+      "rows": [
+        {
+          "id": "slow",
+          "repeat": 0,
+          "passed": false,
+          "actual": null,
+          "exit_code": -9,
+          "timed_out": true,
+          "cancelled": false,
+          "latency_s": 0.728956958046183,
+          "output_limit_exceeded": false,
+          "error": "component timeout, output limit or nonzero exit"
+        },
+        {
+          "id": "good",
+          "repeat": 0,
+          "passed": true,
+          "actual": 6,
+          "exit_code": 0,
+          "timed_out": false,
+          "cancelled": false,
+          "latency_s": 0.5427015830064192,
+          "output_limit_exceeded": false
+        }
+      ],
+      "quality": 0.5,
+      "requests_completed": 2,
+      "requests_planned": 2,
+      "latency_p50_s": 0.6358292705263011,
+      "child_rss_highwater_kib": null,
+      "measurement": "Host-observed Docker command latency including container startup/teardown; no candidate-supplied timing or RSS is trusted."
+    },
+    "provider_calls": 0,
+    "provider_cost_usd": 0,
+    "cancelled": false,
+    "complete": true,
+    "deadline_exceeded": false,
+    "note": "Expected labels scored on host. Each case uses a fresh Docker container. No LLM or host execution of candidate code.",
+    "elapsed_s": 1.3901669170008972
+  }
+}

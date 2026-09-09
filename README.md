@@ -2,7 +2,7 @@
 
 <p align="center"><strong>A practical laboratory for specialised LLMs on constrained hardware.</strong><br>Measure the trade-offs. Build with your models. Route with explicit limits.</p>
 
-<p align="center">Linux · macOS · Windows &nbsp; | &nbsp; Browser GUI + CLI &nbsp; | &nbsp; Local · Cloud · Mixed &nbsp; | &nbsp; Docker</p>
+<p align="center">Linux · macOS · Windows &nbsp; | &nbsp; Browser / native desktop + CLI &nbsp; | &nbsp; Local · Cloud · Mixed &nbsp; | &nbsp; Docker</p>
 
 <p align="center"><a href="docs/getting-started.md">Get started</a> · <a href="docs/user-guide.md">User guide</a> · <a href="docs/cli-reference.md">CLI reference</a> · <a href="docs/training-research.md">Research</a> · <a href="docs/validation.md">Validation evidence</a></p>
 
@@ -10,17 +10,18 @@
 
 LLM-Optimise helps you find useful configurations when CPU, RAM, GPU memory or budget are limited. Evaluate real task quality alongside latency and memory, keep the failed trials, and use the surviving configurations to guide the next experiment.
 
-The application is a lightweight Python control layer with a browser interface. Native inference stays in **llama.cpp**; selected external endpoints handle cloud or other local runtimes. The core has one runtime dependency, `psutil`, and the interface loads no third-party web scripts.
+The application combines a lightweight Python control layer, browser interface and optional Tauri desktop shell. A profiled Rust supervisor can own local model processes. Native inference stays in **llama.cpp**; selected external endpoints handle cloud or other local runtimes. The core has one runtime dependency, `psutil`, and the interface loads no third-party web scripts.
 
 ## What you can do
 
 | Workspace | Capabilities |
 |---|---|
 | **Experiment lab** | Bounded, reproducible sweeps of model files, threads, context, CPU/GPU offload, batching, KV precision, Flash Attention, prompt caching and structured output. Quality gates, Pareto candidates, live progress, cancellation, resume, JSON/CSV/HTML exports. |
-| **Develop** | Describe a solution using your chosen model and selected project files. Review proposed files and diffs, apply with stale-file protection, then build or test a disposable copy in Docker. |
+| **Develop** | Describe a solution using your chosen model and selected project files. Review proposed files and diffs, apply with stale-file protection, then build or test a disposable copy in Docker. A bounded repair loop returns test failures to the model while protecting the acceptance tests. |
 | **Chat** | Discuss the tools, hardware and recorded results with a selected model. Review suggested local experiments and choose when to run them. |
-| **Model router** | Explicit local/cloud/mixed placement; cost, performance or balanced ranking; limits for cost, latency, quality, declared RAM and GPU memory. Inspect selections and exclusions. |
-| **Training** | Export Soup streaming, resident QLoRA and MLX configuration recipes. Training is executed separately with Soup; see the live training/reload evidence below. |
+| **Model router** | Explicit local/cloud/mixed placement; cost, performance or balanced ranking; limits for cost, latency, quality, declared RAM and GPU memory. Inspect selections and exclusions; calibrate per task/model revision, reuse exact responses and restrict specialists to their supported task classes. |
+| **Training & adapters** | Run bounded Soup SFT in a selected environment; register, reload, evaluate and compare adapters with model/data/runtime provenance. Recipes cover streamed and resident QLoRA and MLX. |
+| **Workbench** | Domain datasets and regression gates; capacity, KV, speculation, accelerator and progressive searches; routing calibration, caching, context selection, distillation, specialist abstention, model residency, and Python/Rust component benchmarks. |
 | **CLI + containers** | Run the same core workflows from scripts. Package the GUI/CLI in Docker, or run generated project tests with CPU, RAM, timeout and network limits. |
 
 <p align="center"><img src="docs/assets/experiment-lab.png" alt="Experiment lab showing measured CPU and Metal configurations, quality gates and memory comparisons" width="100%"></p>
@@ -63,6 +64,10 @@ These are **six-task smoke-test observations**, with three measured repetitions 
 
 OpenRouter completed 15 live requests for **US$0.0013586**, including GUI chat and code generation followed by passing container tests. Soup completed real training and fresh adapter reload on **Mac MLX** and **Omen CUDA through WSL**, including resident and streamed layers on Omen. These bounded fixtures validate the integration, not domain quality or hardware ceilings. [Detailed evidence →](docs/validation.md)
 
+## New experimental workbench
+
+All 16 roadmap additions have executable implementations, with guided GUI forms and CLI access. Live Mac checks cover CPU/Metal and KV comparisons, Soup training/fresh adapter evaluation, Rust-managed inference, exact caching and model reload. Docker checks cover Python/Rust components and staged repair. The optional Rust supervisor measured lower idle RSS and startup time than the Python reference in a small equal-workload test; it does not accelerate the model kernels. [Workbench guide →](docs/workbench.md) · [Evidence and limits →](docs/validation.md)
+
 ## Optimisation that remains inspectable
 
 - **Quality first:** a fast answer that fails your specialised task stays rejected.
@@ -82,7 +87,9 @@ OpenRouter completed 15 live requests for **US$0.0013586**, including GUI chat a
 | [Routing and credentials](docs/agent-routing.md) | Registry schema, local/cloud policy, budgets and provider compatibility |
 | [Development workflow](docs/development.md) | Context selection, proposals, diffs, apply and generated-project testing |
 | [Docker](docs/docker.md) | Application packaging, host runtimes, resource limits and container builds/tests |
-| [Performance roadmap](docs/performance-roadmap.md) | Prioritised features, Rust/PyO3/Tauri options and measurement gates |
+| [Workbench guide](docs/workbench.md) | Guided tools, data, training, search, intelligence, components and residency |
+| [Implemented roadmap](docs/performance-roadmap.md) | All 16 additions, code locations, validation and remaining measurement limits |
+| [Native supervisor](native/README.md) · [Desktop](desktop/README.md) | Rust process controls, measured profile, Tauri launcher and platform packaging |
 | [Research and Soup](docs/training-research.md) | Primary sources, integration decisions and experimental training paths |
 | [Architecture](docs/architecture.md) | Components, request flow, artifacts and trust boundaries |
 | [Validation](docs/validation.md) | Actual hardware/software evidence and remaining coverage limits |
@@ -91,7 +98,7 @@ OpenRouter completed 15 live requests for **US$0.0013586**, including GUI chat a
 
 ## Project status
 
-**Version 0.1.0 — working experimental application.** Native CPU/Metal inference, generated-project container testing and browser workflows have live validation on this Mac. CI checks Python code on Linux, macOS and Windows. OpenRouter cloud calls and Soup training/reload on Mac MLX and Omen CUDA/WSL also pass live validation. The GUI exports training recipes; the live training tests run separately. Native Windows training and llama.cpp NVIDIA telemetry still need hardware validation.
+**Version 0.1.0 — working experimental application.** Native CPU/Metal inference, generated-project container testing and browser workflows have live validation on this Mac. CI checks Python code on Linux, macOS and Windows. OpenRouter cloud calls and Soup training/reload on Mac MLX and Omen CUDA/WSL also pass live validation. The GUI and CLI now run training, adapter validation and the complete experimental workbench. Native Windows training, additional accelerator inference paths and production installer distribution still need their respective hardware/release validation.
 
 ## Licence
 

@@ -129,8 +129,18 @@ class ProviderModel:
     gpu_gib: float | None = None
     capabilities: tuple[str, ...] = ("chat", "code")
     supports_json_schema: bool = False
+    revision: str = ""
+    adapter_revision: str = ""
+    task_classes: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
+        for key in ("revision", "adapter_revision"):
+            if not isinstance(getattr(self, key), str):
+                raise ValueError(f"{key} must be a string")
+        if not isinstance(self.task_classes, tuple) or any(
+            not isinstance(v, str) or not v.strip() for v in self.task_classes
+        ):
+            raise ValueError("task_classes must be a tuple of nonempty strings")
         if type(self.supports_json_schema) is not bool:
             raise ValueError("supports_json_schema must be a boolean")
         _require_str(self.id, "id")
@@ -233,7 +243,7 @@ class RoutePolicy:
             self,
             "max_cost_usd",
             _check_optional_number(
-                self.max_cost_usd, "max_cost_usd", minimum=0.0, allow_equal=False
+                self.max_cost_usd, "max_cost_usd", minimum=0.0, allow_equal=True
             ),
         )
         object.__setattr__(

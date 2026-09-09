@@ -1,0 +1,119 @@
+{
+  "status": "passed",
+  "pipeline": [
+    "run_training",
+    "register_adapter",
+    "reload_adapter",
+    "evaluate_adapter(baseline=True)",
+    "compare_adapters"
+  ],
+  "soup_revision": "254351e10331e360b5d75e26aabe0a4e591e16a4",
+  "installed_source_sha256": "f6c71ebe6d8dee66f781964efcac90ee843471f27ec00b0c00e9e711b258c55e",
+  "training_worker": {
+    "status": "passed",
+    "operation": "train",
+    "elapsed_s": 2.521698458935134,
+    "mlx_peak_memory_bytes": 416628542
+  },
+  "training_process": {
+    "status": "passed",
+    "exit_code": 0,
+    "elapsed_s": 2.664471208001487,
+    "resources": {
+      "rss_peak_gib": 0.55047607421875,
+      "gpu_peak_gib": null,
+      "system_available_min_gib": 4.4346160888671875,
+      "samples": 43,
+      "gpu_samples": 0,
+      "scope": "managed process tree",
+      "gpu_source": "NVIDIA process samples; null when unsupported",
+      "violation": null,
+      "sample_interval_s": 0.05
+    }
+  },
+  "adapter_verification": {
+    "tensor_count": 96,
+    "all_saved_tensors_attached_exactly": true,
+    "nonzero_lora_b_tensors": 48
+  },
+  "adapter_id": "1a968ec47109dbdd60044c0e",
+  "adapter_evaluation": {
+    "schema_version": 1,
+    "dataset_sha256": "a938231cc0071465238b7d5f9d35ffc242b265e1059570a4ec699417261d7fb5",
+    "tasks": 1,
+    "quality": 1.0,
+    "schema_failures": 0,
+    "missing_outputs": 0,
+    "total_error_cost": 0.0,
+    "by_task_class": {
+      "general": {
+        "tasks": 1,
+        "quality": 1.0,
+        "error_cost": 0.0
+      }
+    },
+    "results": [
+      {
+        "id": "reload-smoke",
+        "task_class": "general",
+        "score": 1.0,
+        "schema_valid": true,
+        "schema_errors": [],
+        "missing": false,
+        "error_cost": 0.0,
+        "output": "normal"
+      }
+    ]
+  },
+  "baseline_evaluation": {
+    "schema_version": 1,
+    "dataset_sha256": "a938231cc0071465238b7d5f9d35ffc242b265e1059570a4ec699417261d7fb5",
+    "tasks": 1,
+    "quality": 0.0,
+    "schema_failures": 0,
+    "missing_outputs": 0,
+    "total_error_cost": 1.0,
+    "by_task_class": {
+      "general": {
+        "tasks": 1,
+        "quality": 0.0,
+        "error_cost": 1.0
+      }
+    },
+    "results": [
+      {
+        "id": "reload-smoke",
+        "task_class": "general",
+        "score": 0.0,
+        "schema_valid": true,
+        "schema_errors": [],
+        "missing": false,
+        "error_cost": 1.0,
+        "output": "alarm"
+      }
+    ]
+  },
+  "regression_gate": {
+    "passed": true,
+    "failures": [],
+    "delta": {
+      "quality": 1.0,
+      "error_cost": -1.0,
+      "schema_failures": 0
+    },
+    "regressed_task_ids": [],
+    "gates": {
+      "max_quality_drop": 0.0,
+      "max_error_cost_increase": 0.0,
+      "max_schema_failure_increase": 0,
+      "max_regressed_tasks": 0
+    },
+    "dataset_sha256": "a938231cc0071465238b7d5f9d35ffc242b265e1059570a4ec699417261d7fb5"
+  },
+  "limitations": [
+    "12 synthetic training rows and one unseen illustration; no domain quality or capacity claim.",
+    "MLX live validated; Transformers adapter worker implemented but not live validated in this API test.",
+    "No cloud teacher called in this subsystem smoke test."
+  ],
+  "tests": "55 focused tests passed; includes real subprocess cancellation/time/RSS limit checks."
+}

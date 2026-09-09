@@ -1,0 +1,98 @@
+{
+  "platform": "Windows 11 Pro x86_64 MSVC",
+  "rust": "1.96.1",
+  "python": "3.10.11",
+  "scope": "Native Windows suspended-start/job assignment, RSS and deadline termination, descendant cleanup and exit42",
+  "records": [
+    {
+      "scenario": "exit42",
+      "status": "passed",
+      "descendant_stopped": null,
+      "result": {
+        "elapsed_ms": 98.4709,
+        "event": "finished",
+        "exit_code": 42,
+        "group_signal_fallback": false,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "exited",
+        "rss_peak_bytes": 8818688,
+        "sample_ms": 20,
+        "samples": 3,
+        "worker_exit_code": 42,
+        "worker_signal": null
+      }
+    },
+    {
+      "scenario": "rss_limit",
+      "status": "passed",
+      "descendant_stopped": null,
+      "result": {
+        "elapsed_ms": 145.3716,
+        "event": "finished",
+        "exit_code": 125,
+        "group_signal_fallback": false,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "rss_limit",
+        "rss_peak_bytes": 61722624,
+        "sample_ms": 20,
+        "samples": 4,
+        "worker_exit_code": -1073741510,
+        "worker_signal": null
+      }
+    },
+    {
+      "scenario": "timeout",
+      "status": "passed",
+      "descendant_stopped": null,
+      "result": {
+        "elapsed_ms": 182.8185,
+        "event": "finished",
+        "exit_code": 124,
+        "group_signal_fallback": false,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "timeout",
+        "rss_peak_bytes": 9773056,
+        "sample_ms": 20,
+        "samples": 4,
+        "worker_exit_code": -1073741510,
+        "worker_signal": null
+      }
+    },
+    {
+      "scenario": "cancel_descendants",
+      "status": "passed",
+      "descendant_stopped": true,
+      "result": {
+        "elapsed_ms": 132.5212,
+        "event": "finished",
+        "exit_code": 130,
+        "group_signal_fallback": false,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "cancelled",
+        "rss_peak_bytes": 20922368,
+        "sample_ms": 20,
+        "samples": 2,
+        "worker_exit_code": -1073741510,
+        "worker_signal": null
+      }
+    },
+    {
+      "scenario": "orphan_descendant",
+      "status": "passed",
+      "descendant_stopped": true,
+      "result": {
+        "elapsed_ms": 119.4919,
+        "event": "finished",
+        "exit_code": 0,
+        "group_signal_fallback": false,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "exited",
+        "rss_peak_bytes": 13139968,
+        "sample_ms": 20,
+        "samples": 4,
+        "worker_exit_code": 0,
+        "worker_signal": null
+      }
+    }
+  ]
+}

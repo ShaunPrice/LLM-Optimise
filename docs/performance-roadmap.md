@@ -1,58 +1,48 @@
-# Performance roadmap: measure, then replace
+# Implemented performance roadmap
 
-Proposed additions, 9 September 2026. This is a prioritised engineering roadmap, not a list of completed features or promised speedups.
+All 16 proposed additions now have executable implementations. The table distinguishes software behaviour from live hardware evidence. Read the [workbench guide](workbench.md) for operation names, settings and examples.
 
-## Where Rust can help
+| Addition | Implementation | Validation and limits |
+|---|---|---|
+| Deterministic components | `development.py`: isolated Python/Rust JSON contracts and host scoring | Real Docker compilation, passing/failing cases and timeout retention; benchmark includes process/container overhead. |
+| Domain datasets and regression | `datasets.py`: deduplication, group-disjoint splits, schema and error-cost gates | Automated leakage, schema, missing-output and regression fixtures; domain quality depends on user data. |
+| Memory-aware lifecycle | `lifecycle.py`, `managed.py`: admission, leases, concurrency, idle unload/reload | Process/lifecycle tests and real Mac Rust-managed inference/reload. |
+| Hardware capacity explorer | `exploration.py`: bounded staircase, failure classification and recovery control | Actual fixture-process failure/recovery tests; bounded Mac comparisons, not a device ceiling. |
+| Adapter lifecycle GUI | `training_jobs.py`: real train/register/reload/evaluate/compare | New Mac MLX API training and fresh adapter application/evaluation; prior Omen resident/streamed CUDA proof. |
+| Routing calibration | `intelligence.py`: scoped observations and conservative quality confidence | Budget, partial failure, retention and schema fixtures; empirical quality requires matching scored tasks. |
+| KV/context presets | `exploration.py`: context/precision sweeps | Live Mac f16/q8_0 comparisons; other combinations remain runtime/model dependent. |
+| Exact prefix/result caching | `providers.py`, `intelligence.py`: opt-in runtime prefix reuse and versioned bounded exact cache | Real Mac exact hit; invalidation, cost and constraint tests; prefix reuse depends on runtime evidence. |
+| Task-specific context | `context.py`, code GUI/CLI: ranked source spans and required facts | Omitted-fact, adjacency and irrelevant-context tests; lexical retrieval can omit relevant facts. |
+| Speculative decoding | `exploration.py`, `backend.py`: baseline/draft comparisons and observed counters | Protocol/capability fixtures; real draft-model speedup has not been established. |
+| Accelerator comparisons | `exploration.py`: explicit CPU/Metal/CUDA/Vulkan/ROCm capability checks | CPU and Metal run on Mac; other paths require compatible hardware/runtime validation. |
+| Multi-fidelity search | `exploration.py`: common nested subsets, promotion and final held-out check | Real fixture workers validate selection, pruning and held-out separation. |
+| Build/test feedback | `development.py`: staged bounded repairs and immutable acceptance artifacts | Real Python and Rust failure-to-pass repair; Node JUnit; spoofed counts rejected. |
+| Distillation/specialists | `distillation.py`, `intelligence.py`: training-only teacher curation, task restrictions, contracts and explicit escalation | Data/budget/contract fixtures and CLI integration; student quality requires unseen evaluation. |
+| Rust supervisor | `native/`, `native_runtime.py`: process ownership, RSS, deadlines and cancellation | Built/profiled on Mac; actual inference integration passed. Detailed platform evidence in native validation. |
+| Tauri desktop | `desktop/`: native launcher/window/tray and owned Python sidecar | Mac app built and native webview/service/cleanup checked; target-platform CI checks compilation. Signing and installer acceptance remain release work. |
 
-Yes: a Rust supervisor could replace the Python process manager, HTTP/streaming proxy, resource-admission logic and high-volume telemetry aggregation. It could provide one packaged binary with predictable allocation and structured concurrency. A [PyO3](https://pyo3.rs/main/) extension is a smaller migration option for an identified Python hot loop; a [Tauri](https://v2.tauri.app/start/) shell is an option for native desktop packaging using the operating system's webview. Neither automatically makes LLM matrix operations faster.
+## Language boundaries
 
-The current app already delegates those operations to native [llama.cpp](https://github.com/ggml-org/llama.cpp). Soup's Python orchestration similarly calls MLX or PyTorch tensor kernels. Rewriting their orchestration in Rust would not remove weight bandwidth, KV-cache growth or GPU compute costs.
-
-Our existing Mac observation is ~23 MiB RSS for the GUI server, with the browser and model excluded. Its short CPU sample was 0.5%. That is not evidence of a Python bottleneck. The first Rust candidate should be chosen from a profile at realistic concurrency, not from language reputation.
-
-For example, if orchestration accounts for 5% of request time, even eliminating all of it caps the speedup at 1/0.95 ≈ 1.053×. This is an illustration, not a measured decomposition of this app.
-
-## Ranked experiments and features
-
-| Priority | Addition | Expected benefit to test | Trade-off / success criterion |
-|---|---|---|---|
-| 1 | Deterministic task components | Remove per-request LLM cost for rules, parsing, validation or numeric transformations | Use the LLM to build/review a tested implementation, then run Python/Rust/native code where the task has a precise specification; measure correctness and runtime. |
-| 1 | Domain dataset workbench and regression gates | Select smaller models that actually meet the specialised task | Separate train/tuning/held-out sets; retain failures, schema validity and task-specific error costs. No quality claims from smoke data. |
-| 1 | Memory-aware model manager | Avoid duplicate residency and out-of-memory failures | Observe current memory, reserve headroom, admit bounded concurrency, unload idle models; measure cold-start and reload cost. |
-| 1 | Hardware capacity explorer | Find the largest useful model/context/batch inside a chosen RAM/VRAM budget | Increase one dimension at a time in isolated workers, preserve system headroom, record failures and recover automatically. A feasible configuration must also pass quality and latency gates. |
-| 1 | Adapter lifecycle in the GUI | Train, save, reload, evaluate and compare Soup adapters without manual wiring | Isolated pinned environments, bounded jobs, complete adapter provenance; resident/streaming correctness controls. Live training validation is a prerequisite. |
-| 1 | Automatic routing calibration | Choose the cheapest/faster model that meets task quality | Store measured latency/quality/cost by task class, model revision, prompt size and hardware; unknowns remain unknown. Explicitly authorised escalation only. |
-| 2 | KV-cache and context optimisation presets | Reduce RAM/VRAM as context or concurrency grows | Sweep context, KV precision and Flash Attention with held-out quality checks; report actual allocation and failures. Runtime controls already exist; presets and live coverage need expansion. |
-| 2 | Exact prefix/result caching | Reuse repeated agent instructions and deterministic task requests | Cache identity includes model/adapter revision, decoding options, tool/schema and prompt. Measure hit rate, TTFT and memory; expire caches when inputs change. |
-| 2 | Task-specific context selection | Reduce prompt tokens and prefill work | Compare retrieval and structured extraction against the full context; measure omitted-fact errors and total cost including preprocessing. |
-| 2 | Speculative decoding workbench | Improve decoding when draft verification pays off | Measure accepted draft tokens, verification time and extra memory. Draft-model and n-gram approaches have different resource costs; no universal speedup. |
-| 2 | Accelerator backend comparison | Find the best CPU/CUDA/Metal/Vulkan/ROCm path for each device | Check runtime/driver support, compare equal models and quality, and distinguish system RAM from per-device allocations. |
-| 2 | Multi-fidelity experiment search | Reach useful settings in fewer trials | Prune only after minimum quality evidence, promote promising candidates to more repetitions, retain uncertainty and avoid tuning to the test set. |
-| 2 | Build/test feedback to the coding agent | Repair failed generated solutions automatically within a budget | Bounded iterations, user-reviewed file changes, container isolation, regression tests and total cost/time accounting. |
-| 3 | Distillation and specialist task routing | Replace expensive general models with smaller task models | Obtain suitable licensed/authorised training data; evaluate on unseen examples and allow explicit abstention/escalation. |
-| 3 | Rust control daemon or targeted PyO3 extension | Lower orchestration latency, idle RSS and packaging overhead | Profile first; compare equal-feature builds under the same workload. Preserve cancellation, origin/credential checks, error handling and cross-platform tests. |
-| 3 | Tauri desktop packaging | Native launch, app icon, tray controls and OS integration | Measure total memory including the webview; do not claim browser memory disappears. Keep CLI independent. |
-
-llama.cpp's [server documentation](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md) describes cache, context, batching and output controls. Its [speculative decoding documentation](https://github.com/ggml-org/llama.cpp/blob/master/docs/speculative.md) explains draft-model and n-gram options, as well as model-specific techniques. Availability must be checked against the installed runtime, not inferred from the latest documentation.
-
-## A sensible language boundary
+The Rust supervisor is the chosen native replacement. Python remains the API, routing and ML integration layer; llama.cpp, MLX and PyTorch provide native model kernels. A separate PyO3 implementation would duplicate the chosen supervisor approach without current evidence that another Python hot loop merits replacement.
 
 ```mermaid
 flowchart LR
-    UI[Browser or optional Tauri UI] --> API[Control API]
-    CLI[CLI] --> API
-    API --> Supervisor[Python now; Rust candidate after profiling]
-    Supervisor --> Llama[llama.cpp native inference]
-    Supervisor --> Training[Soup / MLX / PyTorch training workers]
-    Supervisor --> Cloud[Selected cloud endpoint]
-    Supervisor --> Sandbox[Container builds and tests]
-    Supervisor --> Evidence[Versioned metrics, costs and task quality]
+  UI[Browser or Tauri] --> API[Python control API]
+  CLI[CLI] --> Core[Shared experiment and workbench core]
+  API --> Core
+  Core --> Lifecycle[Memory admission and residency leases]
+  Lifecycle --> Supervisor[Python or Rust supervisor]
+  Supervisor --> Llama[llama.cpp]
+  Core --> Soup[Isolated Soup / MLX / Transformers]
+  Core --> Cloud[Explicitly selected endpoint]
+  Core --> Docker[Bounded component and repair containers]
+  Core --> Evidence[Dataset hashes, task quality, costs and measurements]
 ```
 
-Keep Python where its ML ecosystem saves integration work. Keep the existing native inference engines. Introduce Rust at a measured control or data-processing bottleneck with a stable interface, rather than duplicating model implementations.
+## What the measurements mean
 
-## Acceptance criteria for a Rust experiment
+The Rust overhead comparison uses equal idle, cancellation, resource-limit and process-exit workloads. It reports supervisor memory separately from worker memory. On the tested Mac, Rust used less idle RSS and started faster; cancellation was similar in the three-repeat sample. This does not establish faster LLM decoding or lower GPU allocation.
 
-Capture request p50/p95/p99, first-token latency, CPU time, RSS, allocation rate, cancellation latency and dropped/queued requests at realistic concurrency. Include startup and model reload time. Benchmark idle operation, a cheap local endpoint and a representative loaded model separately. Assert output equivalence, lifecycle cleanup and resource-limit behaviour. A faster microbenchmark alone is not an application win.
+The new Mac explorer compared six smoke tasks across CPU/Metal and KV configurations. It establishes working controls and recorded trade-offs, not domain accuracy, universal backend superiority or hardware limits. Run representative task datasets, larger repetitions and an independent held-out gate before choosing a deployment configuration.
 
-Suggested first milestone: implement a memory-aware lifecycle manager with task-specific routing calibration, then profile its supervisor. Use that evidence to decide whether Rust replaces the service or only one hot path. Performance targets should be set from this baseline; no speedup multiple is promised here.
+[Actual evidence](validation.md) · [Rust profile](../native/README.md) · [Desktop build](../desktop/README.md)

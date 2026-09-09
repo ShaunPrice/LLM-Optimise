@@ -560,6 +560,7 @@
       $("connection-dot").className = "status-dot connected";
       $("connection-label").textContent = "Workspace connected";
       renderHardware(); renderDatasets(); renderModels(); syncResults(); renderActivity(); completeJobs();
+      window.dispatchEvent(new CustomEvent("llm-state", { detail: app.state }));
     } catch (error) {
       $("connection-dot").className = "status-dot error";
       $("connection-label").textContent = "Connection unavailable";
@@ -577,11 +578,12 @@
     app.editingModel = model && model.id;
     $("model-dialog-heading").textContent = model ? "Edit model" : "Add model";
     if (model) {
-      const fields = { id: "model-id", model: "model-name", provider: "model-provider", location: "model-location", base_url: "model-base-url", context_window: "model-context", max_output_tokens: "model-output", api_key_env: "model-key-env", input_cost_per_million: "model-input-cost", output_cost_per_million: "model-output-cost", latency_ms: "model-latency", quality: "model-quality", ram_gib: "model-ram", gpu_gib: "model-gpu" };
+      const fields = { id: "model-id", model: "model-name", provider: "model-provider", location: "model-location", base_url: "model-base-url", context_window: "model-context", max_output_tokens: "model-output", api_key_env: "model-key-env", input_cost_per_million: "model-input-cost", output_cost_per_million: "model-output-cost", latency_ms: "model-latency", quality: "model-quality", ram_gib: "model-ram", gpu_gib: "model-gpu", revision: "model-revision", adapter_revision: "model-adapter-revision" };
       Object.entries(fields).forEach(([key, id]) => { $(id).value = model[key] ?? ""; });
       $("model-chat").checked = safeArray(model.capabilities).includes("chat");
       $("model-code").checked = safeArray(model.capabilities).includes("code");
       $("model-schema").checked = Boolean(model.supports_json_schema);
+      $("model-task-classes").value = safeArray(model.task_classes).join(", ");
     }
     $("model-dialog").showModal();
     $("model-id").focus();
@@ -619,7 +621,7 @@
     $("chat-message").value = "";
     const pending = appendMessage("assistant", "Choosing a model and preparing a response…"); pending.id = "chat-pending";
     try {
-      const job = await api("/api/chat", { message, history, policy: { ...app.policy }, ...(app.model ? { selected_model: app.model } : {}), max_tokens: 1024 });
+      const job = await api("/api/chat", { message, history, optimisation: window.LLMOptimise?.getOptimisation?.() || {}, policy: { ...app.policy }, ...(app.model ? { selected_model: app.model } : {}), max_tokens: 1024 });
       app.pending.set(job.id, "chat"); await refreshState();
     } catch (error) {
       pending.remove(); toast(errorText(error), true);
@@ -689,7 +691,7 @@
       try {
         if (!app.project || value("project-name") !== app.project) throw new Error("Create or open the project before generating changes.");
         $("code-apply-bar").hidden = true; app.proposal = null; $("code-status").textContent = "Generating proposal";
-        const job = await api("/api/code", { project: app.project, prompt: value("code-prompt"), context_files: $$("input:checked", $("project-files")).map((input) => input.value), policy: { ...app.policy }, ...(app.model ? { selected_model: app.model } : {}), max_tokens: 2048 });
+        const job = await api("/api/code", { ...($("code-context-select").checked ? { context_selection: { max_chars: numeric("code-context-budget"), required_facts: value("code-required-facts").split("\n").map((line) => line.trim()).filter(Boolean) } } : {}), optimisation: window.LLMOptimise?.getOptimisation?.() || {}, project: app.project, prompt: value("code-prompt"), context_files: $$("input:checked", $("project-files")).map((input) => input.value), policy: { ...app.policy }, ...(app.model ? { selected_model: app.model } : {}), max_tokens: 2048 });
         app.pending.set(job.id, "code"); toast("Generating changes. Review the proposal when it is ready."); await refreshState();
       } catch (error) { button.disabled = false; button.textContent = "Generate changes ↗"; $("code-status").textContent = "Request failed"; toast(errorText(error), true); }
     });
@@ -727,7 +729,7 @@
     }));
     listen("model-form", "submit", (event) => {
       event.preventDefault(); busy(event.submitter, "Saving…", async () => {
-        const model = { id: value("model-id"), model: value("model-name"), provider: value("model-provider"), location: value("model-location"), base_url: value("model-base-url"), context_window: numeric("model-context"), max_output_tokens: numeric("model-output"), api_key_env: value("model-key-env") || null, supports_json_schema: $("model-schema").checked, input_cost_per_million: optionalNumeric("model-input-cost"), output_cost_per_million: optionalNumeric("model-output-cost"), latency_ms: optionalNumeric("model-latency"), quality: optionalNumeric("model-quality"), ram_gib: optionalNumeric("model-ram"), gpu_gib: optionalNumeric("model-gpu"), capabilities: [$("model-chat").checked ? "chat" : null, $("model-code").checked ? "code" : null].filter(Boolean) };
+        const model = { revision: value("model-revision"), adapter_revision: value("model-adapter-revision"), task_classes: value("model-task-classes").split(",").map((item) => item.trim()).filter(Boolean), id: value("model-id"), model: value("model-name"), provider: value("model-provider"), location: value("model-location"), base_url: value("model-base-url"), context_window: numeric("model-context"), max_output_tokens: numeric("model-output"), api_key_env: value("model-key-env") || null, supports_json_schema: $("model-schema").checked, input_cost_per_million: optionalNumeric("model-input-cost"), output_cost_per_million: optionalNumeric("model-output-cost"), latency_ms: optionalNumeric("model-latency"), quality: optionalNumeric("model-quality"), ram_gib: optionalNumeric("model-ram"), gpu_gib: optionalNumeric("model-gpu"), capabilities: [$("model-chat").checked ? "chat" : null, $("model-code").checked ? "code" : null].filter(Boolean) };
         if (!model.capabilities.length) throw new Error("Choose at least one model capability.");
         const models = safeArray(app.state.models).filter((candidate) => candidate.id !== app.editingModel);
         if (models.some((candidate) => candidate.id === model.id)) throw new Error("This registry ID already exists. Use a unique ID.");
@@ -739,7 +741,7 @@
     });
     listen("route-form", "submit", (event) => { event.preventDefault(); busy(event.submitter, "Comparing…", async () => {
       const policy = { ...app.policy };
-      const route = await api("/api/route", { policy, input_tokens: numeric("route-input"), output_tokens: numeric("route-output"), capability: value("route-capability"), ...(app.model ? { selected_model: app.model } : {}) }); renderRoute(route);
+      const route = await api("/api/route", { calibrated: window.LLMOptimise?.getOptimisation?.().calibrated || false, task_class: window.LLMOptimise?.getOptimisation?.().task_class || "general", policy, input_tokens: numeric("route-input"), output_tokens: numeric("route-output"), capability: value("route-capability"), ...(app.model ? { selected_model: app.model } : {}) }); renderRoute(route);
     }); });
     listen("local-server-form", "submit", (event) => { event.preventDefault(); busy($("start-server"), "Starting…", async () => {
       await api("/api/local/start", { model: value("server-model"), executable: value("server-executable"), threads: numeric("server-threads"), context: numeric("server-context"), gpu_layers: numeric("server-gpu") }); toast("Local server start requested."); await refreshState();
@@ -759,6 +761,8 @@
     listen("download-recipe", "click", () => { if (app.training) downloadData("soup-training-recipe.json", app.training.config); });
     window.addEventListener("unhandledrejection", (event) => { toast(errorText(event.reason), true); });
   }
+
+  window.LLMOptimise = { api, refresh: refreshState, toast, showView, displayCode, loadProject, downloadData, experiment: experimentConfig, training: () => app.training, get state() { return app.state; }, get policy() { return { ...app.policy }; }, get model() { return app.model; }, get project() { return app.project; }, selectedFiles: () => $$("input:checked", $("project-files")).map((input) => input.value) };
 
   buildPolicyControls();
   bindEvents();

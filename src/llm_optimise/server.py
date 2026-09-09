@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 import secrets
 import threading
 import time
@@ -12,14 +11,16 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from .agent import chat_messages, parse_chat_reply, parse_models, public_models, run_agent
-from .backend import Backend
-from .config import Candidate, load_experiment
+from .agent import chat_messages, parse_chat_reply, parse_models, public_models
+from .config import load_experiment
 from .hardware import detect_hardware
+from .intelligence import Intelligence
+from .managed import ManagedModels
 from .report import export_report
-from .routing import ProviderModel, RoutePolicy, choose_route
+from .routing import RoutePolicy, choose_route
 from .runner import run_experiment, write_json
 from .training import save_recipe, training_recipe
+from .workbench import LONG_OPERATIONS, execute_workbench, workbench_status
 from .workspace import apply_proposal, code_messages, prepare_proposal, project_root, read_context
 
 STATIC = Path(__file__).parent / "static"
@@ -42,6 +43,8 @@ class App:
         )
         self.result_paths = {}
         self.benchmark_active = False
+        self.intelligence = Intelligence(self.workspace)
+        self.managed = ManagedModels(self)
 
     def _results(self):
         paths = list((self.workspace / "runs").glob("*/results.json")) + list(
@@ -96,12 +99,14 @@ class App:
                     {k: v for k, v in job.items() if k != "cancel"} for job in self.jobs.values()
                 ],
                 "results": self._results(),
+                "workbench": workbench_status(self.workspace, self.intelligence),
+                "lifecycle": self.managed.status(),
                 "local_server": {
                     "status": "running",
                     "endpoint": self.local.endpoint,
                     "model": self.local.candidate.model,
                 }
-                if self.local
+                if self.local and self.local.process and self.local.process.poll() is None
                 else {"status": "stopped"},
                 "projects": sorted(
                     p.name
@@ -112,7 +117,13 @@ class App:
 
     def start_job(self, kind, operation):
         with self.lock:
-            if any(j["status"] == "running" for j in self.jobs.values()):
+            active = [j for j in self.jobs.values() if j["status"] == "running"]
+            concurrent = {"chat", "code", "specialist", "context"}
+            if active and (
+                kind not in concurrent
+                or any(j["kind"] not in concurrent for j in active)
+                or len(active) >= 4
+            ):
                 raise ValueError("another operation is running; finish or cancel it first")
             job_id = uuid.uuid4().hex[:12]
             job = {
@@ -124,7 +135,11 @@ class App:
             }
             self.jobs[job_id] = job
             if len(self.jobs) > 40:
-                del self.jobs[next(iter(self.jobs))]
+                finished = next(
+                    (key for key, value in self.jobs.items() if value["status"] != "running"), None
+                )
+                if finished is not None:
+                    del self.jobs[finished]
 
         def worker():
             try:
@@ -145,10 +160,9 @@ class App:
 
     def experiment(self, config):
         with self.lock:
-            if self.local:
-                raise ValueError(
-                    "stop the local chat model before benchmarking to avoid resource contention"
-                )
+            if any(j["status"] == "running" for j in self.jobs.values()):
+                raise ValueError("finish or cancel the active operation before benchmarking")
+            self.managed.unload()
         name = "run-" + time.strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:6]
         config_path = self.workspace / ".llm-optimise" / "experiments" / f"{name}.json"
         # GUI paths resolve against the workspace, not the stored config's nested directory.
@@ -181,64 +195,13 @@ class App:
         return self.start_job("experiment", operation)
 
     def start_local(self, data):
-        with self.lock:
-            if self.local or any(j["status"] == "running" for j in self.jobs.values()):
-                raise ValueError("stop the current model or finish the active operation first")
-        candidate = Candidate(
-            name="interactive",
-            model=str(Path(data["model"]).resolve()),
-            executable=data.get("executable", "llama-server"),
-            threads=int(data.get("threads", 4)),
-            context=int(data.get("context", 4096)),
-            gpu_layers=int(data.get("gpu_layers", 0)),
-        )
-
-        def operation(job):
-            backend = Backend(candidate, self.workspace / "runs" / "interactive-model.log")
-            try:
-                backend.launch()
-
-                def check():
-                    if job["cancel"].is_set():
-                        raise InterruptedError("model startup cancelled")
-
-                backend.ready(120, check)
-                # Credential is ephemeral, held in this process environment and never written to settings.
-                env_name = "LLM_OPTIMISE_MANAGED_LOCAL_KEY"
-                os.environ[env_name] = backend.key
-                model = ProviderModel(
-                    id="managed-local",
-                    supports_json_schema=True,
-                    model="local",
-                    provider="openai",
-                    location="local",
-                    base_url=backend.endpoint + "/v1",
-                    api_key_env=env_name,
-                    context_window=candidate.context,
-                    max_output_tokens=min(2048, candidate.context // 2),
-                    input_cost_per_million=0,
-                    output_cost_per_million=0,
-                )
-                with self.lock:
-                    self.local = backend
-                    self.models = [m for m in self.models if m.id != "managed-local"] + [model]
-                return {"endpoint": backend.endpoint, "model_id": model.id}
-            except Exception:
-                backend.close()
-                raise
-
-        return self.start_job("model", operation)
+        return self.start_job("model", lambda job: self.managed.start(data, job["cancel"]))
 
     def stop_local(self):
         with self.lock:
             if any(j["status"] == "running" for j in self.jobs.values()):
                 raise ValueError("finish or cancel the active operation before stopping the model")
-            if self.local:
-                self.local.close()
-                self.local = None
-                self.models = [m for m in self.models if m.id != "managed-local"]
-                os.environ.pop("LLM_OPTIMISE_MANAGED_LOCAL_KEY", None)
-        return {"status": "stopped"}
+            return self.managed.unload(remove=True)
 
     def project(self, name):
         root = project_root(self.workspace, name)
@@ -258,17 +221,31 @@ class App:
     def code(self, data):
         root = project_root(self.workspace, data["project"])
         context = read_context(root, data.get("context_files", []))
-        messages = code_messages(data["prompt"], context)
+        selection = None
+        if data.get("context_selection") is not None:
+            from .context import select_context
+
+            selection = select_context(data["prompt"], context, **data["context_selection"])
+            if not selection["required_fact_gate"]:
+                raise ValueError(
+                    "selected context omits required facts; increase the budget or use full context"
+                )
+        messages = code_messages(
+            data["prompt"], {"selected-context.txt": selection["text"]} if selection else context
+        )
         models = list(self.models)
 
         def operation(job):
-            result = run_agent(
+            result = self.intelligence.run(
                 models,
                 messages,
                 data.get("policy"),
                 data.get("selected_model"),
                 data.get("max_tokens", 2048),
                 "code",
+                **data.get("optimisation", {}),
+                cancel=job["cancel"],
+                lease=lambda model: self.managed.lease(model, job["cancel"]),
             )
             if job["cancel"].is_set():
                 return {"cancelled": True}
@@ -276,7 +253,12 @@ class App:
             proposal_id = uuid.uuid4().hex
             with self.lock:
                 self.proposals[proposal_id] = (root, proposal)
-            return {**result, "proposal_id": proposal_id, "proposal": proposal}
+            return {
+                **result,
+                "proposal_id": proposal_id,
+                "proposal": proposal,
+                "context_selection": selection,
+            }
 
         return self.start_job("code", operation)
 
@@ -298,13 +280,16 @@ class App:
         models = list(self.models)
 
         def operation(job):
-            result = run_agent(
+            result = self.intelligence.run(
                 models,
                 messages,
                 data.get("policy"),
                 data.get("selected_model"),
                 data.get("max_tokens", 1024),
                 "chat",
+                **data.get("optimisation", {}),
+                cancel=job["cancel"],
+                lease=lambda model: self.managed.lease(model, job["cancel"]),
             )
             parsed = parse_chat_reply(result["completion"]["text"])
             if parsed["experiment"] is not None:
@@ -352,6 +337,55 @@ class App:
             )
 
     def mutate(self, path, data):
+        if path.startswith("/api/workbench/"):
+            operation = path.rsplit("/", 1)[-1]
+
+            def work(job):
+                def progress(event):
+                    with self.lock:
+                        job["progress"] = event
+
+                result = execute_workbench(
+                    self.workspace,
+                    operation,
+                    data,
+                    models=list(self.models),
+                    engine=self.intelligence,
+                    output_dir=self.workspace / "runs" / "workbench" / job["id"],
+                    cancel=job["cancel"],
+                    progress=progress,
+                    lease=lambda model: self.managed.lease(model, job["cancel"]),
+                )
+                if operation == "feedback" and result.get("proposal"):
+                    proposal_id = uuid.uuid4().hex
+                    with self.lock:
+                        self.proposals[proposal_id] = (
+                            project_root(self.workspace, data["project"]),
+                            result["proposal"],
+                        )
+                    result["proposal_id"] = proposal_id
+                return result
+
+            if operation in LONG_OPERATIONS:
+                if operation in {
+                    "explore-run",
+                    "training-run",
+                    "adapter-evaluate",
+                    "adapter-reload",
+                    "component",
+                }:
+                    with self.lock:
+                        if any(j["status"] == "running" for j in self.jobs.values()):
+                            raise ValueError(
+                                "finish or cancel active work before a resource experiment"
+                            )
+                        self.managed.unload()
+                return self.start_job(operation, work)
+            return work({"id": uuid.uuid4().hex[:12], "cancel": threading.Event()})
+        if path == "/api/lifecycle/settings":
+            return self.managed.configure(data)
+        if path == "/api/lifecycle/unload":
+            return self.managed.unload(data.get("id"), remove=data.get("remove", False))
         if path == "/api/experiment":
             return self.experiment(data["config"])
         if path == "/api/cancel":
@@ -363,21 +397,29 @@ class App:
             }
         if path == "/api/models":
             models = parse_models(data["models"])
-            if any(m.id == "managed-local" for m in models):
-                models = [m for m in models if m.id != "managed-local"]
+            models = [m for m in models if m.id not in self.managed.descriptors]
             write_json(self.model_path, public_models(models))
             with self.lock:
-                self.models = models + [m for m in self.models if m.id == "managed-local"]
+                self.models = models + [m for m in self.models if m.id in self.managed.descriptors]
             return {"models": public_models(self.models)}
         if path == "/api/route":
-            return choose_route(
-                self.models,
-                RoutePolicy(**data.get("policy", {})),
-                data.get("input_tokens", 1000),
-                data.get("output_tokens", 256),
-                data.get("capability", "code"),
-                data.get("selected_model"),
-            )
+            models = self.models
+            evidence = {}
+            if data.get("calibrated", False):
+                models, evidence = self.intelligence.calibrated_models(
+                    models, data.get("task_class", "general"), data.get("input_tokens", 1000)
+                )
+            return {
+                **choose_route(
+                    models,
+                    RoutePolicy(**data.get("policy", {})),
+                    data.get("input_tokens", 1000),
+                    data.get("output_tokens", 256),
+                    data.get("capability", "code"),
+                    data.get("selected_model"),
+                ),
+                "calibration": evidence,
+            }
         if path == "/api/project":
             return self.project(data["name"])
         if path == "/api/code":
@@ -490,6 +532,8 @@ def make_server(workspace, port=8765, host="127.0.0.1"):
                     "/app.js": ("app.js", "text/javascript; charset=utf-8"),
                     "/app.css": ("app.css", "text/css; charset=utf-8"),
                     "/app-icon.png": ("app-icon.png", "image/png"),
+                    "/workbench.js": ("workbench.js", "text/javascript; charset=utf-8"),
+                    "/workbench.css": ("workbench.css", "text/css; charset=utf-8"),
                 }
                 name, mime = files[parsed.path]
                 body = (STATIC / name).read_bytes()
@@ -518,7 +562,14 @@ def make_server(workspace, port=8765, host="127.0.0.1"):
             except Exception:
                 return self.respond({"error": "operation failed; inspect local terminal"}, 500)
 
-    server = ThreadingHTTPServer((host, port), Handler)
+    class LabServer(ThreadingHTTPServer):
+        def server_close(self):
+            for job in self.app.jobs.values():
+                job["cancel"].set()
+            self.app.managed.close()
+            super().server_close()
+
+    server = LabServer((host, port), Handler)
     server.app = app
     return server
 

@@ -12,12 +12,18 @@ from pathlib import Path
 
 from .config import positive
 
-IMAGES = {"python": "python:3.12-slim-bookworm", "node": "node:22-slim"}
+IMAGES = {
+    "python": "python:3.12-slim-bookworm",
+    "node": "node:22-slim",
+    "rust": "rust:1-slim-bookworm",
+}
 COMMANDS = {
     ("python", "test"): ["python", "-m", "unittest", "discover", "-s", "tests", "-v"],
     ("python", "build"): ["python", "-m", "compileall", "-q", "."],
     ("node", "test"): ["node", "--test"],
     ("node", "build"): ["npm", "run", "build"],
+    ("rust", "test"): ["cargo", "test", "--offline"],
+    ("rust", "build"): ["cargo", "build", "--release", "--offline"],
 }
 EXCLUDED = {"node_modules", "models", "runs", "__pycache__", "dist", "build"}
 
@@ -88,6 +94,8 @@ def container_command(image, project, name, command, memory_mib, cpus, network):
         "--env",
         "HOME=/tmp",
         "--env",
+        "CARGO_HOME=/tmp/cargo",
+        "--env",
         "PYTHONDONTWRITEBYTECODE=1",
         image,
         *command,
@@ -110,7 +118,7 @@ def run_container(
     cancel=None,
 ):
     if runtime not in IMAGES or action not in ("test", "build"):
-        raise ValueError("choose python/node and test/build")
+        raise ValueError("choose python/node/rust and test/build")
     positive(memory_mib, "memory_mib", integer=True)
     positive(cpus, "cpus")
     positive(timeout_s, "timeout_s")

@@ -49,6 +49,12 @@ def aggregate(samples):
         if complete_counts and len(decode_seconds) == len(samples) and decode_seconds
         else None
     )
+    speculation_known = all(
+        type(s.get("draft_tokens")) is int and type(s.get("accepted_draft_tokens")) is int
+        for s in samples
+    )
+    drafted = sum(s["draft_tokens"] for s in samples) if speculation_known else None
+    accepted = sum(s["accepted_draft_tokens"] for s in samples) if speculation_known else None
     return {
         "quality": statistics.mean(s["score"] for s in samples),
         "latency_p50_s": quantile(latencies, 0.5),
@@ -61,6 +67,9 @@ def aggregate(samples):
         else None,
         "requests": len(samples),
         "truncated_requests": sum(bool(s["truncated"]) for s in samples),
+        "draft_tokens": drafted,
+        "accepted_draft_tokens": accepted,
+        "draft_acceptance_rate": accepted / drafted if drafted else None,
         "quality_by_task": {
             key: statistics.mean(s["score"] for s in samples if s["task_id"] == key)
             for key in sorted({s["task_id"] for s in samples})
@@ -194,6 +203,7 @@ def run_experiment(experiment, output_dir, *, resume=False, cancel=None, progres
                 "memory": {},
             }
             backend, monitor = None, None
+            guard_stop, guard = threading.Event(), None
             samples = []
             started = time.monotonic()
             try:
@@ -206,6 +216,18 @@ def run_experiment(experiment, output_dir, *, resume=False, cancel=None, progres
                     experiment.limits,
                     cpu_only=candidate.backend == "llama.cpp" and candidate.gpu_layers == 0,
                 ).start()
+
+                def guard_worker(backend=backend, monitor=monitor, stop=guard_stop):
+                    # A managed worker is terminated even if its HTTP stream is stalled.
+                    # This is still sampled resource enforcement, not an OS hard memory cap.
+                    while not stop.wait(0.05):
+                        if cancel.is_set() or monitor.violation:
+                            if backend.pid is not None:
+                                backend.close()
+                            return
+
+                guard = threading.Thread(target=guard_worker, daemon=True)
+                guard.start()
 
                 def check(monitor=monitor):
                     if cancel.is_set():
@@ -269,6 +291,9 @@ def run_experiment(experiment, output_dir, *, resume=False, cancel=None, progres
                 trial["error"] = error
                 trial["partial_requests"] = len(samples)
             finally:
+                guard_stop.set()
+                if guard:
+                    guard.join(timeout=10)
                 if monitor:
                     trial["memory"] = monitor.stop()
                 if backend:

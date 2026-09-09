@@ -16,3 +16,8 @@ runs/
 .DS_Store
 projects/
 .llm-optimise/
+
+native/target/
+desktop/src-tauri/target/
+desktop/src-tauri/gen/schemas/
+node_modules/

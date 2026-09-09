@@ -1,0 +1,7 @@
+{
+  "rows": [
+    {"id":"a","prompt":"Return alarm","expected":"alarm","error_cost":5},
+    {"id":"b","prompt":"Return normal","expected":"normal"}
+  ],
+  "predictions": {"a":"alarm","b":"normal"}
+}

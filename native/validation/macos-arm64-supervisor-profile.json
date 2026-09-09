@@ -1,0 +1,882 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "architecture": "arm64",
+  "python": "3.12.13",
+  "sample_ms": 20,
+  "supervisor_rss_external_sample_ms": 5,
+  "scope": "Supervisor-process overhead on identical small Python workers. Three sequential repeats in alternating implementation order; no LLM/GPU throughput claim.",
+  "records": [
+    {
+      "engine": "rust",
+      "scenario": "idle",
+      "repeat": 0,
+      "startup_ms": 388.6137920198962,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 8765440,
+      "supervisor_cpu_seconds": 0.263989912,
+      "worker_result": {
+        "elapsed_ms": 859.210959,
+        "event": "finished",
+        "exit_code": 0,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "exited",
+        "rss_peak_bytes": 13860864,
+        "sample_ms": 20,
+        "samples": 25,
+        "worker_exit_code": 0,
+        "worker_signal": null
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "idle",
+      "repeat": 0,
+      "startup_ms": 28.428499936126173,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 19709952,
+      "supervisor_cpu_seconds": 0.27234858,
+      "worker_result": {
+        "event": "finished",
+        "reason": "exited",
+        "worker_exit_code": 0,
+        "worker_signal": null,
+        "exit_code": 0,
+        "elapsed_ms": 861.4252909319475,
+        "rss_peak_bytes": 13860864,
+        "samples": 26,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "rss_limit",
+      "repeat": 0,
+      "startup_ms": 6.882834015414119,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 7864320,
+      "supervisor_cpu_seconds": 0.040087458,
+      "worker_result": {
+        "elapsed_ms": 99.873875,
+        "event": "finished",
+        "exit_code": 125,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "rss_limit",
+        "rss_peak_bytes": 71745536,
+        "sample_ms": 20,
+        "samples": 2,
+        "worker_exit_code": null,
+        "worker_signal": 15
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "rss_limit",
+      "repeat": 0,
+      "startup_ms": 39.37333298381418,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 19628032,
+      "supervisor_cpu_seconds": 0.080824542,
+      "worker_result": {
+        "event": "finished",
+        "reason": "rss_limit",
+        "worker_exit_code": null,
+        "worker_signal": 15,
+        "exit_code": 125,
+        "elapsed_ms": 86.63454104680568,
+        "rss_peak_bytes": 114671616,
+        "samples": 2,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "cancel",
+      "repeat": 0,
+      "startup_ms": 5.1876250654459,
+      "cancel_ms": 42.996125062927604,
+      "supervisor_peak_rss_bytes": 7847936,
+      "supervisor_cpu_seconds": 0.08013204,
+      "worker_result": {
+        "elapsed_ms": 310.538916,
+        "event": "finished",
+        "exit_code": 130,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "cancelled",
+        "rss_peak_bytes": 28852224,
+        "sample_ms": 20,
+        "samples": 9,
+        "worker_exit_code": null,
+        "worker_signal": 15
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "cancel",
+      "repeat": 0,
+      "startup_ms": 28.74641609378159,
+      "cancel_ms": 47.60220798198134,
+      "supervisor_peak_rss_bytes": 19218432,
+      "supervisor_cpu_seconds": 0.10108288,
+      "worker_result": {
+        "event": "finished",
+        "reason": "cancelled",
+        "worker_exit_code": null,
+        "worker_signal": 15,
+        "exit_code": 130,
+        "elapsed_ms": 285.6679579708725,
+        "rss_peak_bytes": 28819456,
+        "samples": 8,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "timeout",
+      "repeat": 0,
+      "startup_ms": 4.485042067244649,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 7798784,
+      "supervisor_cpu_seconds": 0.07440808,
+      "worker_result": {
+        "elapsed_ms": 291.410417,
+        "event": "finished",
+        "exit_code": 124,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "timeout",
+        "rss_peak_bytes": 13598720,
+        "sample_ms": 20,
+        "samples": 9,
+        "worker_exit_code": null,
+        "worker_signal": 15
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "timeout",
+      "repeat": 0,
+      "startup_ms": 30.892208917066455,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 18923520,
+      "supervisor_cpu_seconds": 0.118440624,
+      "worker_result": {
+        "event": "finished",
+        "reason": "timeout",
+        "worker_exit_code": null,
+        "worker_signal": 15,
+        "exit_code": 124,
+        "elapsed_ms": 309.28804201539606,
+        "rss_peak_bytes": 13565952,
+        "samples": 9,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "exit_code",
+      "repeat": 0,
+      "startup_ms": 5.380165996029973,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 8159232,
+      "supervisor_cpu_seconds": 0.02172529,
+      "worker_result": {
+        "elapsed_ms": 39.652583,
+        "event": "finished",
+        "exit_code": 42,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "exited",
+        "rss_peak_bytes": 458752,
+        "sample_ms": 20,
+        "samples": 1,
+        "worker_exit_code": 42,
+        "worker_signal": null
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "exit_code",
+      "repeat": 0,
+      "startup_ms": 28.764332993887365,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 18874368,
+      "supervisor_cpu_seconds": 0.04153696,
+      "worker_result": {
+        "event": "finished",
+        "reason": "exited",
+        "worker_exit_code": 42,
+        "worker_signal": null,
+        "exit_code": 42,
+        "elapsed_ms": 39.39162497408688,
+        "rss_peak_bytes": 9256960,
+        "samples": 1,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "orphan",
+      "repeat": 0,
+      "startup_ms": 3.8837919710204005,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 7618560,
+      "supervisor_cpu_seconds": 0.009260916000000001,
+      "worker_result": {
+        "elapsed_ms": 28.908666,
+        "event": "finished",
+        "exit_code": 0,
+        "group_signal_fallback": false,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "exited",
+        "rss_peak_bytes": 458752,
+        "sample_ms": 20,
+        "samples": 1,
+        "worker_exit_code": 0,
+        "worker_signal": null
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "orphan",
+      "repeat": 0,
+      "startup_ms": 27.5431249756366,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 18776064,
+      "supervisor_cpu_seconds": 0.039503664,
+      "worker_result": {
+        "event": "finished",
+        "reason": "exited",
+        "worker_exit_code": 0,
+        "worker_signal": null,
+        "exit_code": 0,
+        "elapsed_ms": 41.72691598068923,
+        "rss_peak_bytes": 10518528,
+        "samples": 1,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "idle",
+      "repeat": 1,
+      "startup_ms": 27.67583297099918,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 19054592,
+      "supervisor_cpu_seconds": 0.268560004,
+      "worker_result": {
+        "event": "finished",
+        "reason": "exited",
+        "worker_exit_code": 0,
+        "worker_signal": null,
+        "exit_code": 0,
+        "elapsed_ms": 847.2272080834955,
+        "rss_peak_bytes": 13860864,
+        "samples": 25,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "idle",
+      "repeat": 1,
+      "startup_ms": 4.7435000305995345,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 8208384,
+      "supervisor_cpu_seconds": 0.237277792,
+      "worker_result": {
+        "elapsed_ms": 869.822083,
+        "event": "finished",
+        "exit_code": 0,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "exited",
+        "rss_peak_bytes": 13680640,
+        "sample_ms": 20,
+        "samples": 27,
+        "worker_exit_code": 0,
+        "worker_signal": null
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "rss_limit",
+      "repeat": 1,
+      "startup_ms": 30.07037506904453,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 19120128,
+      "supervisor_cpu_seconds": 0.051793542,
+      "worker_result": {
+        "event": "finished",
+        "reason": "rss_limit",
+        "worker_exit_code": null,
+        "worker_signal": 15,
+        "exit_code": 125,
+        "elapsed_ms": 58.74991707969457,
+        "rss_peak_bytes": 114343936,
+        "samples": 2,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "rss_limit",
+      "repeat": 1,
+      "startup_ms": 4.117625067010522,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 7749632,
+      "supervisor_cpu_seconds": 0.016866166000000002,
+      "worker_result": {
+        "elapsed_ms": 56.49275,
+        "event": "finished",
+        "exit_code": 125,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "rss_limit",
+        "rss_peak_bytes": 114540544,
+        "sample_ms": 20,
+        "samples": 2,
+        "worker_exit_code": null,
+        "worker_signal": 15
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "cancel",
+      "repeat": 1,
+      "startup_ms": 27.758458978496492,
+      "cancel_ms": 47.76633298024535,
+      "supervisor_peak_rss_bytes": 19087360,
+      "supervisor_cpu_seconds": 0.108137128,
+      "worker_result": {
+        "event": "finished",
+        "reason": "cancelled",
+        "worker_exit_code": null,
+        "worker_signal": 15,
+        "exit_code": 130,
+        "elapsed_ms": 284.39466597046703,
+        "rss_peak_bytes": 29081600,
+        "samples": 8,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "cancel",
+      "repeat": 1,
+      "startup_ms": 6.0822919476777315,
+      "cancel_ms": 44.94358296506107,
+      "supervisor_peak_rss_bytes": 7847936,
+      "supervisor_cpu_seconds": 0.07949775299999999,
+      "worker_result": {
+        "elapsed_ms": 304.328,
+        "event": "finished",
+        "exit_code": 130,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "cancelled",
+        "rss_peak_bytes": 29081600,
+        "sample_ms": 20,
+        "samples": 9,
+        "worker_exit_code": null,
+        "worker_signal": 15
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "timeout",
+      "repeat": 1,
+      "startup_ms": 33.12387503683567,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 19267584,
+      "supervisor_cpu_seconds": 0.11300533199999999,
+      "worker_result": {
+        "event": "finished",
+        "reason": "timeout",
+        "worker_exit_code": null,
+        "worker_signal": 15,
+        "exit_code": 124,
+        "elapsed_ms": 289.00675009936094,
+        "rss_peak_bytes": 13844480,
+        "samples": 8,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "timeout",
+      "repeat": 1,
+      "startup_ms": 5.21170801948756,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 7847936,
+      "supervisor_cpu_seconds": 0.07538471000000001,
+      "worker_result": {
+        "elapsed_ms": 280.06575,
+        "event": "finished",
+        "exit_code": 124,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "timeout",
+        "rss_peak_bytes": 13844480,
+        "sample_ms": 20,
+        "samples": 8,
+        "worker_exit_code": null,
+        "worker_signal": 15
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "exit_code",
+      "repeat": 1,
+      "startup_ms": 34.989707986824214,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 18972672,
+      "supervisor_cpu_seconds": 0.047327292,
+      "worker_result": {
+        "event": "finished",
+        "reason": "exited",
+        "worker_exit_code": 42,
+        "worker_signal": null,
+        "exit_code": 42,
+        "elapsed_ms": 43.63770806230605,
+        "rss_peak_bytes": 9879552,
+        "samples": 1,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "exit_code",
+      "repeat": 1,
+      "startup_ms": 4.103207960724831,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 8060928,
+      "supervisor_cpu_seconds": 0.019168291,
+      "worker_result": {
+        "elapsed_ms": 38.236417,
+        "event": "finished",
+        "exit_code": 42,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "exited",
+        "rss_peak_bytes": 458752,
+        "sample_ms": 20,
+        "samples": 1,
+        "worker_exit_code": 42,
+        "worker_signal": null
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "orphan",
+      "repeat": 1,
+      "startup_ms": 26.2042919639498,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 18661376,
+      "supervisor_cpu_seconds": 0.037358249999999996,
+      "worker_result": {
+        "event": "finished",
+        "reason": "exited",
+        "worker_exit_code": 0,
+        "worker_signal": null,
+        "exit_code": 0,
+        "elapsed_ms": 42.23249992355704,
+        "rss_peak_bytes": 9617408,
+        "samples": 1,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "orphan",
+      "repeat": 1,
+      "startup_ms": 3.8434999296441674,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 7602176,
+      "supervisor_cpu_seconds": 0.009506541,
+      "worker_result": {
+        "elapsed_ms": 31.804709,
+        "event": "finished",
+        "exit_code": 0,
+        "group_signal_fallback": false,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "exited",
+        "rss_peak_bytes": 458752,
+        "sample_ms": 20,
+        "samples": 1,
+        "worker_exit_code": 0,
+        "worker_signal": null
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "idle",
+      "repeat": 2,
+      "startup_ms": 4.421459045261145,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 8126464,
+      "supervisor_cpu_seconds": 0.23237491200000002,
+      "worker_result": {
+        "elapsed_ms": 848.7045410000001,
+        "event": "finished",
+        "exit_code": 0,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "exited",
+        "rss_peak_bytes": 13844480,
+        "sample_ms": 20,
+        "samples": 26,
+        "worker_exit_code": 0,
+        "worker_signal": null
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "idle",
+      "repeat": 2,
+      "startup_ms": 35.63049994409084,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 18874368,
+      "supervisor_cpu_seconds": 0.281910824,
+      "worker_result": {
+        "event": "finished",
+        "reason": "exited",
+        "worker_exit_code": 0,
+        "worker_signal": null,
+        "exit_code": 0,
+        "elapsed_ms": 834.2839160468429,
+        "rss_peak_bytes": 13680640,
+        "samples": 24,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "rss_limit",
+      "repeat": 2,
+      "startup_ms": 6.05133397039026,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 8159232,
+      "supervisor_cpu_seconds": 0.027126291,
+      "worker_result": {
+        "elapsed_ms": 60.271875,
+        "event": "finished",
+        "exit_code": 125,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "rss_limit",
+        "rss_peak_bytes": 114540544,
+        "sample_ms": 20,
+        "samples": 2,
+        "worker_exit_code": null,
+        "worker_signal": 15
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "rss_limit",
+      "repeat": 2,
+      "startup_ms": 29.422417050227523,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 18956288,
+      "supervisor_cpu_seconds": 0.050128456,
+      "worker_result": {
+        "event": "finished",
+        "reason": "rss_limit",
+        "worker_exit_code": null,
+        "worker_signal": 15,
+        "exit_code": 125,
+        "elapsed_ms": 59.23012492712587,
+        "rss_peak_bytes": 114573312,
+        "samples": 2,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "cancel",
+      "repeat": 2,
+      "startup_ms": 4.884958965703845,
+      "cancel_ms": 45.47066695522517,
+      "supervisor_peak_rss_bytes": 7815168,
+      "supervisor_cpu_seconds": 0.076402664,
+      "worker_result": {
+        "elapsed_ms": 306.828667,
+        "event": "finished",
+        "exit_code": 130,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "cancelled",
+        "rss_peak_bytes": 28901376,
+        "sample_ms": 20,
+        "samples": 9,
+        "worker_exit_code": null,
+        "worker_signal": 15
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "cancel",
+      "repeat": 2,
+      "startup_ms": 32.443708973005414,
+      "cancel_ms": 49.16891595348716,
+      "supervisor_peak_rss_bytes": 18972672,
+      "supervisor_cpu_seconds": 0.108134204,
+      "worker_result": {
+        "event": "finished",
+        "reason": "cancelled",
+        "worker_exit_code": null,
+        "worker_signal": 15,
+        "exit_code": 130,
+        "elapsed_ms": 282.9050839645788,
+        "rss_peak_bytes": 28852224,
+        "samples": 8,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "timeout",
+      "repeat": 2,
+      "startup_ms": 4.810999962501228,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 7831552,
+      "supervisor_cpu_seconds": 0.080767915,
+      "worker_result": {
+        "elapsed_ms": 290.14795799999996,
+        "event": "finished",
+        "exit_code": 124,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "timeout",
+        "rss_peak_bytes": 13828096,
+        "sample_ms": 20,
+        "samples": 8,
+        "worker_exit_code": null,
+        "worker_signal": 15
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "timeout",
+      "repeat": 2,
+      "startup_ms": 32.51041704788804,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 19955712,
+      "supervisor_cpu_seconds": 0.11853770400000001,
+      "worker_result": {
+        "event": "finished",
+        "reason": "timeout",
+        "worker_exit_code": null,
+        "worker_signal": 15,
+        "exit_code": 124,
+        "elapsed_ms": 302.7304169954732,
+        "rss_peak_bytes": 13844480,
+        "samples": 9,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "exit_code",
+      "repeat": 2,
+      "startup_ms": 8.149500004947186,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 8404992,
+      "supervisor_cpu_seconds": 0.019278583,
+      "worker_result": {
+        "elapsed_ms": 43.009625,
+        "event": "finished",
+        "exit_code": 42,
+        "group_signal_fallback": true,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "exited",
+        "rss_peak_bytes": 458752,
+        "sample_ms": 20,
+        "samples": 1,
+        "worker_exit_code": 42,
+        "worker_signal": null
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "exit_code",
+      "repeat": 2,
+      "startup_ms": 27.247958001680672,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 18808832,
+      "supervisor_cpu_seconds": 0.036346125,
+      "worker_result": {
+        "event": "finished",
+        "reason": "exited",
+        "worker_exit_code": 42,
+        "worker_signal": null,
+        "exit_code": 42,
+        "elapsed_ms": 37.797207944095135,
+        "rss_peak_bytes": 10518528,
+        "samples": 1,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    },
+    {
+      "engine": "rust",
+      "scenario": "orphan",
+      "repeat": 2,
+      "startup_ms": 3.761292085982859,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 7602176,
+      "supervisor_cpu_seconds": 0.009417499,
+      "worker_result": {
+        "elapsed_ms": 31.635583,
+        "event": "finished",
+        "exit_code": 0,
+        "group_signal_fallback": false,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed",
+        "reason": "exited",
+        "rss_peak_bytes": 458752,
+        "sample_ms": 20,
+        "samples": 1,
+        "worker_exit_code": 0,
+        "worker_signal": null
+      }
+    },
+    {
+      "engine": "python",
+      "scenario": "orphan",
+      "repeat": 2,
+      "startup_ms": 26.66091697756201,
+      "cancel_ms": null,
+      "supervisor_peak_rss_bytes": 19103744,
+      "supervisor_cpu_seconds": 0.041979039999999995,
+      "worker_result": {
+        "event": "finished",
+        "reason": "exited",
+        "worker_exit_code": 0,
+        "worker_signal": null,
+        "exit_code": 0,
+        "elapsed_ms": 41.19366593658924,
+        "rss_peak_bytes": 10928128,
+        "samples": 1,
+        "sample_ms": 20,
+        "memory_scope": "sampled owned process tree RSS; excludes GPU; short peaks may be missed"
+      }
+    }
+  ],
+  "summary": [
+    {
+      "engine": "rust",
+      "scenario": "idle",
+      "startup_median_ms": 4.7435000305995345,
+      "cancel_median_ms": null,
+      "supervisor_peak_rss_median_mib": 7.828125,
+      "supervisor_cpu_median_seconds": 0.237277792
+    },
+    {
+      "engine": "python",
+      "scenario": "idle",
+      "startup_median_ms": 28.428499936126173,
+      "cancel_median_ms": null,
+      "supervisor_peak_rss_median_mib": 18.171875,
+      "supervisor_cpu_median_seconds": 0.27234858
+    },
+    {
+      "engine": "rust",
+      "scenario": "rss_limit",
+      "startup_median_ms": 6.05133397039026,
+      "cancel_median_ms": null,
+      "supervisor_peak_rss_median_mib": 7.5,
+      "supervisor_cpu_median_seconds": 0.027126291
+    },
+    {
+      "engine": "python",
+      "scenario": "rss_limit",
+      "startup_median_ms": 30.07037506904453,
+      "cancel_median_ms": null,
+      "supervisor_peak_rss_median_mib": 18.234375,
+      "supervisor_cpu_median_seconds": 0.051793542
+    },
+    {
+      "engine": "rust",
+      "scenario": "cancel",
+      "startup_median_ms": 5.1876250654459,
+      "cancel_median_ms": 44.94358296506107,
+      "supervisor_peak_rss_median_mib": 7.484375,
+      "supervisor_cpu_median_seconds": 0.07949775299999999
+    },
+    {
+      "engine": "python",
+      "scenario": "cancel",
+      "startup_median_ms": 28.74641609378159,
+      "cancel_median_ms": 47.76633298024535,
+      "supervisor_peak_rss_median_mib": 18.203125,
+      "supervisor_cpu_median_seconds": 0.108134204
+    },
+    {
+      "engine": "rust",
+      "scenario": "timeout",
+      "startup_median_ms": 4.810999962501228,
+      "cancel_median_ms": null,
+      "supervisor_peak_rss_median_mib": 7.46875,
+      "supervisor_cpu_median_seconds": 0.07538471000000001
+    },
+    {
+      "engine": "python",
+      "scenario": "timeout",
+      "startup_median_ms": 32.51041704788804,
+      "cancel_median_ms": null,
+      "supervisor_peak_rss_median_mib": 18.375,
+      "supervisor_cpu_median_seconds": 0.118440624
+    },
+    {
+      "engine": "rust",
+      "scenario": "exit_code",
+      "startup_median_ms": 5.380165996029973,
+      "cancel_median_ms": null,
+      "supervisor_peak_rss_median_mib": 7.78125,
+      "supervisor_cpu_median_seconds": 0.019278583
+    },
+    {
+      "engine": "python",
+      "scenario": "exit_code",
+      "startup_median_ms": 28.764332993887365,
+      "cancel_median_ms": null,
+      "supervisor_peak_rss_median_mib": 18.0,
+      "supervisor_cpu_median_seconds": 0.04153696
+    },
+    {
+      "engine": "rust",
+      "scenario": "orphan",
+      "startup_median_ms": 3.8434999296441674,
+      "cancel_median_ms": null,
+      "supervisor_peak_rss_median_mib": 7.25,
+      "supervisor_cpu_median_seconds": 0.009417499
+    },
+    {
+      "engine": "python",
+      "scenario": "orphan",
+      "startup_median_ms": 26.66091697756201,
+      "cancel_median_ms": null,
+      "supervisor_peak_rss_median_mib": 17.90625,
+      "supervisor_cpu_median_seconds": 0.039503664
+    }
+  ]
+}

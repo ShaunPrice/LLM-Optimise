@@ -1,0 +1,12 @@
+{
+  "artifact": "LLM-Optimise-macos-arm64.dmg",
+  "bytes": 4833291,
+  "sha256": "fc117ace9a29fc48f03168ba2557db1fadb45b7e18b14ac93c44bb351c9a8410",
+  "disk_image_checksum_verified": true,
+  "mounted_layout_verified": true,
+  "contains_app_bundle": true,
+  "contains_applications_shortcut": true,
+  "contains_python_service_bridge": true,
+  "signed_for_distribution": false,
+  "notarized": false
+}

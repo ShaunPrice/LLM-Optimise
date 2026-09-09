@@ -1,0 +1,13 @@
+{
+  "mode": "capacity",
+  "max_duration_s": 300,
+  "capacity": {"dimensions": {"context": [512,1024,2048]}, "verify_recovery": true},
+  "experiment": {
+    "name": "Bounded context capacity",
+    "dataset": "examples/tasks.jsonl",
+    "repeats": 1, "warmup": 0, "max_tokens": 64,
+    "timeout_s": 30, "startup_timeout_s": 60, "max_trials": 8,
+    "limits": {"min_quality": 0.9, "max_rss_gib": 4, "min_available_gib": 1},
+    "candidates": [{"name":"baseline","model":"models/your-model.gguf","executable":"llama-server","context":512,"threads":4,"gpu_layers":0}]
+  }
+}

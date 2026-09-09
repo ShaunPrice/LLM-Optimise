@@ -1,0 +1,31 @@
+[package]
+name = "llm-optimise-supervisor"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+license = "MIT"
+description = "Optional bounded process supervisor for LLM-Optimise"
+
+[lib]
+name = "llm_supervisor"
+path = "src/lib.rs"
+
+[[bin]]
+name = "llm-supervisor"
+path = "src/main.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sysinfo = { version = "0.39.6", default-features = false, features = ["system"] }
+ctrlc = { version = "3.5", features = ["termination"] }
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_System_JobObjects", "Win32_System_Threading", "Win32_System_Console", "Win32_System_Diagnostics_ToolHelp", "Win32_Security"] }
+
+[profile.release]
+lto = "thin"
+strip = true
