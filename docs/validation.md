@@ -28,6 +28,7 @@ Paths in the published JSON are replaced with `<workspace>`; hashes, numerical o
 - 150 local automated tests pass, including routing constraints, unknown metrics, strict evaluation, bounded sweeps, stale proposals, atomic replacement failure, protocol adapters, request truncation, CSRF, redirect refusal and managed process cleanup.
 - Ruff lint/format and JavaScript syntax checks pass.
 - All seven [CI jobs passed](https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34340038933) at source commit `1e40e5d`: Python 3.10/3.12 on Linux, macOS and Windows, plus Docker. [Recorded CI status](../validation/ci.json).
+- All seven jobs passed again after the OpenRouter/report-loader changes at source commit `2c928c9`, including the 150-test suite on each Python/OS combination. [Latest CI run](https://github.com/ShaunPrice/LLM-Optimise/actions/runs/34342800572), [recorded result](../validation/ci-cloud-soup.json).
 - OpenRouter cloud requests and GUI chat now have live validation; direct Anthropic requests still have local protocol-fixture coverage only. See the added cloud evidence below.
 - Soup recipes were checked against pinned source field names. The [schema check](../validation/soup-schema-check.json) does not establish successful fine-tuning or backend compatibility.
 
