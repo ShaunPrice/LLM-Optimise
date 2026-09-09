@@ -39,14 +39,24 @@
       "evidence": "Docker process execution; inspect logs for test count and assertions"
     },
     "chat_local_response": true,
-    "cloud_requests": false
+    "cloud_requests": false,
+    "responsive_390px_no_page_overflow": true,
+    "console_errors_after_final_reload": []
   },
   "docker_application": {
-    "image_id": "sha256:7595d2a977518c782c87383f426688530f9bd66e1f3afd096df4b05bda424e52",
+    "image_id": "sha256:cedd29d5b7a213428bd72300d59b28fd9574d5771dfffae6230f94df493bb527",
     "state_and_icon_http": true,
     "memory_mib": 256,
     "cpus": 1,
     "read_only": true
   },
-  "scope": "Live checks of this workflow, not a general code-model quality evaluation"
+  "scope": "Live checks of this workflow, not a general code-model quality evaluation",
+  "control_plane_sample": {
+    "process_rss_mib": 22.84375,
+    "process_cpu_percent_over_2s": 0.5,
+    "managed_model_running": false,
+    "scope": "GUI server process only, browser tab open and polling; browser and OS RAM excluded",
+    "date": "2026-09-09"
+  },
+  "source_commit": "1e40e5d4c3aeff159889a8d2de3d76736402796d"
 }
