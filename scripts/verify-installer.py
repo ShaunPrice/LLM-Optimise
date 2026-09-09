@@ -42,7 +42,17 @@ def runtime_checks(resources, workspace):
     if not python.resolve().is_relative_to(runtime.resolve()):
         raise ValueError("Bundled interpreter escapes the installed runtime")
     env = dict(os.environ)
-    for key in ("PYTHONPATH", "PYTHONHOME", "VIRTUAL_ENV", "LLM_OPTIMISE_PYTHON"):
+    for key in (
+        "PYTHONPATH",
+        "PYTHONHOME",
+        "VIRTUAL_ENV",
+        "LLM_OPTIMISE_PYTHON",
+        "LD_LIBRARY_PATH",
+        "LD_PRELOAD",
+        "DYLD_LIBRARY_PATH",
+        "DYLD_FALLBACK_LIBRARY_PATH",
+        "DYLD_INSERT_LIBRARIES",
+    ):
         env.pop(key, None)
     env["PYTHONDONTWRITEBYTECODE"] = "1"
     code = "import json,sys,psutil,mcp,jwt,llm_optimise,ssl,sqlite3; print(json.dumps({'python':sys.executable,'prefix':sys.prefix,'version':llm_optimise.__version__}))"

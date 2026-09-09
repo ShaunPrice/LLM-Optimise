@@ -79,6 +79,11 @@ def _child_environment(artifacts, workspace):
         "VIRTUAL_ENV",
         "CONDA_PREFIX",
         "CONDA_DEFAULT_ENV",
+        "LD_LIBRARY_PATH",
+        "LD_PRELOAD",
+        "DYLD_LIBRARY_PATH",
+        "DYLD_FALLBACK_LIBRARY_PATH",
+        "DYLD_INSERT_LIBRARIES",
     ):
         env.pop(name, None)
     # Remove developer interpreter locations while preserving normal OS helpers.

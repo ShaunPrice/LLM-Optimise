@@ -85,11 +85,20 @@ The runtime contains the CLI and optional MCP dependencies. It is private to thi
 For example, after installing the Mac app in Applications:
 
 ```bash
-"/Applications/LLM-Optimise.app/Contents/Resources/runtime/python/bin/python3" -I -m llm_optimise --help
-"/Applications/LLM-Optimise.app/Contents/Resources/runtime/python/bin/python3" -I -m llm_optimise.mcp_server --help
+"/Applications/LLM-Optimise.app/Contents/Resources/runtime/llm-optimise" --help
+"/Applications/LLM-Optimise.app/Contents/Resources/runtime/llm-optimise-mcp" --help
 ```
 
-MCP connects to the running desktop service's loopback URL and the same workspace. Use the URL reported by the launcher; a desktop session can use a dynamically allocated port. It shares the GUI's jobs and cancellation state. See [MCP setup and client examples](mcp.md) for stdio, authenticated HTTP and remote-client requirements. Installing the application does not automatically configure ChatGPT or Claude.
+On Windows, open PowerShell in the installation folder you selected in the wizard:
+
+```powershell
+.\runtime\llm-optimise.cmd --help
+.\runtime\llm-optimise-mcp.cmd --help
+```
+
+For an MCP client's `command` setting, use the bundled Python executable listed in `runtime/manifest.json` with arguments `-I -m llm_optimise.mcp_server`. On Windows this is `runtime\python\python.exe` inside the installation folder; on macOS and Linux it is `runtime/python/bin/python3` inside the application resources.
+
+MCP connects to the running desktop service's loopback URL and the same workspace. Copy **Local service URL** from the launcher's Advanced settings into the client's `--app-url` argument; a desktop session can use a dynamically allocated port. It shares the GUI's jobs and cancellation state. See [MCP setup and client examples](mcp.md) for stdio, authenticated HTTP and remote-client requirements. Installing the application does not automatically configure ChatGPT or Claude.
 
 ## Verify a download
 

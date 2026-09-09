@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -40,9 +41,13 @@ def fetch_archive(source, cache):
     if target.exists() and digest(target) == source["sha256"]:
         return target
     if not source["url"].startswith(
-        "https://github.com/astral-sh/python-build-standalone/releases/download/"
+        (
+            "https://github.com/astral-sh/python-build-standalone/releases/download/",
+            "https://github.com/openssl/openssl/releases/download/",
+            "https://files.pythonhosted.org/packages/",
+        )
     ):
-        raise ValueError("Runtime source must be the pinned official HTTPS release")
+        raise ValueError("Build source must be a pinned official HTTPS release")
     partial = target.with_suffix(".partial")
     request = Request(source["url"], headers={"User-Agent": "LLM-Optimise-installer-builder"})
     try:
@@ -61,12 +66,10 @@ def fetch_archive(source, cache):
     return target
 
 
-def extract_archive(archive, target):
+def extract_archive(archive, target, root="python"):
     # Python 3.12's data filter rejects device nodes, absolute paths and escaping links.
     with tarfile.open(archive, "r:gz") as bundle:
-        if any(
-            not m.name.startswith("python/") and m.name != "python" for m in bundle.getmembers()
-        ):
+        if any(not m.name.startswith(root + "/") and m.name != root for m in bundle.getmembers()):
             raise ValueError("Unexpected archive root")
         bundle.extractall(target, filter="data")
 
@@ -88,10 +91,221 @@ def write_launchers(output, windows):
 
 def clean_environment(cache):
     env = dict(os.environ)
-    for key in ("PYTHONHOME", "PYTHONPATH", "VIRTUAL_ENV", "CONDA_PREFIX", "UV_PYTHON"):
+    for key in (
+        "PYTHONHOME",
+        "PYTHONPATH",
+        "VIRTUAL_ENV",
+        "CONDA_PREFIX",
+        "UV_PYTHON",
+        "LD_LIBRARY_PATH",
+        "LD_PRELOAD",
+        "DYLD_LIBRARY_PATH",
+        "DYLD_FALLBACK_LIBRARY_PATH",
+        "DYLD_INSERT_LIBRARIES",
+    ):
         env.pop(key, None)
     env.update(UV_CACHE_DIR=str(cache), UV_PYTHON_DOWNLOADS="never", PYTHONDONTWRITEBYTECODE="1")
     return env
+
+
+def replace_cryptography_requirement(requirements, wheel, version):
+    pattern = r"(?m)^cryptography==[^\n]*(?:\n[ \t]+[^\n]*)*"
+    matches = re.findall(pattern, requirements)
+    if len(matches) != 1 or not matches[0].startswith(f"cryptography=={version} "):
+        raise ValueError("Source-build version differs from the runtime dependency lock")
+    replacement = f"cryptography @ {wheel.resolve().as_uri()} \\\n    --hash=sha256:{digest(wheel)}"
+    return re.sub(pattern, lambda _: replacement, requirements, count=1)
+
+
+def macos_linkage(libraries, load_commands, architectures, expected_arch, minimum_os):
+    if architectures.strip().split() != [expected_arch]:
+        raise ValueError("Cryptography extension architecture differs from the target")
+    dependencies = [
+        line.strip().split(" (", 1)[0] for line in libraries.splitlines()[1:] if line.strip()
+    ]
+    # `otool -L` includes LC_ID_DYLIB itself; that install name is not a load dependency.
+    identities = [
+        match.group(1)
+        for block in re.findall(
+            r"\bcmd LC_ID_DYLIB\n(.*?)(?=\nLoad command|\Z)", load_commands, re.S
+        )
+        if (match := re.search(r"(?m)^\s+name (.+?) \(offset", block))
+    ]
+    dependencies = [value for value in dependencies if value not in identities]
+    if not dependencies or any(
+        not value.startswith(("/usr/lib/", "/System/Library/"))
+        or Path(value).name.startswith(("libssl", "libcrypto"))
+        for value in dependencies
+    ):
+        raise ValueError("Cryptography must link only system libraries; OpenSSL must be static")
+    blocks = re.findall(
+        r"\bcmd LC_(?:BUILD_VERSION|VERSION_MIN_MACOSX)\n(.*?)(?=\nLoad command|\Z)",
+        load_commands,
+        re.S,
+    )
+    versions = [
+        match.group(1)
+        for block in blocks
+        if (match := re.search(r"(?m)^\s+(?:minos|version)\s+(\d+(?:\.\d+)+)", block))
+    ]
+    limit = tuple(int(part) for part in minimum_os.split("."))
+    if not versions or any(
+        tuple(int(p) for p in version.split("."))[:2] > limit for version in versions
+    ):
+        raise ValueError("Cryptography extension exceeds the declared macOS deployment target")
+    return {
+        "libraries": dependencies,
+        "install_names": identities,
+        "architecture": expected_arch,
+        "minimum_os": versions,
+    }
+
+
+def inspect_macos_cryptography(python, env, target, minimum_os):
+    extension = Path(
+        subprocess.check_output(
+            [
+                str(python),
+                "-I",
+                "-c",
+                "import cryptography.hazmat.bindings._rust as r; print(r.__file__)",
+            ],
+            env=env,
+            text=True,
+            timeout=30,
+        ).strip()
+    )
+
+    def inspect(*arguments):
+        return subprocess.check_output([*arguments, str(extension)], env=env, text=True, timeout=30)
+
+    return macos_linkage(
+        inspect("otool", "-L"),
+        inspect("otool", "-l"),
+        inspect("lipo", "-archs"),
+        "x86_64" if target == "macos-x64" else "arm64",
+        minimum_os,
+    )
+
+
+def build_macos_cryptography(python, stage, cache, uv, target):
+    """Build pinned crypto/OpenSSL in private build directories, never Homebrew."""
+    if target not in {"macos-x64", "macos-arm64"}:
+        raise ValueError("This source-build path is only for macOS")
+    pinned = json.loads((ROOT / "packaging/cryptography-source.json").read_text())
+    lock = ROOT / "packaging/cryptography-build-requirements.txt"
+    build = stage / "build-cryptography"
+    build.mkdir()
+    for name in ("openssl", "cryptography"):
+        source = pinned[name]
+        extract_archive(fetch_archive(source, cache / "downloads"), build, source["root"])
+    openssl = build / pinned["openssl"]["root"]
+    crypto = build / pinned["cryptography"]["root"]
+    prefix = build / "openssl-static"
+    env = clean_environment(cache / "uv")
+    for name in list(env):
+        if name.startswith(("OPENSSL_", "DYLD_", "PYO3_")) or name in {
+            "CFLAGS",
+            "CPPFLAGS",
+            "LDFLAGS",
+            "RUSTFLAGS",
+            "ARCHFLAGS",
+            "LIBRARY_PATH",
+            "CPATH",
+            "PKG_CONFIG_PATH",
+            "CARGO_BUILD_TARGET",
+            "CRYPTOGRAPHY_SUPPRESS_LINK_FLAGS",
+        }:
+            env.pop(name, None)
+    minimum = pinned["macos_deployment_target"]
+    env.update(
+        MACOSX_DEPLOYMENT_TARGET=minimum,
+        CFLAGS=f"-mmacosx-version-min={minimum}",
+        LDFLAGS=f"-mmacosx-version-min={minimum}",
+        RUSTFLAGS=f"-C link-arg=-mmacosx-version-min={minimum}",
+        OPENSSL_STATIC="1",
+        OPENSSL_NO_VENDOR="1",
+        OPENSSL_DIR=str(prefix),
+        CARGO_HOME=str(cache / "cargo"),
+        CARGO_TARGET_DIR=str(build / "cargo-target"),
+        CARGO_BUILD_JOBS="2",
+    )
+
+    def run(arguments, cwd=ROOT):
+        subprocess.run([str(x) for x in arguments], cwd=cwd, env=env, check=True, timeout=1200)
+
+    configure = "darwin64-x86_64-cc" if target == "macos-x64" else "darwin64-arm64-cc"
+    run(
+        [
+            "perl",
+            "Configure",
+            configure,
+            "no-shared",
+            "no-module",
+            "no-tests",
+            f"--prefix={prefix}",
+            "--openssldir=/etc/ssl",
+        ],
+        openssl,
+    )
+    run(["make", "-j2"], openssl)
+    run(["make", "install_sw"], openssl)
+    if not (prefix / "lib/libcrypto.a").is_file() or list(prefix.rglob("*.dylib")):
+        raise ValueError("OpenSSL source build did not produce static-only libraries")
+    build_env = build / "environment"
+    run([uv, "venv", "--python", python, build_env])
+    build_python = build_env / "bin/python"
+    run(
+        [
+            uv,
+            "pip",
+            "install",
+            "--python",
+            build_python,
+            "--require-hashes",
+            "--only-binary",
+            ":all:",
+            "-r",
+            lock,
+        ]
+    )
+    # The hash-pinned sdist includes Cargo.lock; maturin's locked=true preserves crate checksums.
+    if not (crypto / "Cargo.lock").is_file():
+        raise ValueError("Cryptography source must include Cargo.lock")
+    wheels = build / "wheels"
+    run(
+        [
+            uv,
+            "build",
+            "--wheel",
+            "--no-build-isolation",
+            "--python",
+            build_python,
+            "--out-dir",
+            wheels,
+            crypto,
+        ]
+    )
+    found = list(wheels.glob(f"cryptography-{pinned['cryptography_version']}-*.whl"))
+    if len(found) != 1:
+        raise ValueError("Expected exactly one source-built cryptography wheel")
+    notices = stage / "licenses/openssl"
+    notices.mkdir(parents=True)
+    shutil.copy2(openssl / "LICENSE.txt", notices / "LICENSE.txt")
+    report = {
+        "name": "cryptography",
+        "version": pinned["cryptography_version"],
+        "source": pinned["cryptography"],
+        "openssl_source": pinned["openssl"],
+        "openssl_static": True,
+        "openssl_version": pinned["openssl_version"],
+        "macos_deployment_target": minimum,
+        "build_dependency_lock_sha256": digest(lock),
+        "cargo_lock_sha256": digest(crypto / "Cargo.lock"),
+        "wheel_sha256": digest(found[0]),
+        "wheel": found[0].name,
+    }
+    return found[0], report
 
 
 def main(argv=None):
@@ -136,6 +350,19 @@ def main(argv=None):
         def run(cmd):
             return subprocess.run([str(x) for x in cmd], env=env, cwd=ROOT, check=True)
 
+        requirements = ROOT / "packaging/runtime-requirements.txt"
+        source_builds = []
+        if target == "macos-x64":
+            crypto_wheel, crypto_report = build_macos_cryptography(python, stage, cache, uv, target)
+            requirements = stage / "resolved-runtime-requirements.txt"
+            requirements.write_text(
+                replace_cryptography_requirement(
+                    (ROOT / "packaging/runtime-requirements.txt").read_text(),
+                    crypto_wheel,
+                    crypto_report["version"],
+                )
+            )
+            source_builds.append(crypto_report)
         run(
             [
                 uv,
@@ -147,9 +374,12 @@ def main(argv=None):
                 "--only-binary",
                 ":all:",
                 "-r",
-                ROOT / "packaging/runtime-requirements.txt",
+                requirements,
             ]
         )
+        if source_builds:
+            requirements.unlink()
+            shutil.rmtree(stage / "build-cryptography")
         wheel_dir = stage / "build-wheel"
         run([uv, "build", "--wheel", "--out-dir", wheel_dir, ROOT])
         wheel = next(wheel_dir.glob("llm_optimise-*.whl"))
@@ -171,12 +401,30 @@ def main(argv=None):
             path.unlink()
         for path in sorted((stage / "python").rglob("__pycache__"), reverse=True):
             shutil.rmtree(path, ignore_errors=True)
+        linux_pruning = None
+        if target.startswith("linux-"):
+            pruning_report = stage / "linux-runtime-pruning.json"
+            run(
+                [
+                    sys.executable,
+                    ROOT / "scripts/prune-linux-runtime.py",
+                    "--runtime",
+                    stage,
+                    "--output",
+                    pruning_report,
+                ]
+            )
+            linux_pruning = json.loads(pruning_report.read_text())
+            if linux_pruning.get("status") != "passed":
+                raise ValueError("Linux runtime pruning and linkage audit did not pass")
+            pruning_report.unlink()
         write_launchers(stage, target.startswith("windows"))
         shutil.copytree(ROOT / "packaging/python-licenses", stage / "licenses/python-distribution")
         (stage / "LICENSE-LLM-Optimise.txt").write_text((ROOT / "LICENSE").read_text())
         (stage / "THIRD-PARTY-NOTICES.txt").write_text(
             "This runtime includes CPython from Astral python-build-standalone and the Python dependencies listed in manifest.json.\n"
             "Their licenses remain in python/LICENSE*, python/share/, and package *.dist-info directories.\n"
+            "Source-built OpenSSL licensing, when present, is in licenses/openssl/LICENSE.txt.\n"
             "Source and licensing metadata: https://github.com/astral-sh/python-build-standalone\n"
             "The LLM-Optimise application source is MIT licensed. Models and accelerator runtimes are not bundled.\n"
         )
@@ -201,9 +449,12 @@ def main(argv=None):
             "dependency_lock_sha256": digest(ROOT / "packaging/runtime-requirements.txt"),
             "application_wheel_sha256": wheel_hash,
             "packages": inventory,
+            "source_built_dependencies": source_builds,
             "models_bundled": False,
             "mcp_included": True,
         }
+        if linux_pruning is not None:
+            manifest["linux_runtime_pruning"] = linux_pruning
         (stage / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
         # Moving the complete tree exposes absolute build-time path dependencies.
         relocated = stage / "relocated runtime with spaces"
@@ -218,6 +469,27 @@ def main(argv=None):
         observed = json.loads(subprocess.check_output([str(python), "-I", "-c", code], env=env))
         assert observed["python"] == pinned["python_version"]
         assert Path(observed["prefix"]).is_relative_to(relocated)
+        if source_builds:
+            source_builds[0]["relocated_linkage"] = inspect_macos_cryptography(
+                python, env, target, source_builds[0]["macos_deployment_target"]
+            )
+            crypto_check = "import cryptography; from cryptography.hazmat.backends.openssl.backend import backend; from cryptography.hazmat.primitives.asymmetric import rsa,padding; from cryptography.hazmat.primitives import hashes; key=rsa.generate_private_key(public_exponent=65537,key_size=2048); signature=key.sign(b'installer relocation',padding.PKCS1v15(),hashes.SHA256()); key.public_key().verify(signature,b'installer relocation',padding.PKCS1v15(),hashes.SHA256()); print(cryptography.__version__); print(backend.openssl_version_text())"
+            source_builds[0]["relocated_crypto_smoke"] = (
+                subprocess.check_output(
+                    [str(python), "-I", "-c", crypto_check],
+                    env=env,
+                    text=True,
+                    timeout=30,
+                )
+                .strip()
+                .splitlines()
+            )
+            smoke = source_builds[0]["relocated_crypto_smoke"]
+            if smoke[0] != source_builds[0]["version"] or not smoke[1].startswith(
+                "OpenSSL " + source_builds[0]["openssl_version"] + " "
+            ):
+                raise ValueError("Relocated cryptography/OpenSSL versions differ from source pins")
+            (relocated / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
         run([python, "-I", "-m", "llm_optimise.cli", "--help"])
         run([python, "-I", "-m", "llm_optimise.mcp_server", "--help"])
         if output.exists():
