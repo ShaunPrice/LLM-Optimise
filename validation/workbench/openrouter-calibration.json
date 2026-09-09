@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-09",
+  "model": "openai/gpt-4.1-nano",
+  "operation": "Intelligence.calibrate",
+  "network": "live OpenRouter",
+  "task_note": "Three synthetic comparisons verify calibration plumbing, not domain quality or a model ranking.",
+  "budget_usd": 0.01,
+  "result": {
+    "cancelled": false,
+    "budget_exceeded": false,
+    "requests": [
+      {
+        "model_id": "openrouter-gpt-4.1-nano",
+        "task_id": "0",
+        "score": 1.0,
+        "latency_ms": 2505.947249941528,
+        "cost_usd": 4.6e-06
+      },
+      {
+        "model_id": "openrouter-gpt-4.1-nano",
+        "task_id": "1",
+        "score": 1.0,
+        "latency_ms": 1748.362333048135,
+        "cost_usd": 4.6e-06
+      },
+      {
+        "model_id": "openrouter-gpt-4.1-nano",
+        "task_id": "2",
+        "score": 1.0,
+        "latency_ms": 1692.4818330444396,
+        "cost_usd": 4.6e-06
+      }
+    ],
+    "accounted_cost_usd": 1.38e-05,
+    "reserved_estimate_usd": 0.00014159999999999997,
+    "note": "Budget is an estimate; provider-reported costs are not a billing cap. Latency excludes cache hits; quality is task-specific."
+  },
+  "calibrated_quality_lower_bound": 0.4384939195509822,
+  "evidence": {
+    "openrouter-gpt-4.1-nano": {
+      "samples": 3,
+      "latency_samples": 3,
+      "quality_samples": 3,
+      "latency_ms": 1748.362333048135,
+      "quality_mean": 1.0,
+      "quality_lower_95": 0.4384939195509822,
+      "failures": 0
+    }
+  },
+  "price_source": "https://openrouter.ai/api/v1/models"
+}

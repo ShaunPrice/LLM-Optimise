@@ -53,6 +53,7 @@ def lab(tmp_path):
         + textwrap.dedent("""
         import json, os, sys, time
         from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+        from socketserver import TCPServer
         args = sys.argv[1:]
         flags = "--model --gpu-layers --no-kv-offload --no-op-offload --list-devices --device --spec-draft-model --spec-draft-n-max --spec-draft-ngl --spec-draft-device --spec-type"
         if '--help' in args:
@@ -88,7 +89,13 @@ def lab(tmp_path):
                 if '--spec-draft-model' in args:
                     final.update(draft_n=8, draft_n_accepted=6)
                 self.wfile.write(('data: ' + json.dumps(final) + '\\n\\n').encode()); self.wfile.flush()
-        server = ThreadingHTTPServer(('127.0.0.1', int(value('--port'))), Handler)
+        class FixtureServer(ThreadingHTTPServer):
+            def server_bind(self):
+                # HTTPServer.server_bind reverse-resolves even numeric loopback hosts.
+                # This local protocol fixture must not depend on the host's DNS service.
+                TCPServer.server_bind(self)
+                self.server_name, self.server_port = self.server_address[:2]
+        server = FixtureServer(('127.0.0.1', int(value('--port'))), Handler)
         print('fixture listening ' + repr(server.server_address) + ' pid=' + str(os.getpid()), flush=True)
         server.serve_forever()
     """)
@@ -128,6 +135,26 @@ def lab(tmp_path):
         },
     }
     return spec, tmp_path, runtime
+
+
+def test_fixture_loopback_startup_needs_no_reverse_dns(lab):
+    spec, root, runtime = lab
+    script = runtime.with_suffix(".py") if os.name == "nt" else runtime
+    script.write_text(
+        script.read_text().replace(
+            "args = sys.argv[1:]",
+            "import socket\n"
+            "socket.getfqdn = lambda *_args: sys.exit('unexpected reverse DNS lookup')\n"
+            "args = sys.argv[1:]",
+        )
+    )
+    spec["capacity"] = {"dimensions": {"context": [512]}}
+    result = run_exploration(spec, root / "no-dns")
+    assert result["selected_candidate"] == "capacity-001", _diagnostics(result, root / "no-dns")
+    assert all(
+        not psutil.pid_exists(int(pid))
+        for pid in (root / "good.gguf.pids").read_text().splitlines()
+    )
 
 
 def test_parse_object_is_portable_and_does_not_mutate(tmp_path):

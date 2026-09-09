@@ -2,7 +2,9 @@
   "macos_arm64": {
     "filename": "llm-supervisor",
     "bytes": 648976,
-    "sha256": "965c45d9598a3160db5727b11f74c1e0355de95d5f037c3686ac9be2d3d868fc"
+    "sha256": "e9f35e9e0bc4a457881ecff088a3b5e6a1c9174137e6ba4e7a54b59c6632f011",
+    "profiled_sha256": "965c45d9598a3160db5727b11f74c1e0355de95d5f037c3686ac9be2d3d868fc",
+    "rebuild_note": "Rebuilt after platform-specific exit-code lint fix; profiling refers to profiled_sha256. Final rebuilt binary passes native integration tests."
   },
   "windows_x64": {
     "filename": "llm-supervisor-windows-x64.exe",

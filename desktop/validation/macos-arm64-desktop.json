@@ -4,7 +4,7 @@
   "python_sidecar_http_passed": true,
   "application_state_http_passed": true,
   "owned_service_closed_after_app_exit": true,
-  "load_and_http_check_seconds": 1.0829626249615103,
+  "load_and_http_check_seconds": 0.576699584024027,
   "python_environment": "selected application virtual environment",
   "binary": "macOS arm64 app bundle",
   "signed_for_distribution": false,

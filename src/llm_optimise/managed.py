@@ -95,10 +95,9 @@ class ManagedModels:
         exe = data.get("executable", "llama-server")
         if "/" in exe or "\\" in exe:
             exe = str((self.app.workspace / exe).resolve())
-        if values.get("supervisor_executable"):
-            values["supervisor_executable"] = str(
-                (self.app.workspace / values["supervisor_executable"]).resolve()
-            )
+        native = values.get("supervisor_executable")
+        if native and ("/" in native or "\\" in native):
+            values["supervisor_executable"] = str((self.app.workspace / native).resolve())
         candidate = Candidate(name=model_id, model=str(model_path), executable=exe, **values)
         stat = model_path.stat()
         key = fingerprint(

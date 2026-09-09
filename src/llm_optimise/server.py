@@ -170,12 +170,15 @@ class App:
         config["dataset"] = str((self.workspace / config["dataset"]).resolve())
         for candidate in config.get("candidates", []):
             if candidate.get("backend", "llama.cpp") == "llama.cpp":
-                for key in ("model", "draft_model", "supervisor_executable"):
+                for key in ("model", "draft_model"):
                     if candidate.get(key):
                         candidate[key] = str((self.workspace / candidate[key]).resolve())
                 exe = candidate.get("executable", "llama-server")
                 if "/" in exe or "\\" in exe:
                     candidate["executable"] = str((self.workspace / exe).resolve())
+                native = candidate.get("supervisor_executable")
+                if native and ("/" in native or "\\" in native):
+                    candidate["supervisor_executable"] = str((self.workspace / native).resolve())
         write_json(config_path, config)
         experiment = load_experiment(config_path)
         from .quality import load_tasks

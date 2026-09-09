@@ -91,7 +91,8 @@ def test_focused_generation_blocks_missing_facts_before_provider(tmp_path):
     assert not app.jobs
 
 
-def test_managed_supervisor_path_uses_workspace_not_service_cwd(tmp_path, monkeypatch):
+@pytest.mark.parametrize("supervisor", ["native/llm-supervisor", "llm-supervisor"])
+def test_managed_supervisor_path_uses_workspace_not_service_cwd(tmp_path, monkeypatch, supervisor):
     from llm_optimise import managed
 
     app = App(tmp_path)
@@ -110,9 +111,10 @@ def test_managed_supervisor_path_uses_workspace_not_service_cwd(tmp_path, monkey
                 {
                     "model": "model.gguf",
                     "gpu_layers": 0,
-                    "supervisor_executable": "native/llm-supervisor",
+                    "supervisor_executable": supervisor,
                 }
             )
-        assert captured[0].supervisor_executable == str(tmp_path / "native/llm-supervisor")
+        expected = str(tmp_path / supervisor) if "/" in supervisor else supervisor
+        assert captured[0].supervisor_executable == expected
     finally:
         app.managed.close()

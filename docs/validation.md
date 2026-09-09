@@ -23,7 +23,7 @@ RSS is sampled every 50 ms for the managed process tree and can miss short peaks
 
 Paths in the published JSON are replaced with `<workspace>`; hashes, numerical observations and trial order are retained. The fingerprint refers to the original run. To reproduce, download the licensed model, install a compatible runtime, update the executable path, and use a new output directory. Hardware, thermal state, background load and runtime versions affect results.
 
-## Software and integration checks
+## Initial software and integration checks
 
 - 150 local automated tests pass, including routing constraints, unknown metrics, strict evaluation, bounded sweeps, stale proposals, atomic replacement failure, protocol adapters, request truncation, CSRF, redirect refusal and managed process cleanup.
 - Ruff lint/format and JavaScript syntax checks pass.
@@ -42,7 +42,7 @@ The image was rebuilt after the OpenRouter/report-loader changes and again serve
 
 ## Coverage limits
 
-Soup MLX training on Mac and CUDA training through WSL on Omen now have live validation. Native Windows training, llama.cpp NVIDIA inference/telemetry, speculative decoding, lower-precision KV caches and external high-concurrency servers remain unvalidated. Linux and Windows CI establish software behaviour in those runners, not accelerator or driver compatibility. Router scores use configured estimates and do not yet learn automatically from production agent traffic. The benchmark workload is sequential.
+Soup MLX training on Mac and CUDA training through WSL on Omen have live validation. Native Windows training, llama.cpp NVIDIA inference/telemetry, real speculative decoding benefits and external high-concurrency servers remain unvalidated. Later workbench checks below add lower-precision KV cache coverage on Mac. Linux and Windows CI establish software behaviour in those runners, not accelerator or driver compatibility. Routing calibration now uses matching task-scoped observations; unscored production responses do not establish task quality. The benchmark workload is sequential.
 
 The bundled tasks are not a specialised-domain benchmark. Replace them with held-out task data and evaluate accuracy, latency, memory and failure behaviour before choosing a configuration for real use. The application searches bounded configurations; it does not prove an exhaustive hardware limit.
 
@@ -61,14 +61,15 @@ Soup 0.74.0 at pinned revision `254351e` was installed in separate environments 
 - **Mac / MLX:** 0.5B four-bit Qwen model, 12 steps, 8.061 seconds training-loop time, 0.388 GiB MLX allocation peak and 0.530 GiB OS process RSS high-water. All 96 saved adapter tensors attached correctly. [Mac evidence](../validation/soup-mac/README.md).
 - **Omen / CUDA via WSL:** RTX 5090 Laptop, 24 GiB VRAM; resident and streaming four-bit 135M-model tests both completed eight optimiser steps. Fresh reloads matched all 120 saved tensors in each adapter. Timing and memory definitions are in the [Omen evidence](../validation/soup-omen/README.md).
 
-Neither tiny training exercise establishes useful domain quality. The Omen model remained verbose on the label task, even though training and adapter updates worked. Layer streaming was tested on Omen; the Mac uses resident MLX LoRA. The GUI still exports recipes; these validation scripts execute the training separately. Proposed in-app training orchestration and Rust work are described in the [performance roadmap](performance-roadmap.md).
+Neither tiny training exercise establishes useful domain quality. The Omen model remained verbose on the label task, even though training and adapter updates worked. Layer streaming was tested on Omen; the Mac uses resident MLX LoRA. These initial validation scripts executed training separately. The implemented workbench now orchestrates training and adapter evaluation through the GUI and CLI, with the newer Mac API check recorded below. See the [implemented performance roadmap](performance-roadmap.md).
 
 ## Implemented workbench validation — 9 September 2026
 
-The 16 roadmap additions now have executable paths shared by the GUI and CLI. The integrated local Python suite passes **316 tests**, including real fixture processes, budget/cache/contract tests, grouped datasets, isolated training worker controls, lifecycle admission, cancellation and native process integration. Ruff checks and formatting pass; both JavaScript files pass syntax checks. The wheel builds, and the Docker application successfully runs `workbench status` with networking disabled and a 128 MiB container limit. These software checks do not establish every accelerator or domain workload.
+The 16 roadmap additions now have executable paths shared by the GUI and CLI. The integrated local Python suite passes **318 tests**, including real fixture processes, budget/cache/contract tests, grouped datasets, isolated training worker controls, lifecycle admission, cancellation and native process integration. Ruff checks and formatting pass; both JavaScript files pass syntax checks. The wheel builds, and the Docker application successfully runs `workbench status` with networking disabled and a 128 MiB container limit. These software checks do not establish every accelerator or domain workload.
 
 | Live check | Observed result | Evidence |
 |---|---|---|
+| OpenRouter routing calibration | Three live synthetic comparisons scored 3/3, while the conservative 95% quality lower bound remained 0.4385. Provider-reported total US$0.0000138 within a US$0.01 estimated budget; this verifies calibration, not domain quality. | [Calibration](../validation/workbench/openrouter-calibration.json) |
 | Mac accelerator explorer | Same Qwen2.5-Coder-1.5B Q4 model and six smoke tasks: CPU p50 256 ms, Metal p50 120 ms; both task quality 1.0 in this single-repeat run. Sampled RSS 1.98/1.08 GiB. | [CPU/Metal](../validation/workbench/mac-accelerators.json) |
 | Mac KV/context explorer | 512/1024 contexts and f16/q8_0 caches ran and passed the six smoke tasks. Reports retain the measured frontier and incomparable GPU telemetry. | [KV observations](../validation/workbench/mac-kv.json) |
 | Mac managed Rust inference | Loaded a real GGUF under Rust ownership, generated YES, returned an exact cache hit, unloaded and generated NO after a fresh worker reload. Single cache lookup ~0.52 ms versus original request ~77.6 ms; not an average cache benchmark. | [Managed model/cache/reload](../validation/workbench/mac-managed-native.json) |
