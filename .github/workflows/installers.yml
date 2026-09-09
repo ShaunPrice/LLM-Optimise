@@ -1,0 +1,94 @@
+name: Build and validate installers
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: installers-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  installer:
+    if: github.ref == 'refs/heads/main'
+    name: ${{ matrix.platform }}-${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos
+            arch: arm64
+            runner: macos-15
+          - platform: macos
+            arch: x64
+            runner: macos-15-intel
+          - platform: windows
+            arch: x64
+            runner: windows-latest
+          - platform: linux
+            arch: x64
+            runner: ubuntu-22.04
+            fuse_package: libfuse2
+          - platform: linux
+            arch: arm64
+            runner: ubuntu-24.04-arm
+            fuse_package: libfuse2t64
+    env:
+      CARGO_TERM_COLOR: always
+      APPIMAGE_EXTRACT_AND_RUN: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.95.0'
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: '0.10.4'
+          enable-cache: false
+      - name: Install Linux build and native smoke prerequisites
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf xvfb xauth dbus-x11 ${{ matrix.fuse_package }}
+      - name: Install locked desktop build tools
+        run: npm ci --prefix desktop
+      - name: Build the pinned standalone Python runtime and preserve licenses
+        run: python scripts/build-bundled-runtime.py
+      - name: Build the desktop with bundled resources
+        run: npm run build --prefix desktop -- --config src-tauri/tauri.bundle.conf.json -- --locked
+      - name: Package platform installers and checksums
+        run: python scripts/package-installers.py --platform ${{ matrix.platform }} --arch ${{ matrix.arch }} --version 0.1.1 --output dist/installers
+      - name: Validate installed Linux packages in a native webview
+        if: runner.os == 'Linux'
+        run: xvfb-run -a dbus-run-session -- python scripts/verify-installer.py --artifacts dist/installers --output dist/installers/validation-${{ matrix.platform }}-${{ matrix.arch }}.json
+      - name: Validate installed macOS or Windows package in a native webview
+        if: runner.os != 'Linux'
+        run: python scripts/verify-installer.py --artifacts dist/installers --output dist/installers/validation-${{ matrix.platform }}-${{ matrix.arch }}.json
+      - name: Upload installers only after package acceptance passes
+        uses: actions/upload-artifact@v4
+        with:
+          name: llm-optimise-0.1.1-${{ matrix.platform }}-${{ matrix.arch }}
+          path: dist/installers/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+      - name: Retain failure evidence without publishing an accepted installer
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: installer-failure-${{ matrix.platform }}-${{ matrix.arch }}
+          path: |
+            dist/installers/validation-*.json
+            dist/installers/*-artifacts/
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1,10 +1,13 @@
-"""Managed desktop sidecar using the user's selected Python installation."""
+"""Managed loopback sidecar running inside the bundled or selected Python."""
 
 import argparse
 import json
+import os
+import platform
 import signal
 import sys
 import threading
+from importlib import metadata, resources
 
 
 def main():
@@ -17,7 +20,7 @@ def main():
         print(
             json.dumps(
                 {
-                    "error": "This Python environment needs llm-optimise installed. Run: <selected-python> -m pip install /path/to/LLM-Optimise",
+                    "error": "LLM-Optimise is missing from this runtime. Reinstall the full desktop package, or install llm-optimise into the custom Python selected in Advanced.",
                     "detail": str(exc),
                 }
             ),
@@ -44,6 +47,14 @@ def main():
                 "ready": True,
                 "url": f"http://127.0.0.1:{server.server_address[1]}",
                 "workspace": args.workspace,
+                "python_executable": sys.executable,
+                "python_prefix": sys.prefix,
+                "python_version": platform.python_version(),
+                "package_version": metadata.version("llm-optimise"),
+                "pid": os.getpid(),
+                "sample_data_available": resources.files("llm_optimise")
+                .joinpath("data/tasks.jsonl")
+                .is_file(),
             }
         ),
         flush=True,

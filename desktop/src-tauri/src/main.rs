@@ -4,8 +4,8 @@ use llm_supervisor::OwnedProcess;
 use serde::{Deserialize, Serialize};
 use std::{
     fs,
-    io::{BufRead, BufReader, Write},
-    path::{Path, PathBuf},
+    io::{BufRead, BufReader, Read, Write},
+    path::{Component, Path, PathBuf},
     process::{ChildStdin, Command, Stdio},
     sync::{Mutex, mpsc},
     thread,
@@ -17,15 +17,137 @@ use tauri::{
     tray::TrayIconBuilder,
 };
 
-#[derive(Default, Clone, Serialize, Deserialize)]
+#[derive(Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+enum RuntimeMode {
+    #[default]
+    Bundled,
+    Custom,
+}
+
+#[derive(Clone, Serialize, Deserialize, Debug)]
+#[serde(default)]
 struct Settings {
+    format_version: u32,
+    runtime_mode: RuntimeMode,
     interpreter: String,
     workspace: String,
 }
+impl Default for Settings {
+    fn default() -> Self {
+        Self {
+            format_version: 2,
+            runtime_mode: RuntimeMode::Bundled,
+            interpreter: String::new(),
+            workspace: String::new(),
+        }
+    }
+}
+impl Settings {
+    fn normalise(mut self) -> Self {
+        self.format_version = 2;
+        if self.runtime_mode == RuntimeMode::Bundled {
+            self.interpreter.clear();
+        }
+        self
+    }
+}
+
+#[derive(Serialize)]
+struct LauncherDefaults {
+    #[serde(flatten)]
+    settings: Settings,
+    bundled_available: bool,
+    bundled_error: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct RuntimeManifest {
+    format_version: u32,
+    interpreter: String,
+}
+
+fn legacy_bundle_path(value: &str) -> bool {
+    let value = value.replace('\\', "/").to_ascii_lowercase();
+    [
+        "/runtime/python/bin/python3",
+        "/runtime/python/bin/python",
+        "/runtime/python/python.exe",
+    ]
+    .iter()
+    .any(|suffix| value.ends_with(suffix))
+}
+
+fn decode_settings(bytes: &[u8]) -> Result<Settings, String> {
+    let document: serde_json::Value = serde_json::from_slice(bytes).map_err(|e| e.to_string())?;
+    let mut settings: Settings =
+        serde_json::from_value(document.clone()).map_err(|e| e.to_string())?;
+    if document.get("runtime_mode").is_none() && !settings.interpreter.is_empty() {
+        settings.runtime_mode = if legacy_bundle_path(&settings.interpreter) {
+            RuntimeMode::Bundled
+        } else {
+            RuntimeMode::Custom
+        };
+    }
+    Ok(settings.normalise())
+}
+
+fn bundled_python(resource_dir: &Path) -> Result<PathBuf, String> {
+    let runtime = resource_dir.join("runtime");
+    let manifest_path = runtime.join("manifest.json");
+    let info = fs::metadata(&manifest_path).map_err(|_| {
+        "This build has no bundled runtime. Install the full desktop package, or select a custom Python in Advanced settings.".to_string()
+    })?;
+    if info.len() > 65536 {
+        return Err("The bundled runtime manifest is invalid. Reinstall the application.".into());
+    }
+    let manifest: RuntimeManifest =
+        serde_json::from_slice(&fs::read(manifest_path).map_err(|e| e.to_string())?)
+            .map_err(|_| "The bundled runtime manifest is invalid. Reinstall the application.")?;
+    let relative = Path::new(&manifest.interpreter);
+    if manifest.format_version != 1
+        || manifest.interpreter.is_empty()
+        || relative.is_absolute()
+        || relative
+            .components()
+            .any(|part| !matches!(part, Component::Normal(_)))
+    {
+        return Err("The bundled runtime manifest uses an unsupported format or path.".into());
+    }
+    let root = runtime.canonicalize().map_err(|e| e.to_string())?;
+    let interpreter = root.join(relative).canonicalize().map_err(|_| {
+        "The bundled Python is missing. Reinstall the application; no system Python is required.".to_string()
+    })?;
+    if !interpreter.is_file() || !interpreter.starts_with(&root) {
+        return Err(
+            "The bundled interpreter must be a file inside the application runtime.".into(),
+        );
+    }
+    Ok(interpreter)
+}
+
+fn resolve_python(resource_dir: &Path, settings: &Settings) -> Result<PathBuf, String> {
+    match settings.runtime_mode {
+        RuntimeMode::Bundled => bundled_python(resource_dir),
+        RuntimeMode::Custom => {
+            let path = PathBuf::from(&settings.interpreter);
+            if !path.is_absolute() || !path.is_file() {
+                return Err(
+                    "Select an existing custom Python executable using its absolute path.".into(),
+                );
+            }
+            // Preserve venv executable identity rather than canonicalising its symlink.
+            Ok(path)
+        }
+    }
+}
+
 struct Service {
     process: OwnedProcess,
     input: Option<ChildStdin>,
     url: String,
+    settings: Settings,
+    evidence: serde_json::Value,
 }
 impl Drop for Service {
     fn drop(&mut self) {
@@ -58,14 +180,24 @@ fn settings_path(app: &tauri::AppHandle) -> Result<PathBuf, String> {
         .map_err(|e| e.to_string())
 }
 #[tauri::command]
-fn defaults(app: tauri::AppHandle) -> Settings {
+fn defaults(app: tauri::AppHandle) -> LauncherDefaults {
     let mut value = settings_path(&app)
         .ok()
         .and_then(|p| fs::read(p).ok())
-        .and_then(|b| serde_json::from_slice::<Settings>(&b).ok())
+        .and_then(|b| decode_settings(&b).ok())
         .unwrap_or_default();
-    if let Ok(python) = std::env::var("LLM_OPTIMISE_PYTHON") {
+    if let Ok(python) = std::env::var("LLM_OPTIMISE_PYTHON")
+        && !python.is_empty()
+    {
         value.interpreter = python;
+        value.runtime_mode = RuntimeMode::Custom;
+    }
+    if let Ok(mode) = std::env::var("LLM_OPTIMISE_RUNTIME_MODE") {
+        match mode.as_str() {
+            "bundled" => value.runtime_mode = RuntimeMode::Bundled,
+            "custom" => value.runtime_mode = RuntimeMode::Custom,
+            _ => (),
+        }
     }
     if let Ok(workspace) = std::env::var("LLM_OPTIMISE_WORKSPACE") {
         value.workspace = workspace;
@@ -74,44 +206,53 @@ fn defaults(app: tauri::AppHandle) -> Settings {
         value.workspace = app
             .path()
             .document_dir()
-            .unwrap_or_else(|_| PathBuf::from("."))
+            .or_else(|_| app.path().app_data_dir())
+            .unwrap_or_else(|_| std::env::temp_dir())
             .join("LLM-Optimise")
             .to_string_lossy()
             .into();
     }
-    value
+    let runtime = app
+        .path()
+        .resource_dir()
+        .map_err(|e| e.to_string())
+        .and_then(|resource| bundled_python(&resource));
+    LauncherDefaults {
+        settings: value.normalise(),
+        bundled_available: runtime.is_ok(),
+        bundled_error: runtime.err(),
+    }
 }
 
-fn launch(app: &tauri::AppHandle, interpreter: &str, workspace: &str) -> Result<Service, String> {
-    let python = Path::new(interpreter);
-    if !python.is_absolute() || !python.is_file() {
-        return Err("Select an existing Python executable using its absolute path.".into());
-    }
-    let workspace = Path::new(workspace);
+fn launch(app: &tauri::AppHandle, settings: &Settings) -> Result<Service, String> {
+    let resources = app.path().resource_dir().map_err(|e| e.to_string())?;
+    let python = resolve_python(&resources, settings)?;
+    let workspace = Path::new(&settings.workspace);
     if !workspace.is_absolute() {
         return Err("The workspace must be an absolute directory path.".into());
     }
     fs::create_dir_all(workspace).map_err(|e| format!("Cannot create workspace: {e}"))?;
-    let script = app
-        .path()
-        .resource_dir()
-        .map_err(|e| e.to_string())?
-        .join("service.py");
-    let script = if script.is_file() {
-        script
-    } else {
-        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("resources/service.py")
-    };
+    let mut script = resources.join("service.py");
+    if cfg!(debug_assertions) && !script.is_file() {
+        script = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("resources/service.py");
+    }
+    if !script.is_file() {
+        return Err(
+            "The desktop service is missing. Reinstall the full application package.".into(),
+        );
+    }
     let logs = workspace.join(".llm-optimise").join("desktop");
     fs::create_dir_all(&logs).map_err(|e| e.to_string())?;
     let log = fs::File::create(logs.join("service.log")).map_err(|e| e.to_string())?;
-    let mut command = Command::new(python);
+    let mut command = Command::new(&python);
     command
         .args(["-I", "-u"])
         .arg(script)
         .arg("--workspace")
         .arg(workspace)
         .current_dir(workspace)
+        .env_remove("PYTHONHOME")
+        .env_remove("PYTHONPATH")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(log);
@@ -125,7 +266,9 @@ fn launch(app: &tauri::AppHandle, interpreter: &str, workspace: &str) -> Result<
     let (tx, rx) = mpsc::channel();
     thread::spawn(move || {
         let mut line = String::new();
-        let result = BufReader::new(output).read_line(&mut line).map(|_| line);
+        let result = BufReader::new(output.take(65536))
+            .read_line(&mut line)
+            .map(|_| line);
         let _ = tx.send(result);
     });
     let line=rx.recv_timeout(Duration::from_secs(30)).map_err(|_|"Python startup timed out. Inspect .llm-optimise/desktop/service.log in the workspace.")?.map_err(|e|e.to_string())?;
@@ -147,6 +290,7 @@ fn launch(app: &tauri::AppHandle, interpreter: &str, workspace: &str) -> Result<
         || parsed.password().is_some()
         || parsed.query().is_some()
         || parsed.fragment().is_some()
+        || parsed.path() != "/"
     {
         return Err("Service must use its own loopback-only HTTP endpoint.".into());
     }
@@ -155,10 +299,18 @@ fn launch(app: &tauri::AppHandle, interpreter: &str, workspace: &str) -> Result<
         process,
         input,
         url,
+        settings: settings.clone(),
+        evidence: serde_json::json!({
+            "runtime_mode": settings.runtime_mode,
+            "resolved_interpreter": python,
+            "resource_dir": resources,
+            "sidecar": result,
+        }),
     })
 }
 
-fn show_lab(app: &tauri::AppHandle, url: &str) -> Result<(), String> {
+fn show_lab(app: &tauri::AppHandle, service: &Service) -> Result<(), String> {
+    let url = &service.url;
     if let Some(window) = app.get_webview_window("lab") {
         // Recreate the window when a crashed service receives a new loopback port;
         // its navigation policy is bound to the previous service origin.
@@ -177,16 +329,53 @@ fn show_lab(app: &tauri::AppHandle, url: &str) -> Result<(), String> {
     }
     let origin = url.to_string();
     let handle = app.clone();
-    let window=WebviewWindowBuilder::new(app,"lab",WebviewUrl::External(url.parse().map_err(|_|"Invalid URL")?))
-        .title("LLM-Optimise · Laboratory").inner_size(1320.0,880.0).min_inner_size(900.0,620.0)
-        .on_navigation(move |target|target.as_str()==origin || target.as_str().starts_with(&(origin.clone()+"/")))
-        .on_page_load(move |_window,payload| {
-            if payload.event()==tauri::webview::PageLoadEvent::Finished
-                && let Some(path)=std::env::var_os("LLM_OPTIMISE_DESKTOP_TEST_REPORT") {
-                    let _=fs::write(path,serde_json::to_vec_pretty(&serde_json::json!({"event":"native_webview_loaded","url":payload.url().as_str(),"tauri":2,"sidecar":"selected Python interpreter"})).unwrap());
-                    if std::env::var_os("LLM_OPTIMISE_DESKTOP_SMOKE_EXIT").is_some() {let app=handle.clone();thread::spawn(move || {thread::sleep(Duration::from_millis(500));app.exit(0);});}
+    let evidence = service.evidence.clone();
+    let window = WebviewWindowBuilder::new(
+        app,
+        "lab",
+        WebviewUrl::External(url.parse().map_err(|_| "Invalid URL")?),
+    )
+    .title("LLM-Optimise · Laboratory")
+    .inner_size(1320.0, 880.0)
+    .min_inner_size(900.0, 620.0)
+    .on_navigation(move |target| {
+        target.as_str() == origin || target.as_str().starts_with(&(origin.clone() + "/"))
+    })
+    .on_page_load(move |_window, payload| {
+        if payload.event() == tauri::webview::PageLoadEvent::Finished
+            && let Some(path) = std::env::var_os("LLM_OPTIMISE_DESKTOP_TEST_REPORT")
+        {
+            let mut report = evidence.clone();
+            report["event"] = "native_webview_loaded".into();
+            report["url"] = payload.url().as_str().into();
+            report["tauri"] = 2.into();
+            let path = PathBuf::from(path);
+            let temporary = path.with_extension("tmp");
+            if let Ok(bytes) = serde_json::to_vec_pretty(&report)
+                && fs::write(&temporary, bytes).is_ok()
+            {
+                let _ = fs::rename(temporary, path);
             }
-        }).build().map_err(|e|e.to_string())?;
+            if std::env::var_os("LLM_OPTIMISE_DESKTOP_SMOKE_EXIT").is_some() {
+                let app = handle.clone();
+                thread::spawn(move || {
+                    if let Some(stop) = std::env::var_os("LLM_OPTIMISE_DESKTOP_TEST_STOP") {
+                        for _ in 0..1200 {
+                            if Path::new(&stop).exists() {
+                                break;
+                            }
+                            thread::sleep(Duration::from_millis(50));
+                        }
+                    } else {
+                        thread::sleep(Duration::from_secs(5));
+                    }
+                    app.exit(0);
+                });
+            }
+        }
+    })
+    .build()
+    .map_err(|e| e.to_string())?;
     let copy = window.clone();
     window.on_window_event(move |event| {
         if let tauri::WindowEvent::CloseRequested { api, .. } = event {
@@ -201,40 +390,47 @@ fn show_lab(app: &tauri::AppHandle, url: &str) -> Result<(), String> {
 async fn start_service(
     app: tauri::AppHandle,
     state: State<'_, AppState>,
-    interpreter: String,
+    interpreter: Option<String>,
     workspace: String,
+    runtime_mode: Option<RuntimeMode>,
 ) -> Result<serde_json::Value, String> {
+    let selected = Settings {
+        runtime_mode: runtime_mode.unwrap_or_default(),
+        interpreter: interpreter.unwrap_or_default(),
+        workspace,
+        ..Settings::default()
+    }
+    .normalise();
     let mut service = state
         .service
         .lock()
         .map_err(|_| "Service state unavailable")?;
     if let Some(running) = service.as_mut() {
         if !running.process.exited().unwrap_or(true) {
-            show_lab(&app, &running.url)?;
+            if running.settings.workspace != selected.workspace
+                || running.settings.runtime_mode != selected.runtime_mode
+                || running.settings.interpreter != selected.interpreter
+            {
+                return Err("The laboratory is already open with different settings. Stop its local service in Advanced before switching workspace or runtime.".into());
+            }
+            show_lab(&app, running)?;
             return Ok(serde_json::json!({"url":running.url}));
         }
         *service = None;
     }
-    let running = launch(&app, &interpreter, &workspace)?;
+    let running = launch(&app, &selected)?;
     let url = running.url.clone();
-    *service = Some(running);
-    if let Err(error) = show_lab(&app, &url) {
-        *service = None;
-        return Err(error);
-    }
     let path = settings_path(&app)?;
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
     fs::write(
         path,
-        serde_json::to_vec_pretty(&Settings {
-            interpreter,
-            workspace,
-        })
-        .map_err(|e| e.to_string())?,
+        serde_json::to_vec_pretty(&selected).map_err(|e| e.to_string())?,
     )
     .map_err(|e| e.to_string())?;
+    show_lab(&app, &running)?;
+    *service = Some(running);
     Ok(serde_json::json!({"url":url}))
 }
 #[tauri::command]
@@ -304,8 +500,9 @@ fn main() {
                     let result = start_service(
                         handle.clone(),
                         handle.state::<AppState>(),
-                        selected.interpreter,
-                        selected.workspace,
+                        Some(selected.settings.interpreter),
+                        selected.settings.workspace,
+                        Some(selected.settings.runtime_mode),
                     )
                     .await;
                     if let Err(error) = result {
@@ -326,4 +523,176 @@ fn main() {
             }
         }
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::{AtomicU64, Ordering};
+    static NEXT: AtomicU64 = AtomicU64::new(0);
+
+    struct Fixture(PathBuf);
+    impl Fixture {
+        fn new() -> Self {
+            let path = std::env::temp_dir().join(format!(
+                "llm-desktop-runtime-{}-{}",
+                std::process::id(),
+                NEXT.fetch_add(1, Ordering::Relaxed)
+            ));
+            fs::create_dir_all(&path).unwrap();
+            Self(path)
+        }
+        fn runtime(&self, relative: &str) -> PathBuf {
+            let runtime = self.0.join("runtime");
+            let python = runtime.join(relative);
+            fs::create_dir_all(python.parent().unwrap()).unwrap();
+            fs::write(&python, b"test interpreter placeholder").unwrap();
+            fs::write(runtime.join("manifest.json"), serde_json::to_vec(&serde_json::json!({"format_version":1,"interpreter":relative,"python_version":"test"})).unwrap()).unwrap();
+            python
+        }
+    }
+    impl Drop for Fixture {
+        fn drop(&mut self) {
+            let _ = fs::remove_dir_all(&self.0);
+        }
+    }
+
+    #[test]
+    fn fresh_install_uses_bundled_without_interpreter_setting() {
+        let settings = Settings::default();
+        assert_eq!(settings.runtime_mode, RuntimeMode::Bundled);
+        assert!(settings.interpreter.is_empty());
+    }
+
+    #[test]
+    fn legacy_custom_environment_remains_an_explicit_custom_choice() {
+        let value = decode_settings(
+            br#"{"interpreter":"/home/user/.venv/bin/python","workspace":"/home/user/lab"}"#,
+        )
+        .unwrap();
+        assert_eq!(value.runtime_mode, RuntimeMode::Custom);
+        assert_eq!(value.interpreter, "/home/user/.venv/bin/python");
+        assert_eq!(value.workspace, "/home/user/lab");
+        assert_eq!(value.format_version, 2);
+    }
+
+    #[test]
+    fn legacy_bundled_locations_are_migrated_without_stale_paths() {
+        for old in [
+            "/Applications/Old.app/Contents/Resources/runtime/python/bin/python3",
+            "C:\\Old\\runtime\\python\\python.exe",
+        ] {
+            let bytes = serde_json::to_vec(
+                &serde_json::json!({"interpreter":old,"workspace":"saved-workspace"}),
+            )
+            .unwrap();
+            let settings = decode_settings(&bytes).unwrap();
+            assert_eq!(settings.runtime_mode, RuntimeMode::Bundled);
+            assert!(settings.interpreter.is_empty());
+            assert_eq!(settings.workspace, "saved-workspace");
+        }
+    }
+
+    #[test]
+    fn explicit_custom_choice_is_never_reclassified_by_its_filename() {
+        let settings = decode_settings(
+            br#"{"runtime_mode":"custom","interpreter":"/custom/runtime/python/bin/python3"}"#,
+        )
+        .unwrap();
+        assert_eq!(settings.runtime_mode, RuntimeMode::Custom);
+        assert!(!settings.interpreter.is_empty());
+    }
+
+    #[test]
+    fn bundled_setting_never_persists_an_absolute_interpreter() {
+        let settings = decode_settings(
+            br#"{"runtime_mode":"bundled","interpreter":"/stale/path","workspace":"my-workspace"}"#,
+        )
+        .unwrap();
+        let persisted = serde_json::to_value(settings).unwrap();
+        assert_eq!(persisted["interpreter"], "");
+        assert_eq!(persisted["workspace"], "my-workspace");
+    }
+
+    #[test]
+    fn bundle_is_resolved_again_after_move_and_interpreter_upgrade() {
+        let fixture = Fixture::new();
+        fixture.runtime("python/bin/python3");
+        let settings = Settings::default();
+        let original = resolve_python(&fixture.0, &settings).unwrap();
+        let moved = Fixture::new();
+        fs::rename(fixture.0.join("runtime"), moved.0.join("runtime")).unwrap();
+        let new_path = resolve_python(&moved.0, &settings).unwrap();
+        assert_ne!(original, new_path);
+        assert!(new_path.starts_with(moved.0.canonicalize().unwrap()));
+        moved.runtime("python/bin/python-new");
+        assert!(
+            resolve_python(&moved.0, &settings)
+                .unwrap()
+                .ends_with("python-new")
+        );
+    }
+
+    #[test]
+    fn source_build_missing_runtime_does_not_search_system_path() {
+        let fixture = Fixture::new();
+        assert!(
+            resolve_python(&fixture.0, &Settings::default())
+                .unwrap_err()
+                .contains("no bundled runtime")
+        );
+    }
+
+    #[test]
+    fn manifest_rejects_unknown_version_absolute_and_traversal_paths() {
+        let fixture = Fixture::new();
+        fixture.runtime("python/bin/python3");
+        for (version, path) in [
+            (2, "python/bin/python3"),
+            (1, "../outside"),
+            (1, "/outside"),
+            (1, ""),
+        ] {
+            fs::write(
+                fixture.0.join("runtime/manifest.json"),
+                serde_json::to_vec(
+                    &serde_json::json!({"format_version":version,"interpreter":path}),
+                )
+                .unwrap(),
+            )
+            .unwrap();
+            assert!(bundled_python(&fixture.0).is_err());
+        }
+    }
+
+    #[test]
+    fn missing_interpreter_has_reinstall_guidance() {
+        let fixture = Fixture::new();
+        let python = fixture.runtime("python/bin/python3");
+        fs::remove_file(python).unwrap();
+        assert!(
+            bundled_python(&fixture.0)
+                .unwrap_err()
+                .contains("no system Python is required")
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn interpreter_symlink_must_stay_in_bundle_but_custom_venv_identity_is_preserved() {
+        use std::os::unix::fs::symlink;
+        let fixture = Fixture::new();
+        let python = fixture.runtime("python/bin/python3");
+        let external = fixture.0.join("outside-python");
+        fs::write(&external, b"placeholder").unwrap();
+        fs::remove_file(&python).unwrap();
+        symlink(&external, &python).unwrap();
+        assert!(bundled_python(&fixture.0).is_err());
+        let custom = Settings {
+            runtime_mode: RuntimeMode::Custom,
+            interpreter: python.to_string_lossy().into(),
+            ..Settings::default()
+        };
+        assert_eq!(resolve_python(&fixture.0, &custom).unwrap(), python);
+    }
 }

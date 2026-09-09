@@ -20,6 +20,8 @@ projects/
 native/target/
 desktop/src-tauri/target/
 desktop/src-tauri/gen/schemas/
+desktop/src-tauri/resources/runtime/
+desktop/profile-local/
 node_modules/
 
 # Marketing production media stays outside source history; releases carry the film.

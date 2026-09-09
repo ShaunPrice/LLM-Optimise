@@ -1,4 +1,33 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LLM-Optimise</title><link rel="stylesheet" href="style.css"></head><body>
-<main><div class="brand">LLM<span>—</span>Optimise <small>DESKTOP LAB</small></div><div class="eyebrow">SMALL HARDWARE. SPECIALISED INTELLIGENCE.</div><h1>Your local AI laboratory.</h1><p class="lead">Explore the limits of your hardware. Measure quality, speed and memory. Build with the models you choose.</p>
-<form id="launch"><label for="python">Python environment</label><input id="python" placeholder="/absolute/path/to/.venv/bin/python" required autocomplete="off"><p class="hint">Select a Python 3.10+ executable with LLM-Optimise installed. This application manages its own local service.</p><label for="workspace">Experiment workspace</label><input id="workspace" placeholder="/absolute/path/to/your/LLM-Optimise" required autocomplete="off"><div class="actions"><button id="start" type="submit">Open laboratory <span>↗</span></button><button id="stop" type="button" class="secondary">Stop local service</button></div></form>
-<output id="status" aria-live="polite">Your models and results stay in the workspace you select.</output><footer><span>Linux · macOS · Windows</span><span>Local service · Native window · Optional cloud</span></footer></main><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LLM-Optimise</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <div class="brand">LLM<span>—</span>Optimise <small>DESKTOP LAB</small></div>
+  <div class="eyebrow">SMALL HARDWARE. SPECIALISED INTELLIGENCE.</div>
+  <h1>Your local AI laboratory.</h1>
+  <p class="lead">Measure quality, speed and memory. Build with the models you choose.</p>
+  <form id="launch">
+    <div class="runtime-card"><span class="runtime-dot" id="runtime-dot" aria-hidden="true"></span><div><strong id="runtime-title">Checking application runtime…</strong><p id="runtime-note">The desktop package includes everything needed to open your laboratory.</p></div><span class="runtime-badge" id="runtime-badge">INCLUDED</span></div>
+    <label for="workspace">Experiment workspace</label>
+    <input id="workspace" required autocomplete="off" spellcheck="false" aria-describedby="workspace-hint">
+    <p class="hint" id="workspace-hint">Models, projects and results live here. A new folder is created when needed.</p>
+    <button id="start" type="submit" disabled>Open laboratory <span aria-hidden="true">↗</span></button>
+    <details id="advanced"><summary>Advanced settings</summary><div class="advanced-body">
+      <label for="runtime-mode">Application runtime</label>
+      <select id="runtime-mode"><option value="bundled">Bundled runtime · recommended</option><option value="custom">Custom Python environment</option></select>
+      <div id="custom-runtime" hidden><label for="python">Custom Python executable</label><input id="python" placeholder="Absolute path to Python" autocomplete="off" spellcheck="false" disabled aria-describedby="python-hint"><p class="hint" id="python-hint">For developers: Python 3.10+ with llm-optimise installed. This choice is separate from your model runtimes.</p></div>
+      <p class="hint">Closing the laboratory window keeps its service available in the tray. Stop it before switching workspace or runtime.</p>
+      <div id="service-address" hidden><label for="service-url">Local service URL · for MCP clients</label><input id="service-url" readonly autocomplete="off" spellcheck="false" aria-describedby="service-url-hint"><p class="hint" id="service-url-hint">Copy this address for the MCP client’s --app-url setting. It is available while this laboratory service is running.</p></div>
+      <button id="stop" type="button" class="secondary">Stop local service</button>
+    </div></details>
+  </form>
+  <output id="status" aria-live="polite">No Python setup is needed with the full desktop package.</output>
+  <footer><span>Linux · macOS · Windows</span><span>Your workspace. Your model choices.</span></footer>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

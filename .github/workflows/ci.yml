@@ -23,6 +23,9 @@ jobs:
       - run: python -m pip install ".[dev,mcp]"
       - run: ruff check src tests
       - run: ruff format --check src tests
+      - run: ruff check scripts/build-bundled-runtime.py scripts/package-installers.py scripts/verify-installer.py desktop/validate_installed.py desktop/src-tauri/resources/service.py
+      - run: ruff format --check scripts/build-bundled-runtime.py scripts/package-installers.py scripts/verify-installer.py desktop/validate_installed.py desktop/src-tauri/resources/service.py
+      - run: node --check desktop/ui/app.js
       - run: node --check src/llm_optimise/static/app.js
       - run: node --check src/llm_optimise/static/workbench.js
       - run: pytest -q
@@ -53,6 +56,7 @@ jobs:
       - if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
       - run: cargo check --locked --manifest-path desktop/src-tauri/Cargo.toml
+      - run: cargo test --locked --manifest-path desktop/src-tauri/Cargo.toml
   container:
     runs-on: ubuntu-latest
     steps:

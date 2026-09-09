@@ -6,7 +6,9 @@ The lightweight application does not include model weights, a GPU runtime, or So
 
 ## 1. Install the application
 
-Start in the repository directory. Python 3.10 or newer is required; the core dependency is `psutil`. Use a virtual environment so the installation does not modify your operating system's Python.
+For the simplest setup, use a [desktop installer for macOS, Windows or Linux](install.md). It includes Python and MCP support. Open the application, select **Open laboratory**, then continue to step 2 below.
+
+The commands in this section are for installing from source. Start in the repository directory. Python 3.10 or newer is required; the core dependency is `psutil`. Use a virtual environment so the installation does not modify your operating system's Python.
 
 ### Linux and macOS
 

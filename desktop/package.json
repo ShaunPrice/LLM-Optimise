@@ -1,6 +1,6 @@
 {
   "name": "llm-optimise-desktop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "license": "MIT",
   "scripts": {"dev": "tauri dev", "build": "tauri build", "icon": "tauri icon ../src/llm_optimise/static/app-icon.png"},

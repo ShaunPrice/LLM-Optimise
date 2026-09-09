@@ -35,7 +35,17 @@ A narrated 1080p walkthrough of the workspace, architecture, routing, Docker dev
 
 ## Start the lab
 
-Install Python 3.10+, clone the repository and run:
+**[Download the desktop installer](https://github.com/ShaunPrice/LLM-Optimise/releases/tag/v0.1.1-experimental)** — Python, the application and MCP support are included.
+
+| Platform | Simple installation |
+|---|---|
+| **macOS** | Open the Apple Silicon or Intel `.dmg`, drag the app to Applications, then open it. |
+| **Windows** | Run the x64 `-setup.exe` wizard, then open LLM-Optimise from the Start Menu. |
+| **Linux** | Install the x64/ARM64 `.deb`, or make the matching `.AppImage` executable and launch it. |
+
+Select **Open laboratory** to begin with the bundled runtime and default workspace. Models, inference engines and Docker are optional separate installations. Experimental packages are unsigned; see the [installation guide](docs/install.md) for supported systems, first-open steps, checksums, CLI/MCP access and updates.
+
+For a source installation, install Python 3.10+, clone the repository and run:
 
 ```bash
 git clone https://github.com/ShaunPrice/LLM-Optimise.git
@@ -88,6 +98,7 @@ All 16 roadmap additions have executable implementations, with guided GUI forms 
 
 | Guide | Contents |
 |---|---|
+| [Desktop installation](docs/install.md) | Simple Mac/Windows/Linux installers, first launch, bundled CLI/MCP, updates and removal |
 | [Getting started](docs/getting-started.md) | Linux/macOS/Windows installation, runtimes, first benchmark and local model setup |
 | [User guide](docs/user-guide.md) | Every workspace, datasets, sweeps, metrics, reports and interpretation |
 | [CLI reference](docs/cli-reference.md) | Commands, arguments, examples, outputs and exit behaviour |
@@ -106,7 +117,7 @@ All 16 roadmap additions have executable implementations, with guided GUI forms 
 
 ## Project status
 
-**Version 0.1.0 — working experimental application.** Native CPU/Metal inference, generated-project container testing and browser workflows have live validation on this Mac. CI checks Python code on Linux, macOS and Windows. OpenRouter cloud calls and Soup training/reload on Mac MLX and Omen CUDA/WSL also pass live validation. The GUI and CLI now run training, adapter validation and the complete experimental workbench. Native Windows training, additional accelerator inference paths and production installer distribution still need their respective hardware/release validation.
+**Version 0.1.1 — working experimental application.** Native CPU/Metal inference, generated-project container testing and browser workflows have live validation on this Mac. CI checks Python code on Linux, macOS and Windows. OpenRouter cloud calls and Soup training/reload on Mac MLX and Omen CUDA/WSL also pass live validation. The GUI and CLI run training, adapter validation and the complete experimental workbench. Desktop installers bundle their own Python runtime; each release includes its package acceptance results. Native Windows training, additional accelerator inference paths and signed/notarized distribution remain separate validation or release work.
 
 ## Licence
 
